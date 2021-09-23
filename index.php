@@ -1,6 +1,10 @@
-<?php require($_SERVER['DOCUMENT_ROOT'] . "/s/bn/config.inc.php"); ?>
-<?php require($_SERVER['DOCUMENT_ROOT'] . "/s/bn/db_helper.php"); ?>
-<?php $__db_c = new db_helper(); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/bn/config.inc.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/bn/db_helper.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/bn/time_manip.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/bn/video_helper.php"); ?>
+<?php $__video_h = new video_fetcher($__db); ?>
+<?php $__db_h = new db_helper(); ?>
+<?php $__time_h = new time_helper(); ?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -12,8 +16,8 @@
         <script>
             var yt = yt || {};yt.timing = yt.timing || {};yt.timing.tick = function(label, opt_time) {var timer = yt.timing['timer'] || {};if(opt_time) {timer[label] = opt_time;}else {timer[label] = new Date().getTime();}yt.timing['timer'] = timer;};yt.timing.info = function(label, value) {var info_args = yt.timing['info_args'] || {};info_args[label] = value;yt.timing['info_args'] = info_args;};yt.timing.info('e', "904821,919006,922401,920704,912806,913419,913546,913556,919349,919351,925109,919003,920201,912706");if (document.webkitVisibilityState == 'prerender') {document.addEventListener('webkitvisibilitychange', function() {yt.timing.tick('start');}, false);}yt.timing.tick('start');yt.timing.info('li','0');try {yt.timing['srt'] = window.gtbExternal && window.gtbExternal.pageT() ||window.external && window.external.pageT;} catch(e) {}if (window.chrome && window.chrome.csi) {yt.timing['srt'] = Math.floor(window.chrome.csi().pageT);}if (window.msPerformance && window.msPerformance.timing) {yt.timing['srt'] = window.msPerformance.timing.responseStart - window.msPerformance.timing.navigationStart;}    
         </script>
-        <link id="www-core-css" rel="stylesheet" href="http://s.ytimg.com/yt/cssbin/www-core-vfluMRDnk.css">
-        <link rel="stylesheet" href="http://s.ytimg.com/yt/cssbin/www-guide-vflx0V5Tq.css">
+        <link id="www-core-css" rel="stylesheet" href="/yt/cssbin/www-core-vfluMRDnk.css">
+        <link rel="stylesheet" href="/yt/cssbin/www-guide-vflx0V5Tq.css">
         <script>
             if (window.yt.timing) {yt.timing.tick("ct");}    
         </script>
@@ -293,55 +297,60 @@
 											<?php
 												$stmt = $__db->prepare("SELECT * FROM videos ORDER BY id DESC LIMIT 20");
 												$stmt->execute();
-												$stmt->store_result();
-												while($stmt->fetch()) {
+												$result = $stmt->get_result();
+												while($video = $result->fetch_assoc()) {	
+													$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
+													$video['duration'] = $__time_h->timestamp($video['duration']);
+													$video['views'] = $__video_h->fetch_video_views($video['rid']);
+													$video['author'] = htmlspecialchars($video['author']);		
+													$video['title'] = htmlspecialchars($video['title']);
+													$video['description'] = $__video_h->shorten_description($video['description'], 50);
 											?>
 											<li>
 												<div class="feed-item-container first " data-channel-key="UCR2A9ZNliJfgC66IvIpe-Zw">
 													<div class="feed-author-bubble-container">
-														<a href="/user/FUNKER530?feature=g-logo-xit" class="feed-author-bubble   ">  <span class="feed-item-author">
-														<span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="FUNKER530" data-thumb="//i3.ytimg.com/i/6xBhF4QYIPPF2_-ExZzd2w/1.jpg?v=4f8c693b" width="28"><span class="vertical-align"></span></span></span></span>
+														<a href="/user/<?php echo $video['author']; ?>" class="feed-author-bubble   ">  <span class="feed-item-author">
+														<span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $video['author']; ?>" data-thumb="//i3.ytimg.com/i/6xBhF4QYIPPF2_-ExZzd2w/1.jpg?v=4f8c693b" width="28"><span class="vertical-align"></span></span></span></span>
 														</span>
 														</a>  
 													</div>
 													<div class="feed-item-main">
 														<div class="feed-item-header">
 															<span class="feed-item-actions-line ">
-															<span class="feed-item-owner">    <a href="/user/FUNKER530?feature=g-logo-xit" class="yt-uix-sessionlink yt-user-name " data-sessionlink="feature=g-logo-xit" dir="ltr">FUNKER530</a>
+															<span class="feed-item-owner">    <a href="/user/<?php echo $video['author']; ?>" class="yt-uix-sessionlink yt-user-name " data-sessionlink="feature=g-logo-xit" dir="ltr"><?php echo $video['author']; ?></a>
 															</span>
 															uploaded a video
 															<span class="feed-item-time">
-															4 days ago
+															<?php echo $video['age']; ?>
 															</span>
 															</span>
 														</div>
 														<div class="feed-item-content-wrapper clearfix">
 															<div class="feed-item-thumb">
-																<a class="ux-thumb-wrap contains-addto  yt-uix-contextlink yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;context=G266dc06FOAAAAAAAAAA" href="/watch?v=rLHU-_OhT8g&amp;feature=g-logo-xit">
-																<span class="video-thumb ux-thumb yt-thumb-default-185 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="//i3.ytimg.com/vi/rLHU-_OhT8g/mqdefault.jpg" width="185"><span class="vertical-align"></span></span></span></span>
-																<span class="video-time">3:29</span>
+																<a class="ux-thumb-wrap contains-addto  yt-uix-contextlink yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;context=G266dc06FOAAAAAAAAAA" href="/watch?v=<?php echo $video['rid']; ?>">
+																<span class="video-thumb ux-thumb yt-thumb-default-185 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" width="185"><span class="vertical-align"></span></span></span></span>
+																<span class="video-time"><?php echo $video['duration']; ?></span>
 																<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="rLHU-_OhT8g" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
 																</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
 																</a>
 															</div>
 															<div class="feed-item-content">
 																<h4>
-																	<a class="feed-video-title title yt-uix-contextlink  yt-uix-sessionlink  secondary" href="/watch?v=rLHU-_OhT8g&amp;feature=g-logo-xit" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-logo-xit&amp;context=G266dc06FOAAAAAAAAAA">
-																	U.S. Soldier Survives Taliban Machine Gun Fire During Firefight
+																	<a class="feed-video-title title yt-uix-contextlink  yt-uix-sessionlink  secondary" href="/watch?v=<?php echo $video['rid']; ?>" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-logo-xit&amp;context=G266dc06FOAAAAAAAAAA">
+																		<?php echo $video['title']; ?>
 																	</a>
 																</h4>
 																<div class="metadata">
-																	<a href="/user/FUNKER530?feature=g-logo-xit" class="yt-user-photo ">
-																	<span class="video-thumb ux-thumb yt-thumb-square-18 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="FUNKER530" data-thumb="//i3.ytimg.com/i/6xBhF4QYIPPF2_-ExZzd2w/1.jpg?v=4f8c693b" width="18"><span class="vertical-align"></span></span></span></span>
+																	<a href="/user/<?php echo $video['author']; ?>" class="yt-user-photo ">
+																	<span class="video-thumb ux-thumb yt-thumb-square-18 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $video['author']; ?>" data-thumb="//i3.ytimg.com/i/6xBhF4QYIPPF2_-ExZzd2w/1.jpg?v=4f8c693b" width="18"><span class="vertical-align"></span></span></span></span>
 																	</a>
-																	<a href="/user/FUNKER530?feature=g-logo-xit" class="yt-uix-sessionlink yt-user-name " data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-logo-xit" dir="ltr">FUNKER530</a>
+																	<a href="/user/<?php echo $video['author']; ?>" class="yt-uix-sessionlink yt-user-name " data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-logo-xit" dir="ltr"><?php echo $video['author']; ?></a>
 																	<span class="bull">•</span>
 																	<span class="view-count">
-																	9,211,241 views
+																	<?php echo $video['views']; ?> views
 																	</span>
 																	<div class="description">
-																		<p>No rounds penetrated  his body armor, and he made it home with no permanent injuries. This happened in Kunar Province, Afghanistan. </p>
-																		<p>*READ* From th...</p>
+																		<p><?php echo $video['description']; ?></p>
 																	</div>
 																</div>
 															</div>
@@ -350,13 +359,13 @@
 												</div>
 												<div class="feed-item-dismissal-notices">
 													<div class="feed-item-dismissal feed-item-dismissal-hide hid">This item has been hidden</div>
-													<div class="feed-item-dismissal feed-item-dismissal-uploads hid">In the future you will only see uploads from   <span class="feed-item-owner">    <a href="/user/FUNKER530?feature=g-logo-xit" class="yt-uix-sessionlink yt-user-name " data-sessionlink="feature=g-logo-xit" dir="ltr">FUNKER530</a>
+													<div class="feed-item-dismissal feed-item-dismissal-uploads hid">In the future you will only see uploads from   <span class="feed-item-owner">    <a href="/user/<?php echo $video['author']; ?>" class="yt-uix-sessionlink yt-user-name " data-sessionlink="feature=g-logo-xit" dir="ltr"><?php echo $video['author']; ?></a>
 														</span>
 													</div>
-													<div class="feed-item-dismissal feed-item-dismissal-all-activity hid">In the future you will see all activity from   <span class="feed-item-owner">    <a href="/user/FUNKER530?feature=g-logo-xit" class="yt-uix-sessionlink yt-user-name " data-sessionlink="feature=g-logo-xit" dir="ltr">FUNKER530</a>
+													<div class="feed-item-dismissal feed-item-dismissal-all-activity hid">In the future you will see all activity from   <span class="feed-item-owner">    <a href="/user/<?php echo $video['author']; ?>" class="yt-uix-sessionlink yt-user-name " data-sessionlink="feature=g-logo-xit" dir="ltr"><?php echo $video['author']; ?></a>
 														</span>
 													</div>
-													<div class="feed-item-dismissal feed-item-dismissal-unsubscribe hid">You have been unsubscribed from   <span class="feed-item-owner">    <a href="/user/FUNKER530?feature=g-logo-xit" class="yt-uix-sessionlink yt-user-name " data-sessionlink="feature=g-logo-xit" dir="ltr">FUNKER530</a>
+													<div class="feed-item-dismissal feed-item-dismissal-unsubscribe hid">You have been unsubscribed from   <span class="feed-item-owner">    <a href="/user/<?php echo $video['author']; ?>" class="yt-uix-sessionlink yt-user-name " data-sessionlink="feature=g-logo-xit" dir="ltr"><?php echo $video['author']; ?></a>
 														</span>
 													</div>
 												</div>
