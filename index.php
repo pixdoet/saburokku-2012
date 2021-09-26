@@ -1,8 +1,11 @@
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/bn/config.inc.php"); ?>
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/bn/db_helper.php"); ?>
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/bn/time_manip.php"); ?>
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/bn/video_helper.php"); ?>
-<?php $__video_h = new video_fetcher($__db); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/config.inc.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/db_helper.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/time_manip.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_helper.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/video_helper.php"); ?>
+<?php $__server->page_title = "test"; ?>
+<?php $__video_h = new video_helper($__db); ?>
+<?php $__user_h = new user_helper($__db); ?>
 <?php $__db_h = new db_helper(); ?>
 <?php $__time_h = new time_helper(); ?>
 <!DOCTYPE html>
@@ -28,56 +31,67 @@
 		</form>
 		<!-- begin page -->
 		<div id="page" class="">
-			<div id="masthead-container">
-				<!-- begin masthead -->
-				<div id="masthead" class="" dir="ltr">
-					<a id="logo-container" href="/" title="YouTube home">
-					<img id="logo" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="YouTube home">
-					</a>
-					<div id="masthead-user-bar-container">
-						<div id="masthead-user-bar">
-							<div id="masthead-user">
-								<div id="masthead-user-display"><span id="masthead-user-wrapper"><button href="https://accounts.google.com/ServiceLogin?passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dsign_in_button%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252F&amp;uilel=3&amp;hl=en_US&amp;service=youtube" type="button" id="masthead-user-button" onclick=";window.location.href=this.getAttribute('href');return false;" class=" yt-uix-button yt-uix-button-text" role="button"><span class="yt-uix-button-content">  <span id="masthead-user-image">
-									<span class="clip">
-									<span class="clip-center">
-									<img src="//s.ytimg.com/yt/img/no_videos_140-vfl5AhOQY.png" alt="">
-									<span class="vertical-center"></span>
-									</span>
-									</span>
-									</span>
-									<span class="masthead-user-username">Sign In</span>
-									</span></button></span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div id="masthead-search-bar-container">
-						<div id="masthead-search-bar">
-							<div id="masthead-nav"><a href="/videos?feature=mh">Browse</a><span class="masthead-link-separator">|</span><a href="/movies?feature=mh">Movies</a>                <span class="masthead-link-separator">|</span><a id="masthead-upload-link" class="" data-upsell="upload" href="//www.youtube.com/my_videos_upload">Upload</a></div>
-							<form id="masthead-search" class="search-form consolidated-form" action="/results" onsubmit="if (_gel('masthead-search-term').value == '') return false;">
-								<button class="search-btn-compontent search-button yt-uix-button yt-uix-button-default" onclick="if (_gel('masthead-search-term').value == '') return false; _gel('masthead-search').submit(); return false;;return true;" type="submit" id="search-btn" dir="ltr" tabindex="2" role="button"><span class="yt-uix-button-content">Search </span></button>
-								<div id="masthead-search-terms" class="masthead-search-terms-border" dir="ltr"><label><input id="masthead-search-term" autocomplete="off" class="search-term" name="search_query" value="" type="text" tabindex="1" onkeyup="goog.i18n.bidi.setDirAttribute(event,this)" title="Search"></label></div>
-							</form>
-						</div>
-					</div>
-				</div>
-				<div id="alerts"></div>
-				<!-- end masthead -->
-			</div>
+			<div id="masthead-container"><?php require($_SERVER['DOCUMENT_ROOT'] . "/s/mod/header.php"); ?></div>
 			<div id="content-container">
 				<!-- begin content -->
 				<div id="content">
 					<div class="guide-layout-container enable-fancy-subscribe-button">
 						<div class="guide-container">
-							<div id="guide-builder-promo">
+						<?php if(!isset($_SESSION['siteusername'])) { ?>
+									<div id="guide-builder-promo">
 								<h2>
-									Sign in to add channels to your homepage
+							Sign in to add channels to your homepage
 								</h2>
 								<div id="guide-builder-promo-buttons" class="signed-out">
-									<button href="https://accounts.google.com/ServiceLogin?passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dguide%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252Findex%253Ffeature%253Dsignin&amp;uilel=3&amp;hl=en_US&amp;service=youtube" type="button" class=" yt-uix-button yt-uix-button-dark" onclick=";window.location.href=this.getAttribute('href');return false;" role="button"><span class="yt-uix-button-content">Sign In </span></button>
+									<button href="login" type="button" class=" yt-uix-button yt-uix-button-dark" onclick=";window.location.href=this.getAttribute('href');return false;" role="button"><span class="yt-uix-button-content">Sign In </span></button>
+									<button href="signup" type="button" class=" yt-uix-button yt-uix-button-primary" onclick=";window.location.href=this.getAttribute('href');return false;" role="button"><span class="yt-uix-button-content">Create Account </span></button>
 								</div>
+								<?php } else { ?>
+									<div id="guide-builder-promo">
+								
+								<div id="guide-builder-promo-buttons" class="">
+									<button href="/browse" type="button" onclick=";window.location.href=this.getAttribute('href');return false;" role="button" class=" yt-uix-button  yt-uix-button-primary"><img src="/static/pixel-vfl3z5WfW.gif" class="yt-uix-button-icon-add"><span class="yt-uix-button-content"> Browse channels</span></button>
+								</div>
+								<?php } ?>
 							</div>
 							<div class="guide">
+							<?php 
+								if(isset($_SESSION['siteusername'])) {
+								?>
+								<div style="/*! margin-top: 0px; *//*! margin-left: 10px; *//*! margin-bottom: 13px; */height: 99px;" class="guide-section feed-header channel first"><img alt="" src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($_SESSION['siteusername']); ?>" style="height: 88px;position: relative;top: 4px;left: 4px;" class="feed-header-thumb channel-thumb" width="88px"><div id="links" style="/*! margin-left: 5px; */position: relative;left: 13px;top: 7px;"><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
+							<a href="/user/<?php echo htmlspecialchars($_SESSION['siteusername']); ?>" style="color: inherit;">My channel
+							<img src="/static/pixel-vfl3z5WfW.gif" class="see-more-arrow" alt=""></a>        
+							</div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
+							<a href="/video_manager" style="color: inherit;">Videos</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
+							<a href="/playlists" style="color: inherit;">Playlists</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
+							<a href="/logout" style="color: inherit;">Log Out</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
+							<a href="/feed" style="color: inherit;">Dashboard</a>        </div></div></div>
+
+								<div class="guide-section yt-uix-expander  ">
+								<h3 class="guide-item-container">
+									<a data-feed-name="balls" data-feed-type="system" class="guide-item" href="/inbox/">
+									<span class="thumb">
+										<img src="/static/pixel-vfl3z5WfW.gif" alt="" class="system-icon category">
+									</span>
+									<span class="display-name">Inbox</span>
+									</a>
+								</h3>
+								<ul>
+										<li class="guide-item-container ">
+								<a class="guide-item" data-feed-type="system" data-feed-name="retard" href="/feed">
+									<span class="thumb">
+									<img src="/static/pixel-vfl3z5WfW.gif" alt="" class="system-icon system social">
+									</span>
+								<span class="display-name">Feed</span>
+								</a>
+							</li>
+								</ul>
+								<div class="guide-item-container">
+									<span class="guide-item guide-item-action guide-item-fake">
+							<a style="display: none;" href="/web/20121123233507/http://www.youtube.com/videos?feature=hp">&nbsp;<img src="/static/pixel-vfl3z5WfW.gif" class="see-more-arrow" alt=""></a>        </span>
+								</div>
+								</div>
+								<?php } ?>
 								<div class="guide-section yt-uix-expander  first ">
 									<h3 class="guide-item-container selected-child">
 										<a class="guide-item selected" data-feed-name="youtube" data-feed-type="system">
@@ -160,51 +174,17 @@
 											</span>
 											</a>
 										</li>
-										<li class="guide-item-container ">
-											<a class="guide-item" data-external-id="W-B8MvkfS9LZW9X_jU6iJA" data-feed-name="W-B8MvkfS9LZW9X_jU6iJA" data-feed-type="user">
-											<span class="thumb">  <span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="//i4.ytimg.com/i/W-B8MvkfS9LZW9X_jU6iJA/1.jpg?v=50343a63" width="28"><span class="vertical-align"></span></span></span></span>
-											</span>
-											<span class="display-name">
-											OraTVnetwork
-											</span>
-											</a>
-										</li>
-										<li class="guide-item-container ">
-											<a class="guide-item" data-external-id="f4FYTsGFFcdc68AUPIU3RA" data-feed-name="f4FYTsGFFcdc68AUPIU3RA" data-feed-type="user">
-											<span class="thumb">  <span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="//i3.ytimg.com/i/f4FYTsGFFcdc68AUPIU3RA/1.jpg?v=5032a7d9" width="28"><span class="vertical-align"></span></span></span></span>
-											</span>
-											<span class="display-name">
-											BuzzFeed
-											</span>
-											</a>
-										</li>
-										<li class="guide-item-container ">
-											<a class="guide-item" data-external-id="l3Vf8heuOumLuC_toRYGXg" data-feed-name="l3Vf8heuOumLuC_toRYGXg" data-feed-type="user">
-											<span class="thumb">  <span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="//i1.ytimg.com/i/l3Vf8heuOumLuC_toRYGXg/1.jpg?v=4fef5500" width="28"><span class="vertical-align"></span></span></span></span>
-											</span>
-											<span class="display-name">
-											HplusDigitalSeries
-											</span>
-											</a>
-										</li>
-										<li class="guide-item-container ">
-											<a class="guide-item" data-external-id="WljxewHlJE3M7U_6_zFNyA" data-feed-name="WljxewHlJE3M7U_6_zFNyA" data-feed-type="user">
-											<span class="thumb">  <span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="//i4.ytimg.com/i/WljxewHlJE3M7U_6_zFNyA/1.jpg?v=4fbbd073" width="28"><span class="vertical-align"></span></span></span></span>
-											</span>
-											<span class="display-name">
-											AwesomenessTV
-											</span>
-											</a>
-										</li>
-										<li class="guide-item-container ">
-											<a class="guide-item" data-external-id="qnbDFdCpuN8CMEg0VuEBqA" data-feed-name="qnbDFdCpuN8CMEg0VuEBqA" data-feed-type="user">
-											<span class="thumb">  <span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="//i2.ytimg.com/i/qnbDFdCpuN8CMEg0VuEBqA/1.jpg?v=66fa49" width="28"><span class="vertical-align"></span></span></span></span>
-											</span>
-											<span class="display-name">
-											TheNewYorkTimes
-											</span>
-											</a>
-										</li>
+										<?php foreach($__server->featured_channels as $channel) { ?>
+											<li class="guide-item-container ">
+												<a class="guide-item" data-external-id="<?php echo htmlspecialchars($channel); ?>" data-feed-name="<?php echo htmlspecialchars($channel); ?>" data-feed-type="user">
+												<span class="thumb">  <span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($channel); ?>" width="28"><span class="vertical-align"></span></span></span></span>
+												</span>
+												<span class="display-name">
+													<?php echo htmlspecialchars($channel); ?>
+												</span>
+												</a>
+											</li>
+										<?php } ?>
 									</ul>
 									<div class="guide-item-container">
 										<span class="guide-item guide-item-action guide-item-fake">
@@ -221,64 +201,57 @@
 								<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 								</a>
 							</div>
-							<h3 class="sidebar-module-header">
-								Spotlight
-							</h3>
-							<h2>News and Documentary Emmy Nominees</h2>
+							<h2>2012 is out!</h2>
 							<p class="sidebar-module-description">
-								These are just some of the News and Documentary Emmy nominees, celebrating the important work being done by journalists and documentarians, unearthing stories that might otherwise be left untold.
+								Enjoy some recommended videos selected for you by our nonexistant recommendation algorythmn.
 							</p>
 							<p class="sidebar-module-description">
-								Presented by: <a href="/theifilestv">theifilestv</a>
+								Presented by: <a href="/user/SubRocks">SubRocks</a>
 							</p>
 							<ul>
-								<li class="video-list-item "><a href="/watch?v=yuTBQ86r8o0&amp;feature=g-sptl&amp;cid=inp-hs-ytg" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Where Soldiers Come From" data-thumb="//i2.ytimg.com/vi/yuTBQ86r8o0/default.jpg" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time">4:04</span>
+								<?php
+									$stmt = $__db->prepare("SELECT * FROM videos ORDER BY rand() LIMIT 4");
+									$stmt->execute();
+									$result = $stmt->get_result();
+									while($video = $result->fetch_assoc()) {	
+										$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
+										$video['duration'] = $__time_h->timestamp($video['duration']);
+										$video['views'] = $__video_h->fetch_video_views($video['rid']);
+										$video['author'] = htmlspecialchars($video['author']);		
+										$video['title'] = htmlspecialchars($video['title']);
+										$video['description'] = $__video_h->shorten_description($video['description'], 50);
+								?>
+								<li class="video-list-item "><a href="/watch?v=<?php echo $video['rid']; ?>" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $video['title']; ?>" data-thumb="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $video['duration']; ?></span>
 									<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="yuTBQ86r8o0" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
 									</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-									</span><span dir="ltr" class="title" title="Where Soldiers Come From">Where Soldiers Come From</span><span class="stat">by <span class="yt-user-name " dir="ltr">theifilestv</span></span><span class="stat view-count">  <span class="viewcount">307 views</span>
+									</span><span dir="ltr" class="title" title="<?php echo $video['title']; ?>"><?php echo $video['title']; ?></span><span class="stat">by <span class="yt-user-name " dir="ltr"><?php echo $video['author']; ?></span></span><span class="stat view-count">  <span class="viewcount"><?php echo $video['views']; ?> views</span>
 									</span></a>
 								</li>
-								<li class="video-list-item "><a href="/watch?v=XlVzvLHTIps&amp;feature=g-sptl&amp;cid=inp-hs-ytg" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="A National Disgrace" data-thumb="//i1.ytimg.com/vi/XlVzvLHTIps/default.jpg" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time">5:26</span>
-									<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="XlVzvLHTIps" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
-									</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-									</span><span dir="ltr" class="title" title="A National Disgrace">A National Disgrace</span><span class="stat">by <span class="yt-user-name " dir="ltr">theifilestv</span></span><span class="stat view-count">  <span class="viewcount">308 views</span>
-									</span></a>
-								</li>
-								<li class="video-list-item "><a href="/watch?v=kFvhpDg9naU&amp;feature=g-sptl&amp;cid=inp-hs-ytg" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Punched Out | Part One" data-thumb="//i4.ytimg.com/vi/kFvhpDg9naU/default.jpg" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time">12:01</span>
-									<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="kFvhpDg9naU" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
-									</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-									</span><span dir="ltr" class="title" title="Punched Out | Part One">Punched Out | Part One</span><span class="stat">by <span class="yt-user-name " dir="ltr">TheNewYorkTimes</span></span><span class="stat view-count">  <span class="viewcount">621 views</span>
-									</span></a>
-								</li>
-								<li class="video-list-item "><a href="/watch?v=s0y8smihQHI&amp;feature=g-sptl&amp;cid=inp-hs-ytg" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Why Would Anyone Kill Kate? (20/20 1-14-2011)" data-thumb="//i4.ytimg.com/vi/s0y8smihQHI/default.jpg" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time">6:55</span>
-									<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="s0y8smihQHI" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
-									</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-									</span><span dir="ltr" class="title" title="Why Would Anyone Kill Kate? (20/20 1-14-2011)">Why Would Anyone Kill Kate? (20/20 1-14-2011)</span><span class="stat">by <span class="yt-user-name " dir="ltr">ABCNews</span></span><span class="stat view-count">  <span class="viewcount">1,508 views</span>
-									</span></a>
-								</li>
+								<?php } $stmt->close(); ?>
 							</ul>
 							<h3>
 								Featured
 							</h3>
 							<ul>
-								<li class="video-list-item "><a href="/watch?v=aAnhju9US0s&amp;feature=g-feat" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-feat&amp;context=G2e88192YFAAAAAAAAAA"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Serenity" data-thumb="//i2.ytimg.com/vi/aAnhju9US0s/default.jpg" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time">1:50</span>
-									<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="aAnhju9US0s" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
+								<?php
+									$stmt = $__db->prepare("SELECT * FROM videos WHERE featured = 'v' ORDER BY id DESC LIMIT 4");
+									$stmt->execute();
+									$result = $stmt->get_result();
+									while($video = $result->fetch_assoc()) {	
+										$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
+										$video['duration'] = $__time_h->timestamp($video['duration']);
+										$video['views'] = $__video_h->fetch_video_views($video['rid']);
+										$video['author'] = htmlspecialchars($video['author']);		
+										$video['title'] = htmlspecialchars($video['title']);
+										$video['description'] = $__video_h->shorten_description($video['description'], 50);
+								?>
+								<li class="video-list-item "><a href="/watch?v=<?php echo $video['rid']; ?>" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $video['title']; ?>" data-thumb="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $video['duration']; ?></span>
+									<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="yuTBQ86r8o0" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
 									</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-									</span><span dir="ltr" class="title" title="Serenity">Serenity</span><span class="stat">by <span class="yt-user-name " dir="ltr">YoBoHoMusic</span></span><span class="stat view-count">  <span class="viewcount">1,503 views</span>
+									</span><span dir="ltr" class="title" title="<?php echo $video['title']; ?>"><?php echo $video['title']; ?></span><span class="stat">by <span class="yt-user-name " dir="ltr"><?php echo $video['author']; ?></span></span><span class="stat view-count">  <span class="viewcount"><?php echo $video['views']; ?> views</span>
 									</span></a>
 								</li>
-								<li class="video-list-item "><a href="/watch?v=DAR10PTHOcc&amp;feature=g-feat" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-feat&amp;context=G26b30daYFAAAAAAAAAQ"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Spanish Word of the Day - &quot;Chancla&quot;" data-thumb="//i1.ytimg.com/vi/DAR10PTHOcc/default.jpg" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time">0:36</span>
-									<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="DAR10PTHOcc" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
-									</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-									</span><span dir="ltr" class="title" title="Spanish Word of the Day - &quot;Chancla&quot;">Spanish Word of the Day - "Chancla"</span><span class="stat">by <span class="yt-user-name " dir="ltr">mitu</span></span><span class="stat view-count">  <span class="viewcount">8,666 views</span>
-									</span></a>
-								</li>
-								<li class="video-list-item "><a href="/watch?v=i_mguvhu4jc&amp;feature=g-feat" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-feat&amp;context=G27dd993YFAAAAAAAAAg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Beachy Kitchen Transformation" data-thumb="//i2.ytimg.com/vi/i_mguvhu4jc/default.jpg" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time">3:21</span>
-									<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="i_mguvhu4jc" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
-									</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-									</span><span dir="ltr" class="title" title="Beachy Kitchen Transformation">Beachy Kitchen Transformation</span><span class="stat">by <span class="yt-user-name " dir="ltr">HGTV</span></span><span class="stat view-count">  <span class="viewcount">4,068 views</span>
-									</span></a>
-								</li>
+								<?php } $stmt->close(); ?>
 							</ul>
 						</div>
 						<div id="feed">
@@ -310,7 +283,7 @@
 												<div class="feed-item-container first " data-channel-key="UCR2A9ZNliJfgC66IvIpe-Zw">
 													<div class="feed-author-bubble-container">
 														<a href="/user/<?php echo $video['author']; ?>" class="feed-author-bubble   ">  <span class="feed-item-author">
-														<span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $video['author']; ?>" data-thumb="//i3.ytimg.com/i/6xBhF4QYIPPF2_-ExZzd2w/1.jpg?v=4f8c693b" width="28"><span class="vertical-align"></span></span></span></span>
+														<span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $video['author']; ?>" data-thumb="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($video['author']); ?>" width="28"><span class="vertical-align"></span></span></span></span>
 														</span>
 														</a>  
 													</div>
@@ -342,7 +315,7 @@
 																</h4>
 																<div class="metadata">
 																	<a href="/user/<?php echo $video['author']; ?>" class="yt-user-photo ">
-																	<span class="video-thumb ux-thumb yt-thumb-square-18 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $video['author']; ?>" data-thumb="//i3.ytimg.com/i/6xBhF4QYIPPF2_-ExZzd2w/1.jpg?v=4f8c693b" width="18"><span class="vertical-align"></span></span></span></span>
+																	<span class="video-thumb ux-thumb yt-thumb-square-18 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $video['author']; ?>" data-thumb="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($video['author']); ?>" width="18"><span class="vertical-align"></span></span></span></span>
 																	</a>
 																	<a href="/user/<?php echo $video['author']; ?>" class="yt-uix-sessionlink yt-user-name " data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-logo-xit" dir="ltr"><?php echo $video['author']; ?></a>
 																	<span class="bull">•</span>
@@ -412,82 +385,7 @@
 				</div>
 				<!-- end content -->
 			</div>
-			<div id="footer-container">
-				<!-- begin footer -->
-				<div id="footer">
-					<div class="yt-horizontal-rule "><span class="first"></span><span class="second"></span><span class="third"></span></div>
-					<div id="footer-logo">
-						<a href="/" title="YouTube home">
-						<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="YouTube home">
-						</a>
-						<span class="copyright" dir="ltr">© 2012 YouTube, LLC</span>
-						<span id="footer-divider"></span>
-					</div>
-					<div id="footer-main">
-						<div id="in-product-help" class="yt-uix-clickcard">
-							<button type="button" id="help-button" onclick=";return false;" class="yt-uix-clickcard-target yt-uix-button-reverse yt-uix-button yt-uix-button-default" data-orientation="vertical" data-locale="en_US" data-iph-anchor-text="More Help" data-iph-search-button-text="Search" data-iph-tracking="iph-questionmark" data-iph-js-url="//s.ytimg.com/yt/jsbin/www-help-vflyZa3c5.js" data-iph-search-input-text="Search YouTube's Help Center" data-iph-title-text="Need Help on this page?" data-iph-topic-id="1699306" data-iph-css-url="//s.ytimg.com/yt/cssbin/www-helpie-vflhT2yf3.css" data-help-center-host="//support.google.com/youtube" role="button"><span class="yt-uix-button-content">  <img class="questionmark" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
-							<span>Help</span>
-							<img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
-							</span></button>
-							<div class="yt-uix-clickcard-content" id="help-target">
-								<p class="loading-spinner">
-									<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-									Loading...
-								</p>
-							</div>
-						</div>
-						<ul id="footer-links-primary">
-							<li><a href="/t/about_youtube">About</a></li>
-							<li><a href="/t/press">Press &amp; Blogs</a></li>
-							<li><a href="/t/copyright_center">Copyright</a></li>
-							<li><a href="/creators">Creators &amp; Partners</a></li>
-							<li><a href="/t/advertising_overview">Advertising</a></li>
-							<li><a href="/dev">Developers</a></li>
-						</ul>
-						<ul id="footer-links-secondary">
-							<li><a href="/t/terms">Terms</a></li>
-							<li><a href="http://www.google.com/intl/en/policies/privacy/">Privacy</a></li>
-							<li><a href="//support.google.com/youtube/bin/request.py?contact_type=abuse&amp;hl=en-US">Safety</a></li>
-							<li><a href="//www.google.com/tools/feedback/intl/en/error.html" onclick="return yt.www.feedback.start(yt.getConfig('FEEDBACK_LOCALE_LANGUAGE'), yt.getConfig('FEEDBACK_LOCALE_EXTRAS'));" id="reportbug">Report a bug</a></li>
-							<li><a href="/testtube">Try something new!</a></li>
-						</ul>
-						<ul class="pickers yt-uix-button-group" data-button-toggle-group="optional">
-							<li>
-								Language:
-								<button type="button" class=" yt-uix-button yt-uix-button-text" onclick=";return false;" data-button-toggle="true" data-picker-position="footer" data-button-menu-id="arrow-display" data-picker-key="language" data-button-action="yt.www.picker.load" role="button"><span class="yt-uix-button-content">English </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-							</li>
-							<li>
-								Location:
-								<button type="button" class=" yt-uix-button yt-uix-button-text" onclick=";return false;" data-button-toggle="true" data-picker-position="footer" data-button-menu-id="arrow-display" data-picker-key="country" data-button-action="yt.www.picker.load" role="button"><span class="yt-uix-button-content">Worldwide </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-							</li>
-							<li>
-								Safety:
-								<button type="button" class=" yt-uix-button yt-uix-button-text" onclick=";return false;" data-button-toggle="true" data-picker-position="footer" data-button-menu-id="arrow-display" data-picker-key="safetymode" data-button-action="yt.www.picker.load" role="button"><span class="yt-uix-button-content">Off
-								</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-							</li>
-						</ul>
-						<div id="yt-picker-language-footer" class="yt-picker" style="display: none">
-							<p class="yt-spinner">
-								<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="yt-spinner-img" alt="">
-								Loading...
-							</p>
-						</div>
-						<div id="yt-picker-country-footer" class="yt-picker" style="display: none">
-							<p class="yt-spinner">
-								<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="yt-spinner-img" alt="">
-								Loading...
-							</p>
-						</div>
-						<div id="yt-picker-safetymode-footer" class="yt-picker" style="display: none">
-							<p class="yt-spinner">
-								<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="yt-spinner-img" alt="">
-								Loading...
-							</p>
-						</div>
-					</div>
-				</div>
-				<!-- end footer -->
-			</div>
+			<div id="footer-container"><?php require($_SERVER['DOCUMENT_ROOT'] . "/s/mod/footer.php"); ?></div>
 			<div id="playlist-bar" class="hid passive editable" data-video-url="/watch?v=&amp;feature=BFql&amp;playnext=1&amp;list=QL" data-list-id="" data-list-type="QL">
 				<div id="playlist-bar-bar-container">
 					<div id="playlist-bar-bar">
@@ -511,7 +409,7 @@
 							<div id="playlist-bar-tray-content" class="yt-uix-slider-slide">
 								<ol class="video-list"></ol>
 								<ol id="playlist-bar-help">
-									<li class="empty playlist-bar-help-message">Your queue is empty. Add videos to your queue using this button: <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="addto-button-help"><br> or <a href="https://accounts.google.com/ServiceLogin?passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dplaylist%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252F&amp;uilel=3&amp;hl=en_US&amp;service=youtube">sign in</a> to load a different list.</li>
+									<li class="empty playlist-bar-help-message">Your queue is empty. Add videos to your queue using this button: <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="addto-button-help"><br> or <a href="/sign_in">sign in</a> to load a different list.</li>
 								</ol>
 							</div>
 							<div class="yt-uix-slider-shade-left"></div>
@@ -544,12 +442,12 @@
 				</div>
 			</div>
 			<div id="shared-addto-watch-later-login" class="hid">
-				<a href="https://accounts.google.com/ServiceLogin?passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dplaylist%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252F&amp;uilel=3&amp;hl=en_US&amp;service=youtube" class="sign-in-link">Sign in</a> to add this to a playlist
+				<a href="/sign_in" class="sign-in-link">Sign in</a> to add this to a playlist
 			</div>
 			<div id="shared-addto-menu" style="display: none;" class="hid sign-in">
 				<div class="addto-menu">
 					<div id="addto-list-panel" class="menu-panel active-panel">
-						<span class="yt-uix-button-menu-item yt-uix-tooltip sign-in" data-possible-tooltip="" data-tooltip-show-delay="750"><a href="https://accounts.google.com/ServiceLogin?passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dplaylist%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252F&amp;uilel=3&amp;hl=en_US&amp;service=youtube" class="sign-in-link">Sign in</a> to add this to a playlist
+						<span class="yt-uix-button-menu-item yt-uix-tooltip sign-in" data-possible-tooltip="" data-tooltip-show-delay="750"><a href="/sign_in" class="sign-in-link">Sign in</a> to add this to a playlist
 						</span>
 					</div>
 					<div id="addto-list-saved-panel" class="menu-panel">
