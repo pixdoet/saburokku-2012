@@ -44,6 +44,17 @@ class video_helper {
         return $description;
     }
 
+    function get_video_responses($id) {
+        $stmt = $this->__db->prepare("SELECT * FROM video_response WHERE toid = ?");
+        $stmt->bind_param("s", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $rows = mysqli_num_rows($result); 
+        $stmt->close();
+    
+        return $rows;
+    }
+
     function fetch_video_rid(string $rid) {
             $stmt = $this->__db->prepare("SELECT * FROM videos WHERE rid = ?");
             $stmt->bind_param("s", $rid);

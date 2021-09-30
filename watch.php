@@ -360,52 +360,36 @@
 														</div>
 													</div>
 												<?php } else { ?>
-													<form method="post" action="" id="submitform">
-															<textarea 
-																onkeyup="textCounter(this,'counter',500);" 
-																class="comment-textbox" cols="32" id="com" style="width: 98%;"
-																placeholder="Respond to this video" name="comment"></textarea><br><br> 
-															<input disabled class="characters-remaining" maxlength="3" size="3" value="500" id="counter"> <?php if(!isset($cLang)) { ?> characters remaining <?php } else { echo $cLang['charremaining']; } ?> 
-															<span style="float: right;"><a href="/add_video_response?v=<?php echo $_video['rid']; ?>">Add a Video Response</a></span><br>
-															<input class="yt-uix-button yt-uix-button-default" type="submit" value="Post">
-															<script>
-																function textCounter(field,field2,maxlimit) {
-																	var countfield = document.getElementById(field2);
-																	if ( field.value.length > maxlimit ) {
-																		field.value = field.value.substring( 0, maxlimit );
-																		return false;
-																	} else {
-																		countfield.value = maxlimit - field.value.length;
-																	}
-																}
-
-																var comment = $('#com').val();
-																var id = '<?php echo $_video['rid']; ?>';
-																var comment_section = document.getElementById("comment_section");
-										
-																if(comment && id)
-																{
-																	$.ajax
-																	({
-																	type: 'POST',
-																	url: '/watch_2?v=<?php echo $_video['rid']; ?>',
-																	data: 
-																	{
-																		comment:comment,
-																		id: id
-																	},
-																	success: function (response) 
-																		{
-																			console.log("wtf commented???");
-																			document.getElementById("buffer-comment-lolpenis").style.display = "none";
-																			document.getElementById("abcdefg").innerHTML = comment.replace(/(?:\r\n|\r|\n)/g,"<br/>");
-																			document.getElementById("buffer-comment-lolpenis").style.display = "block";
-																			comment_section.innerHTML = document.getElementById("buffer-comment-lolpenis").innerHTML + comment_section.innerHTML;
-																		}
-																	});
-																}
-															</script>
-													</form>
+													<div class="comments-post-container clearfix">
+														<form class="comments" method="post" action="/watch?v=<?php echo $_GET['v']; ?>">
+															<div class="yt-alert yt-alert-default yt-alert-error hid comments-post-message">
+																<div class="yt-alert-icon">
+																	<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
+																</div>
+																<div class="yt-alert-buttons"></div>
+																<div class="yt-alert-content" role="alert"></div>
+															</div>
+															<input type="hidden" name="form_id" value="">
+															<input type="hidden" name="source" value="w">
+															<input type="hidden" value="" name="reply_parent_id">
+															<a href="/user/<?php echo htmlspecialchars($_SESSION['siteusername']); ?>" class="yt-user-photo comments-post-profile"><span class="video-thumb ux-thumb yt-thumb-square-46 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($_SESSION['siteusername']); ?>" alt="<?php echo htmlspecialchars($_SESSION['siteusername']); ?>" width="46"><span class="vertical-align"></span></span></span></span></a>
+															<div class="comments-textarea-container" onclick="yt.www.comments.initForm(this, true, false);">
+																<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="" class="comments-textarea-tip"><label class="comments-textarea-label" data-upsell="comment">Respond to this video...</label>  
+																<div class="yt-uix-form-input-fluid yt-grid-fluid ">
+																	<textarea id="" class="yt-uix-form-textarea comments-textarea" onfocus="yt.www.comments.initForm(this, false, false);" data-upsell="comment" name="comment"></textarea>
+																</div>
+															</div>
+															<p class="comments-remaining">
+																<span class="comments-remaining-count" data-max-count="500"></span> characters remaining
+															</p>
+															<p class="comments-threshold-countdown hid">
+																<span class="comments-threshold-count"></span> seconds remaining before you can post
+															</p>
+															<p class="comments-post-buttons">
+																<span class="comments-post-video-response-link"><a href="/video_response_upload?v=<?php echo $_GET['v']; ?>">Create a video response</a>&nbsp;or&nbsp;</span><button type="submit" class="comments-post yt-uix-button yt-uix-button-default" role="button"><span class="yt-uix-button-content">Post </span></button>    
+															</p>
+														</form>
+													</div>
 												<?php } ?><br>
 												<div id="live-comments-setting-scroll" class="live-comments-setting hid">
 													<span id="live-comments-count"></span>

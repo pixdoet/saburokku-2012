@@ -62,7 +62,7 @@
 							<a href="/user/<?php echo htmlspecialchars($_SESSION['siteusername']); ?>" style="color: inherit;">My channel
 							<img src="/static/pixel-vfl3z5WfW.gif" class="see-more-arrow" alt=""></a>        
 							</div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
-							<a href="/video_manager" style="color: inherit;">Videos</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
+							<a href="/my_videos" style="color: inherit;">Videos</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
 							<a href="/playlists" style="color: inherit;">Playlists</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
 							<a href="/logout" style="color: inherit;">Log Out</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
 							<a href="/feed" style="color: inherit;">Dashboard</a>        </div></div></div>
