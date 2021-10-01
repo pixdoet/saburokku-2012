@@ -40,6 +40,19 @@
         width: 200px;
     }
 
+    .channel-layout-selector {
+        display: inline-block;
+        height: 300px;
+        width: 18%;
+        vertical-align: top;
+        margin-top: 9px;
+        padding: 10px;
+    }
+
+    .channel-layout-selector img {
+        width: 134px;
+    }
+
     .grey-text-options input {
         vertical-align: top;
     }
@@ -76,6 +89,11 @@
 
     .right-side-customization .thin-line-darker {
         width: 100%;
+    }
+
+    .www-header-list table {
+        background: rgb(232,232,232);
+        background: linear-gradient(0deg, rgba(232,232,232,1) 0%, rgba(250,250,250,1) 100%); 
     }
 
     .left-side-customization {
@@ -127,13 +145,13 @@
         <div class="www-header-list">
             <script>
                 function selectTable(showDom) {
-                    doms = ['#pictures-table', '#misc-table', '#bg-table', '#color-table']; 
+                    doms = ['#pictures-table', '#misc-table', '#bg-table', '#color-table', '#layout-table']; 
                     doms.forEach(dom => $(dom).hide()); 
                     $(showDom).show();
                 };
 
                 $("#biom").change(function(){
-                    alert("The text has been changed.");
+                    
                 }); 
             </script>
             <a class="www-header-item" href="#" onclick="selectTable('#pictures-table');">
@@ -144,6 +162,9 @@
             </a>
             <a class="www-header-item" href="#" onclick="selectTable('#bg-table');">
                 <button class="yt-uix-button yt-uix-button-dark">Background</button>
+            </a>
+            <a class="www-header-item" href="#" onclick="selectTable('#layout-table');">
+                <button class="yt-uix-button yt-uix-button-dark">Layout</button>
             </a>
             <div class="channel-customization-options">
             </div>
@@ -159,25 +180,17 @@
                 <td class="left-side-customization">
                     <b style="position: relative;top: 11px;">Avatar</b>
                     <div class="customization-module" id="pfp" action="/d/post/channel_update" enctype="multipart/form-data">
-                        <input style="width: 169px;" type="file" name="fileToUpload" id="avatar-upload">
+                        <input style="width: 169px;position: relative;top: 10px;" type="file" name="pfpset" id="avatar-upload">
                         <!--<button class="yt-uix-button yt-uix-button-default" id="av-uplod">Select File</button>-->
-                    </div><br>
+                    </div><br><br>
+                    <img src="/d/pfp/<?php echo $_user['pfp']; ?>" style="width:100px;height:100px;"><br>
                     <?php if($_user['pfp'] != "default.png") { ?>
                         <a href="/get/remove_profile_pic">Remove Profile Picture</a><br>
                     <?php } ?>
                     <br><hr class="thin-line-darker" style="width:unset;">
-                    <b style="position: relative;top: 11px;">Channel Banner</b>
-                    <div class="customization-module" id="banner" action="/d/post/channel_update" enctype="multipart/form-data" style="display: inline-block;float:right;">
-                        <input style="width: 169px;" type="file" name="fileToUpload" id="avatar-upload">
-                        <!--<button class="yt-uix-button yt-uix-button-default" id="av-uplod">Select File</button>-->
-                    </div><br>
-                    <?php if(!empty($_user['banner'])) { ?>
-                        <a href="/get/remove_channel_banner">Remove Channel Banner</a><br>
-                    <?php } ?>
-                    <br><hr class="thin-line-darker" style="width:unset;">
                     <b style="position: relative;top: 11px;">Video Page Banner</b>
                     <div class="customization-module" id="watchbanner" action="/d/post/channel_update" enctype="multipart/form-data" style="display: inline-block;float:right;">
-                        <input style="width: 169px;" type="file" name="fileToUpload" id="avatar-upload">
+                        <input style="width: 169px;position: relative;top: 10px;" type="file" name="videopagebanner" id="avatar-upload">
                         <!--<button class="yt-uix-button yt-uix-button-default" id="av-uplod">Select File</button>-->
                     </div><br>                   
                     <?php if(!empty($_user['subbutton'])) { ?>
@@ -498,6 +511,55 @@
             </tr>
         </table>
 
+        <table id="layout-table" style="width: 970px;padding: 10px;display: none;">
+            <tr>
+                <th></th>
+            </tr>
+            <tr>
+                <form method="post" id="layoutform" action="/d/post/channel_update" enctype="multipart/form-data">
+                <td>
+                    <center>
+                        <div class="channel-layout-selector">
+                            <img src="/s/img/creator.png">
+                            <h2>Creator</h2>
+                            <p>
+                                A featured video from a playlist<br>
+                                with a group of featured playlists
+                            </p>
+                        </div>
+                        <div class="channel-layout-selector">
+                            <img src="/s/img/blogger.png">
+                            <h2>Blogger</h2>
+                            <p>
+                                A reverse chronological list of<br>
+                                your recent uploads or a<br>
+                                featured playlist<br>
+                            </p>
+                        </div>
+                        <div class="channel-layout-selector">
+                            <img src="/s/img/network.png">
+                            <h2>Network</h2>
+                            <p>
+                                A featured video from a playlist <br>
+                                with a group of featured<br>
+                                channels
+                            </p>
+                        </div>
+                        <div class="channel-layout-selector">
+                            <img src="/s/img/everything.png">
+                            <h2>Everything</h2>
+                            <p>
+                                A featured video from a playlist<br>
+                                with a group of featured playlists<br>
+                                and channels.
+                            </p><br>
+                        </div>
+                    </center>
+                </td>
+                </form>
+            </tr>
+        </table>
+
         <table id="misc-table" style="display:none;width: 970px;padding: 10px;">
             <tr>
                 <th></th>
@@ -571,7 +633,7 @@
                     <b>Background</b> <br>
                     <span style="font-size: 11px;" class="grey-text">Choose Image (Max file size: 10MB)</span><br>
                     <div class="customization-module"  id="backgroundimage" method="post" action="/d/post/channel_update" enctype="multipart/form-data">
-                        <input type="file" name="fileToUpload" id="background-upload">
+                        <input type="file" name="backgroundbgset" id="background-upload">
                         <!--<button class="yt-uix-button yt-uix-button-default" id="av-uplod">Select File</button>-->
                     </div><br><br> 
 
@@ -651,8 +713,10 @@
     $('#picturesform').submit(
         function( e ) {
             var data = new FormData(this);
+            d = 0;
             $.each($("input[type='file']")[0].files, function(i, file) {
-                data.append('file', file);
+                data.append('file', file + "_" + d);
+                d++;
             });
 
             $.ajax( {
@@ -666,7 +730,6 @@
                     alerts++;
                     addAlert("editsuccess_" + alerts, "Successfully updated your channel!");
                     showAlert("#editsuccess_" + alerts);
-                    alert(result);
                     $("#bio-changeme").text($("#biom").val());
                 }
             } );
@@ -689,7 +752,6 @@
                     alerts++;
                     addAlert("editsuccess_" + alerts, "Successfully updated your channel!");
                     showAlert("#editsuccess_" + alerts);
-                    alert(result);
                     $("#bio-changeme").text($("#biom").val());
                 }
             } );
@@ -697,7 +759,7 @@
         } 
     );
 
-    $('#miscform').submit(
+    $('#bgform').submit(
         function( e ) {
             var data = new FormData(this);
 
@@ -710,9 +772,8 @@
                 contentType: false,
                 success: function(result){
                     alerts++;
-                    addAlert("editsuccess_" + alerts, "Successfully updated your channel!");
+                    addAlert("alert__" + alerts, "Successfully updated your channel!");
                     showAlert("#editsuccess_" + alerts);
-                    alert(result);
                     $("#bio-changeme").text($("#biom").val());
                 }
             } );
@@ -720,3 +781,5 @@
         } 
     );
 </script>
+<script src="/s/js/channelEdit.js"></script>
+<script src="/s/js/alert.js"></script>

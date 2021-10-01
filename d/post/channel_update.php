@@ -34,267 +34,301 @@
         $stmt->execute();
         $stmt->close();
 
-        $_user_update_utils->update_user_bio(
-            $_SESSION['siteusername'], 
-            $_POST['bio']
-        );
-
-        $_user_update_utils->update_user_channels(
-            $_SESSION['siteusername'], 
-            $_POST['videoid']
-        );
+        if($_SERVER['REQUEST_METHOD'] == 'POST' && @$_FILES['pfpset']) {
+            if(!empty($_FILES["pfpset"]["name"])) {
+                $target_dir = "../pfp/";
+                $imageFileType = strtolower(pathinfo($_FILES["pfpset"]["name"], PATHINFO_EXTENSION));
+                $target_name = md5_file($_FILES["pfpset"]["tmp_name"]) . "." . $imageFileType;
+        
+                $target_file = $target_dir . $target_name;
+        
+                $uploadOk = true;
+                $movedFile = false;
+        
+                if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+                    && $imageFileType != "gif" ) {
+                    $fileerror = 'unsupported file type. must be jpg, png, jpeg, or gif';
+                    $uploadOk = false;
+                    goto skip;
+                }
+        
+                if (file_exists($target_file)) {
+                    $movedFile = true;
+                } else {
+                    $movedFile = move_uploaded_file($_FILES["pfpset"]["tmp_name"], $target_file);
+                }
+        
+                if ($uploadOk) {
+                    if ($movedFile) {
+                        $stmt = $__db->prepare("UPDATE users SET pfp = ? WHERE `users`.`username` = ?;");
+                        $stmt->bind_param("ss", $target_name, $_SESSION['siteusername']);
+                        $stmt->execute();
+                        $stmt->close();
+                    } else {
+                        $fileerror = 'fatal error';
+                    }
+                }
+            }
+        } else if($_SERVER['REQUEST_METHOD'] == 'POST' && @$_FILES['backgroundbgset']) {
+            if(!empty($_FILES["backgroundbgset"]["name"])) {
+                $target_dir = "../banners/";
+                $imageFileType = strtolower(pathinfo($_FILES["backgroundbgset"]["name"], PATHINFO_EXTENSION));
+                $target_name = md5_file($_FILES["backgroundbgset"]["tmp_name"]) . "." . $imageFileType;
     
-        $_user_update_utils->update_user_css(
-            $_SESSION['siteusername'], 
-            $_POST['css']
-        );
-
-        $_user_update_utils->update_user_featured_video(
-            $_SESSION['siteusername'], 
-            $_POST['videoid']
-        );
-
-        $_user_update_utils->update_user_primary_color(
-            $_SESSION['siteusername'], 
-            $_POST['solidcolor']
-        );
-
-        $_user_update_utils->update_user_transparency(
-            $_SESSION['siteusername'], 
-            $_POST['transparency']
-        );
-
-        $_user_update_utils->update_user_transparency(
-            $_SESSION['siteusername'], 
-            $_POST['transparency']
-        );
-
-        $_user_update_utils->update_user_genre(
-            $_SESSION['siteusername'], 
-            $_POST['genre']
-        );
-
-        $_user_update_utils->update_user_border_color(
-            $_SESSION['siteusername'], 
-            $_POST['bordercolor']
-        );
-
-        $_user_update_utils->update_user_country(
-            $_SESSION['siteusername'], 
-            $_POST['country']
-        );
-
-        $_user_update_utils->update_user_header(
-            $_SESSION['siteusername'], 
-            $_POST['header']
-        );
-
-        $_user_update_utils->update_user_channels(
-            $_SESSION['siteusername'], 
-            $_POST['channels']
-        );
-
-        $_user_update_utils->update_user_text(
-            $_SESSION['siteusername'], 
-            $_POST['customtext']
-        );
-
-        $_user_update_utils->update_user_text(
-            $_SESSION['siteusername'], 
-            $_POST['country']
-        );
-
-        $_user_update_utils->update_user_website(
-            $_SESSION['siteusername'], 
-            $_POST['website']
-        );
+                $target_file = $target_dir . $target_name;
     
-        $_user_update_utils->update_user_secondary_color(
-            $_SESSION['siteusername'], 
-            $_POST['channelboxcolor']
-        );
+                $uploadOk = true;
+                $movedFile = false;
+    
+                if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+                    && $imageFileType != "gif" ) {
+                    $fileerror = 'unsupported file type. must be jpg, png, jpeg, or gif';
+                    $uploadOk = false;
+                    goto skip;
+                }
+    
+                if($uploadOk) { 
+                    if (file_exists($target_file)) {
+                        $movedFile = true;
+                    } else {
+                        $movedFile = move_uploaded_file($_FILES["backgroundbgset"]["tmp_name"], $target_file);
+                    }
+                }
+    
+                if ($uploadOk) {
+                    if ($movedFile) {
+                        $__user_u->update_user_bg_09(
+                            $target_name, 
+                            $_SESSION['siteusername']
+                        );
+                    } else {
+                        $fileerror = 'fatal error';
+                    }
+                }
+            }
+        } else if($_SERVER['REQUEST_METHOD'] == 'POST' && @$_POST['bannerset']) {
+            if(!empty($_FILES["file"]["name"])) {
+                $target_dir = "../banners/";
+                $imageFileType = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
+                $target_name = md5_file($_FILES["file"]["tmp_name"]) . "." . $imageFileType;
+    
+                $target_file = $target_dir . $target_name;
+    
+                $uploadOk = true;
+                $movedFile = false;
+    
+                if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+                    && $imageFileType != "gif" ) {
+                    $fileerror = 'unsupported file type. must be jpg, png, jpeg, or gif';
+                    $uploadOk = false;
+                    goto skip;
+                }
+    
+                if($uploadOk) { 
+                    if (file_exists($target_file)) {
+                        $movedFile = true;
+                    } else {
+                        $movedFile = move_uploaded_file($_FILES["file"]["tmp_name"], $target_file);
+                    }
+                }
+    
+                if ($uploadOk) {
+                    if ($movedFile) {
+                        $__user_u->update_user_banner(
+                            $target_name, 
+                            $_SESSION['siteusername']
+                        );
+                    } else {
+                        $fileerror = 'fatal error';
+                    }
+                } 
+            }
+        } else if($_SERVER['REQUEST_METHOD'] == 'POST' && @$_FILES['videopagebanner']) {
+            if(!empty($_FILES["videopagebanner"]["name"])) {
+                $target_dir = "../subscribe/";
+                $imageFileType = strtolower(pathinfo($_FILES["videopagebanner"]["name"], PATHINFO_EXTENSION));
+                $target_name = md5_file($_FILES["videopagebanner"]["tmp_name"]) . "." . $imageFileType;
+    
+                $target_file = $target_dir . $target_name;
+    
+                $uploadOk = true;
+                $movedFile = false;
+    
+                if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+                    && $imageFileType != "gif" ) {
+                    $fileerror = 'unsupported file type. must be jpg, png, jpeg, or gif';
+                    $uploadOk = false;
+                    goto skip;
+                }
+    
+                if($uploadOk) { 
+                    if (file_exists($target_file)) {
+                        $movedFile = true;
+                    } else {
+                        $movedFile = move_uploaded_file($_FILES["videopagebanner"]["tmp_name"], $target_file);
+                    }
+                }
+    
+                if ($uploadOk) {
+                    if ($movedFile) {
+                        $__user_u->update_user_video_banner(
+                            $target_name, 
+                            $_SESSION['siteusername']
+                        );
+                    } else {
+                        $fileerror = 'fatal error';
+                    }
+                }
+            }
+        }
 
-        $_user_update_utils->update_user_third_color(
-            $_POST['backgroundcolor'], 
-            $_SESSION['siteusername']
-        );
+        if(!empty($_POST['bio'])) { 
+            $__user_u->update_user_bio(
+                $_SESSION['siteusername'], 
+                $_POST['bio']
+            );
+        }
 
-        $_user_update_utils->update_user_primary_text_color(
-            $_SESSION['siteusername'], 
-            $_POST['textmaincolor']
-        );
+        if(!empty($_POST['videoid'])) { 
+            $__user_u->update_user_channels(
+                $_SESSION['siteusername'], 
+                $_POST['videoid']
+            );
+        }
+    
+        if(!empty($_POST['css'])) {
+            $__user_u->update_user_css(
+                $_SESSION['siteusername'], 
+                $_POST['css']
+            );
+        }
+
+        if(!empty($_POST['videoid'])) {
+            $__user_u->update_user_featured_video(
+                $_SESSION['siteusername'], 
+                $_POST['videoid']
+            );
+        }
+
+        if(!empty($_POST['solidcolor'])) {
+            $__user_u->update_user_primary_color(
+                $_SESSION['siteusername'], 
+                $_POST['solidcolor']
+            );
+        }
+
+        if(!empty($_POST['transparency'])) {
+            $__user_u->update_user_transparency(
+                $_SESSION['siteusername'], 
+                $_POST['transparency']
+            );
+        }
+
+        if(!empty($_POST['genre'])) {
+            $__user_u->update_user_genre(
+                $_SESSION['siteusername'], 
+                $_POST['genre']
+            );
+        }
+
+        if(!empty($_POST['bordercolor'])) {
+            $__user_u->update_user_border_color(
+                $_SESSION['siteusername'], 
+                $_POST['bordercolor']
+            );
+        }
+
+        if(!empty($_POST['country'])) {
+            $__user_u->update_user_country(
+                $_SESSION['siteusername'], 
+                $_POST['country']
+            );
+        }
+
+        if(!empty($_POST['header'])) {
+            $__user_u->update_user_header(
+                $_SESSION['siteusername'], 
+                $_POST['header']
+            );
+        }
+
+        if(!empty($_POST['channels'])) {
+            $__user_u->update_user_channels(
+                $_SESSION['siteusername'], 
+                $_POST['channels']
+            );
+        }
+
+        if(!empty($_POST['customtext'])) {
+            $__user_u->update_user_text(
+                $_SESSION['siteusername'], 
+                $_POST['customtext']
+            );
+        }
+
+        if(!empty($_POST['country'])) {
+            $__user_u->update_user_text(
+                $_SESSION['siteusername'], 
+                $_POST['country']
+            );
+        }
+
+        if(!empty($_POST['website'])) {
+            $__user_u->update_user_website(
+                $_SESSION['siteusername'], 
+                $_POST['website']
+            );
+        }
+    
+        if(!empty($_POST['channelboxcolor'])) {
+            $__user_u->update_user_secondary_color(
+                $_SESSION['siteusername'], 
+                $_POST['channelboxcolor']
+            );
+        }
+
+        if(!empty($_POST['backgroundcolor'])) {
+            $__user_u->update_user_third_color(
+                $_POST['backgroundcolor'], 
+                $_SESSION['siteusername']
+            );
+        }
+
+        if(!empty($_POST['textmaincolor'])) {
+            $__user_u->update_user_primary_text_color(
+                $_SESSION['siteusername'], 
+                $_POST['textmaincolor']
+            );
+        }
 
     if(!empty($_POST['bgoptionset'])) {
         $bgoption = $_POST['bgoption'];
         $bgcolor = $_POST['solidcolor'];
         $default = "default.png";
 
-        $_user_update_utils->update_user_bg_option_09(
+        $__user_u->update_user_bg_option_09(
             $bgoption, 
             $_SESSION['siteusername']
         );
 
-        $_user_update_utils->update_user_bg_color_09(
+        $__user_u->update_user_bg_color_09(
             $bgcolor, 
             $_SESSION['siteusername']
         );  
 
         if($bgoption == "solid") {
-            $_user_update_utils->update_user_bg_color_09(
+            $__user_u->update_user_bg_color_09(
                 $bgcolor, 
                 $_SESSION['siteusername']
             );    
             
-            $_user_update_utils->update_user_bg_09(
+            $__user_u->update_user_bg_09(
                 $default, 
                 $_SESSION['siteusername']
             );
         }
-    } else if($_SERVER['REQUEST_METHOD'] == 'POST' && @$_POST['pfpset']) {
-        $target_dir = "../dynamic/pfp/";
-        $imageFileType = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
-        $target_name = md5_file($_FILES["file"]["tmp_name"]) . "." . $imageFileType;
-
-        $target_file = $target_dir . $target_name;
-
-        $uploadOk = true;
-        $movedFile = false;
-
-        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-            && $imageFileType != "gif" ) {
-            $fileerror = 'unsupported file type. must be jpg, png, jpeg, or gif';
-            $uploadOk = false;
-            goto skip;
-        }
-
-        if (file_exists($target_file)) {
-            $movedFile = true;
-        } else {
-            $movedFile = move_uploaded_file($_FILES["file"]["tmp_name"], $target_file);
-        }
-
-        if ($uploadOk) {
-            if ($movedFile) {
-                $stmt = $__db->prepare("UPDATE users SET pfp = ? WHERE `users`.`username` = ?;");
-                $stmt->bind_param("ss", $target_name, $_SESSION['siteusername']);
-                $stmt->execute();
-                $stmt->close();
-            } else {
-                $fileerror = 'fatal error';
-            }
-        }
-    } else if($_SERVER['REQUEST_METHOD'] == 'POST' && @$_POST['bgset']) {
-        if(!empty($_FILES["file"]["name"])) {
-            $target_dir = "../dynamic/banners/";
-            $imageFileType = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
-            $target_name = md5_file($_FILES["file"]["tmp_name"]) . "." . $imageFileType;
-
-            $target_file = $target_dir . $target_name;
-
-            $uploadOk = true;
-            $movedFile = false;
-
-            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-                && $imageFileType != "gif" ) {
-                $fileerror = 'unsupported file type. must be jpg, png, jpeg, or gif';
-                $uploadOk = false;
-                goto skip;
-            }
-
-            if($uploadOk) { 
-                if (file_exists($target_file)) {
-                    $movedFile = true;
-                } else {
-                    $movedFile = move_uploaded_file($_FILES["file"]["tmp_name"], $target_file);
-                }
-            }
-
-            if ($uploadOk) {
-                if ($movedFile) {
-                    $_user_update_utils->update_user_bg_09(
-                        $target_name, 
-                        $_SESSION['siteusername']
-                    );
-                } else {
-                    $fileerror = 'fatal error';
-                }
-            }
-        }
-    } else if($_SERVER['REQUEST_METHOD'] == 'POST' && @$_POST['bannerset']) {
-        if(!empty($_FILES["file"]["name"])) {
-            $target_dir = "../dynamic/banners/";
-            $imageFileType = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
-            $target_name = md5_file($_FILES["file"]["tmp_name"]) . "." . $imageFileType;
-
-            $target_file = $target_dir . $target_name;
-
-            $uploadOk = true;
-            $movedFile = false;
-
-            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-                && $imageFileType != "gif" ) {
-                $fileerror = 'unsupported file type. must be jpg, png, jpeg, or gif';
-                $uploadOk = false;
-                goto skip;
-            }
-
-            if($uploadOk) { 
-                if (file_exists($target_file)) {
-                    $movedFile = true;
-                } else {
-                    $movedFile = move_uploaded_file($_FILES["file"]["tmp_name"], $target_file);
-                }
-            }
-
-            if ($uploadOk) {
-                if ($movedFile) {
-                    $_user_update_utils->update_user_banner(
-                        $target_name, 
-                        $_SESSION['siteusername']
-                    );
-                } else {
-                    $fileerror = 'fatal error';
-                }
-            } 
-        }
-    } else if($_SERVER['REQUEST_METHOD'] == 'POST' && @$_POST['videopageset']) {
-        if(!empty($_FILES["file"]["name"])) {
-            $target_dir = "../dynamic/subscribe/";
-            $imageFileType = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
-            $target_name = md5_file($_FILES["file"]["tmp_name"]) . "." . $imageFileType;
-
-            $target_file = $target_dir . $target_name;
-
-            $uploadOk = true;
-            $movedFile = false;
-
-            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-                && $imageFileType != "gif" ) {
-                $fileerror = 'unsupported file type. must be jpg, png, jpeg, or gif';
-                $uploadOk = false;
-                goto skip;
-            }
-
-            if($uploadOk) { 
-                if (file_exists($target_file)) {
-                    $movedFile = true;
-                } else {
-                    $movedFile = move_uploaded_file($_FILES["file"]["tmp_name"], $target_file);
-                }
-            }
-
-            if ($uploadOk) {
-                if ($movedFile) {
-                    $_user_update_utils->update_user_video_banner(
-                        $target_name, 
-                        $_SESSION['siteusername']
-                    );
-                } else {
-                    $fileerror = 'fatal error';
-                }
-            }
-        }
     }
+    
     skip:
 
     print_r($_POST);

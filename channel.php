@@ -29,6 +29,13 @@
         return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
     }
 
+	function addhttp($url) {
+		if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
+			$url = "http://" . $url;
+		}
+		return $url;
+	}
+
     function check_valid_colorhex($colorCode) {
         // If user accidentally passed along the # sign, strip it off
         $colorCode = ltrim($colorCode, '#');
@@ -119,8 +126,8 @@
 		<link rel="stylesheet" href="/yt/cssbin/www-extra.css">
 		<style>
 			#content-container {
-				background-color: #234701;
-				background-image: url(http://web.archive.org/web/20121004011900im_/http://i4.ytimg.com/bg/SzCRSznO_53wuXeY0Z0gcA/default.jpg?app=bg&v=50ecc8);
+				background-color: <?php echo $_user['primary_color'];  ?>;
+				background-image: url(/d/banners/<?php echo $_user['2009_bg']; ?>);
 				background-repeat: repeat;
 				background-position: center top;
 			}
@@ -183,7 +190,7 @@
 											<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>">
 											<span class="profile-thumb">
 											<span class="centering-wrap">
-											<img src="/dynamic/pfp/<?php echo htmlspecialchars($_user['pfp']); ?>" title="<?php echo htmlspecialchars($_user['username']); ?>" alt="<?php echo htmlspecialchars($_user['username']); ?>">
+											<img src="/d/pfp/<?php echo htmlspecialchars($_user['pfp']); ?>" title="<?php echo htmlspecialchars($_user['username']); ?>" alt="<?php echo htmlspecialchars($_user['username']); ?>">
 											</span>
 											</span>
 											</a>
@@ -247,11 +254,6 @@
 												<li>
 													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/videos" class="gh-tab-101">
 													Videos
-													</a>
-												</li>
-												<li>
-													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/store" class="gh-tab-103">
-													Store
 													</a>
 												</li>
 											</ul>
@@ -406,6 +408,39 @@
 														</div>
 														<hr class="yt-horizontal-rule ">
 													</div>
+													<?php if(!empty($_user['website'])) { ?>
+														<div class="user-profile-item">
+															<div class="yt-c3-profile-custom-url field-container ">
+																<a href="<?php echo addhttp(htmlspecialchars($_user['website'])); ?>" rel="me nofollow" target="_blank" title="<?php echo htmlspecialchars($_user['website']); ?>" class="yt-uix-redirect-link">
+																<img src="/yt/imgbin/custom_site.png" class="favicon" alt="">
+																<span class="link-text">
+																<?php echo htmlspecialchars($_user['website']); ?>
+																</span>
+																</a>
+															</div>
+														</div>
+														<div class="user-profile-item">
+															<!--
+															<div class="yt-c3-profile-custom-url field-container ">
+																<a href="http://smarturl.it/boyfriend?IQid=youtube" rel="me nofollow" target="_blank" title="Get &quot;Boyfriend&quot; on iTunes" class="yt-uix-redirect-link">
+																<img src="//s2.googleusercontent.com/s2/favicons?domain=smarturl.it&amp;feature=youtube_channel" class="favicon" alt="">
+																<span class="link-text">
+																Get "Boyfriend" on iTunes
+																</span>
+																</a>
+															</div>
+															<div class="yt-c3-profile-custom-url field-container ">
+																<a href="http://bieberfever.com/" rel="me nofollow" target="_blank" title="Bieber Fever" class="yt-uix-redirect-link">
+																<img src="//s2.googleusercontent.com/s2/favicons?domain=bieberfever.com&amp;feature=youtube_channel" class="favicon" alt="">
+																<span class="link-text">
+																Bieber Fever
+																</span>
+																</a>
+															</div>
+															-->
+														</div>
+														<hr class="yt-horizontal-rule ">
+														<?php } ?>
 													<div class="section created-by-section">
 														<div class="user-profile-item">
 															by <span class="yt-user-name " dir="ltr"><?php echo htmlspecialchars($_user['username']); ?></span>
@@ -418,14 +453,18 @@
 															<h5>Date Joined</h5>
 															<span class="value"><?php echo date("M d, Y", strtotime($_user['created'])); ?></span>
 														</div>
-													</div>
-													<div class="section">
 														<div class="user-profile-item ">
 															<h5>Country</h5>
 															<span class="value"><?php echo htmlspecialchars($_user['country']); ?></span>
 														</div>
-														<hr class="yt-horizontal-rule ">
+														<?php if($_user['genre'] != "none") { ?>
+															<div class="user-profile-item ">
+																<h5>Channel Genre</h5>
+																<span class="value"><?php echo htmlspecialchars($_user['genre']); ?></span>
+															</div>
+														<?php } ?>
 													</div>
+													<hr class="yt-horizontal-rule ">
 												</div>
 											</div>
 											<div class="playlists-narrow channel-module yt-uix-c3-module-container">

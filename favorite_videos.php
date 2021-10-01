@@ -199,32 +199,32 @@
                                     
                                     <?php
                                         while($video = $result6->fetch_assoc()) { 
-                                            $_video = [];
-                                            $_video = $__video_h->fetch_video_rid($video['reciever']);
-                                            $_video['video_responses'] = $__video_h->get_video_responses($_video['rid']);
-                                            $_video['age'] = $__time_h->time_elapsed_string($_video['publish']);		
-                                            $_video['duration'] = $__time_h->timestamp($_video['duration']);
-                                            $_video['views'] = $__video_h->fetch_video_views($_video['rid']);
-                                            $_video['author'] = htmlspecialchars($_video['author']);		
-                                            $_video['title'] = htmlspecialchars($_video['title']);
-                                            $_video['description'] = $__video_h->shorten_description($_video['description'], 50);
+											if($__video_h->video_exists($video['reciever'])) {
+												$_video = $__video_h->fetch_video_rid($video['reciever']);
+												$_video['video_responses'] = $__video_h->get_video_responses($_video['rid']);
+												$_video['age'] = $__time_h->time_elapsed_string($_video['publish']);		
+												$_video['duration'] = $__time_h->timestamp($_video['duration']);
+												$_video['views'] = $__video_h->fetch_video_views($_video['rid']);
+												$_video['author'] = htmlspecialchars($_video['author']);		
+												$_video['title'] = htmlspecialchars($_video['title']);
+												$_video['description'] = $__video_h->shorten_description($_video['description'], 50);
 
-                                            if($_video['thumbnail'] == ".png" && $_video['filename'] == ".mp4") {
-                                                $status = "Corrupted";
-                                            } else if($_video['visibility'] == "v") {
-                                                $status = "Approved";
-                                            } else if($_video['visibility'] == "n") {
-                                                $status = "Approved";
-                                            } else if($_video['visibility'] == "o") {
-                                                $status = "Disapproved";
-                                            } else {
-                                                $status = "Unknown";
-                                            }                      
-                                            
-                                            if($_video['commenting'] == "a") 
-                                                $_video['commentstatus'] = "Commenting allowed";
-                                            else 
-                                                $_video['commentstatus'] = "Commenting disallowed";
+												if($_video['thumbnail'] == ".png" && $_video['filename'] == ".mp4") {
+													$status = "Corrupted";
+												} else if($_video['visibility'] == "v") {
+													$status = "Approved";
+												} else if($_video['visibility'] == "n") {
+													$status = "Approved";
+												} else if($_video['visibility'] == "o") {
+													$status = "Disapproved";
+												} else {
+													$status = "Unknown";
+												}                      
+												
+												if($_video['commenting'] == "a") 
+													$_video['commentstatus'] = "Commenting allowed";
+												else 
+													$_video['commentstatus'] = "Commenting disallowed";
                                     ?> 
                                     <tr style="margin-top: 5px;" id="videoslist">
                                         <td class="video-manager-left">
@@ -257,7 +257,7 @@
                                             </span><br>
                                         </td>
                                     </tr>
-                                    <?php } ?>
+                                    <?php } } ?>
                                 </table> 
                                 </div>
 
@@ -300,7 +300,7 @@
                                         $(".my_videos_ajax").html("")
 
                                         $.ajax({
-                                            url: '/video_manager_ajax?filter=' + currentfilter + '&page=' + page,
+                                            url: '/favorite_ajax?filter=' + currentfilter + '&page=' + page,
                                             method: 'GET'
                                         })
 

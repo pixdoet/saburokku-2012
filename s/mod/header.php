@@ -189,6 +189,18 @@
 			</div>
 		</div></div></div>
 	<?php } ?>
+	<?php if(isset($error_legacy)) { ?>
+		<div id="masthead_child_div"><div class="yt-alert yt-alert-default yt-alert-error  yt-alert-player">  <div class="yt-alert-icon">
+			<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
+		</div>
+		<div class="yt-alert-buttons"></div><div class="yt-alert-content" role="alert">    <span class="yt-alert-vertical-trick"></span>
+			<div class="yt-alert-message">
+				<?php echo $error_legacy; ?>
+			</div>
+		</div></div></div>
+	<?php } ?>
 </div>
 <!-- end masthead -->
-
+<div class="alerts-2012">
+	
+</div>

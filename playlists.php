@@ -5,11 +5,33 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/time_manip.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_helper.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/video_helper.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_update.php"); ?>
 <?php $__server->page_title = "test"; ?>
 <?php $__video_h = new video_helper($__db); ?>
 <?php $__user_h = new user_helper($__db); ?>
+<?php $__user_u = new user_update($__db); ?>
 <?php $__db_h = new db_helper(); ?>
 <?php $__time_h = new time_helper(); ?>
+<?php
+    if($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if(!isset($_SESSION['siteusername'])){ $error_legacy = "you are not logged in"; goto skipcomment; }
+        if(!$_POST['comment']){ $error_legacy = "your description cannot be blank"; goto skipcomment; }
+        if(strlen($_POST['comment']) > 1024){ $error_legacy = "your comment must be shorter than 1000 characters"; goto skipcomment; }
+        if($__user_h->if_cooldown($_SESSION['siteusername'])) { $error_legacy = "You are on a cooldown! Wait for a minute before posting another comment."; goto skipcomment; }
+
+        $stmt = $__db->prepare("INSERT INTO `playlists` (title, description, rid, author) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $_POST['title'], $_POST['comment'], $rid, $_SESSION['siteusername']);
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
+        $result = '';
+        for ($i = 0; $i < 11; $i++)
+            $rid .= $characters[mt_rand(0, 63)];
+        $text = htmlspecialchars($_POST['comment']);
+        $stmt->execute();
+        $stmt->close();
+        $__user_u->update_comment_cooldown_time($_SESSION['siteusername']);
+        skipcomment:
+    }
+?>
 <!DOCTYPE html>
 <html dir="ltr">
 	<head>
@@ -23,13 +45,15 @@
 		</script>
 		<link id="www-core-css" rel="stylesheet" href="/yt/cssbin/www-core-vfluMRDnk.css">
 		<link rel="stylesheet" href="/yt/cssbin/www-guide-vflx0V5Tq.css">
-		<link rel="stylesheet" href="/yt/cssbin/www-videos-nav-vflYGt27y.css">
         <link rel="stylesheet" href="/yt/cssbin/www-extra.css">
+		<link rel="stylesheet" href="/yt/cssbin/www-videos-nav-vflYGt27y.css">
 		<script src="//s.ytimg.com/yt/jsbin/www-browse-vflu1nggJ.js" data-loaded="true"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-		<script>
-			if (window.yt.timing) {yt.timing.tick("ct");}    
-		</script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+        <script>
+			if (window.yt.timing) {yt.timing.tick("ct");}   
+        </script> 
         <style>
             .master-myaccount-top {
                 border-bottom: 1px solid #CACACA;
@@ -154,7 +178,7 @@
 								<div class="browse-collection  has-box-ad">
                                 <?php
                                     $search = $_SESSION['siteusername'];
-                                    $stmt56 = $__db->prepare("SELECT * FROM videos WHERE author = ? AND visibility = 'v'");
+                                    $stmt56 = $__db->prepare("SELECT * FROM playlists WHERE author = ?");
                                     $stmt56->bind_param("s", $search);
                                     $stmt56->execute();
                                     $result854 = $stmt56->get_result();
@@ -162,7 +186,7 @@
 
                                     $results_per_page = 12;
 
-                                    $stmt = $__db->prepare("SELECT * FROM videos WHERE author = ? ORDER BY id DESC");
+                                    $stmt = $__db->prepare("SELECT * FROM playlists WHERE author = ? ORDER BY id DESC");
                                     $stmt->bind_param("s", $_SESSION['siteusername']);
                                     $stmt->execute();
                                     $result = $stmt->get_result();
@@ -182,12 +206,32 @@
                                     $stmt->close();
                                 ?>
                                 <?php 
-                                    $stmt6 = $__db->prepare("SELECT * FROM videos WHERE author = ? ORDER BY id DESC LIMIT ?, ?");
+                                    $stmt6 = $__db->prepare("SELECT * FROM playlists WHERE author = ? ORDER BY id DESC LIMIT ?, ?");
                                     $stmt6->bind_param("sss", $search, $page_first_result, $results_per_page);
                                     $stmt6->execute();
                                     $result6 = $stmt6->get_result();
                                 ?>                    
                                 
+                                <div id="ex1" class="modal">
+                                    <form method="post" enctype="multipart/form-data" id="submitform" style="top:0px;">
+                                        <div >
+                                            <h2>Create a Playlist</h2>
+                                            <span style="font-size: 11px;" class="grey-text">Playlists are still in a buggy state. Report bugs to the forums.</span><br>
+                                            <input placeholder="Playlist Title" type="text" name="title" style="width: 100%;" required="required" row="20"><br>
+                                        </div><br>
+                                        <div >
+                                            <textarea style="width: 100%;" id="com" placeholder="Description" name="comment"></textarea><br><br>
+                                            <input class="yt-uix-button yt-uix-button-default" type="submit" value="Create">
+                                        </div><br>
+                                    </form>
+                                </div>
+
+                                <a href="#ex1" rel="modal:open">
+                                    <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
+                                        Create Playlist
+                                    </button>
+                                </a><br><br>
+
                                 <div class="my_videos_ajax">
                                 <table style="width: 100%;">
                                     <tr>
@@ -203,79 +247,51 @@
                                     </tr>
                                     
                                     <?php
-                                        while($video = $result6->fetch_assoc()) { 
-                                            $video['video_responses'] = $__video_h->get_video_responses($video['rid']);
-                                            $video['age'] = $__time_h->time_elapsed_string($video['publish']);		
-                                            $video['duration'] = $__time_h->timestamp($video['duration']);
-                                            $video['views'] = $__video_h->fetch_video_views($video['rid']);
-                                            $video['author'] = htmlspecialchars($video['author']);		
-                                            $video['title'] = htmlspecialchars($video['title']);
-                                            $video['description'] = $__video_h->shorten_description($video['description'], 50);
-
-                                            if($video['thumbnail'] == ".png" && $video['filename'] == ".mp4") {
-                                                $status = "Corrupted";
-                                            } else if($video['visibility'] == "v") {
-                                                $status = "Approved";
-                                            } else if($video['visibility'] == "n") {
-                                                $status = "Approved";
-                                            } else if($video['visibility'] == "o") {
-                                                $status = "Disapproved";
-                                            } else {
-                                                $status = "Unknown";
-                                            }                      
-                                            
-                                            if($video['commenting'] == "a") 
-                                                $video['commentstatus'] = "Commenting allowed";
-                                            else 
-                                                $video['commentstatus'] = "Commenting disallowed";
-                                    ?> 
-                                    <tr style="margin-top: 5px;" id="videoslist">
-                                        <td class="video-manager-left">
-                                            <ul>
-                                                <li class="video-list-item "><a href="/watch?v=<?php echo $video['rid']; ?>" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $video['title']; ?>" data-thumb="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $video['duration']; ?></span>
-                                                    <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="yuTBQ86r8o0" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
-                                                    </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-                                                    </span><span dir="ltr" class="title" title="<?php echo $video['title']; ?>"><?php echo $video['title']; ?></span><span class="stat">by <span class="yt-user-name " dir="ltr"><?php echo $video['author']; ?></span></span><span class="stat view-count">  <span class="viewcount"><?php echo $video['views']; ?> views</span>
-                                                    </span></a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        while($playlist = $result->fetch_assoc()) { 
+                                            $playlist['videos'] = json_decode($playlist['videos']);
+                                            if($__video_h->video_exists(@$playlist['videos'][0])) {
+                                                if(count($playlist['videos']) != 0) {
+                                                    $video = $__video_h->fetch_video_rid($playlist['videos'][0]);
+                                                    $video['video_responses'] = $__video_h->get_video_responses($video['rid']);
+                                                    $video['age'] = $__time_h->time_elapsed_string($video['publish']);		
+                                                    $video['duration'] = $__time_h->timestamp($video['duration']);
+                                                    $video['views'] = $__video_h->fetch_video_views($video['rid']);
+                                                    $video['author'] = htmlspecialchars($video['author']);		
+                                                    $video['title'] = htmlspecialchars($video['title']);
+                                                    $video['description'] = $__video_h->shorten_description($video['description'], 50);
+                                                    $playlist['title'] = htmlspecialchars($playlist['title']);
+                                        ?> 
+                                        <tr style="margin-top: 5px;" id="videoslist">
+                                            <td class="video-manager-left">
+                                                <ul>
+                                                    <li class="video-list-item "><a href="/view_playlist?v=<?php echo $playlist['rid']; ?>" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $playlist['title']; ?>" data-thumb="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $video['duration']; ?></span>
+                                                        <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="yuTBQ86r8o0" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
+                                                        </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
+                                                        </span><span dir="ltr" class="title" title="<?php echo $playlist['title']; ?>"><?php echo $playlist['title']; ?></span><span class="stat">by <span class="yt-user-name " dir="ltr"><?php echo $playlist['author']; ?></span></span><span class="stat view-count">  <span class="viewcount"><?php echo $video['views']; ?> views</span>
+                                                        </span></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                                 
-                                            <a href="/edit_video?id=<?php echo $video['rid']; ?>">
-                                                <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
-                                                    Edit
-                                                </button>
-                                            </a>
-                                            <a href="/get/delete_video?id=<?php echo $video['rid']; ?>">
-                                                <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
-                                                    Delete
-                                                </button>
-                                            </a>
-                                            <a href="/get/toggle_comment?id=<?php echo $video['rid']; ?>">
-                                                <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
-                                                    Toggle Commenting
-                                                </button>
-                                            </a>
+                                            </td>
+                                            <td class="video-manager-stats" style="background: none;padding-left: 8px;">
+                                            <a href="/edit_playlist?id=<?php echo $playlist['rid']; ?>">
+                                                    <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
+                                                        Edit
+                                                    </button>
+                                                </a> 
+                                                <a href="/get/delete_playlist?id=<?php echo $playlist['rid']; ?>">
+                                                    <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
+                                                        Delete
+                                                    </button>
+                                                </a><br><br>
 
-                                            <span style="margin-left:10px">
-                                                <img src="/s/img/world.png"> <span style="font-size: 11px;position: relative;bottom: 2px;left: 5px;">Public</span>
-                                            </span>
-                                        </td>
-                                        <td class="video-manager-stats" style="background: none;padding-left: 8px;">
-                                            <span class="video-manager-span" style="width:140px;display: inline-block;margin-bottom: 4px;">
-                                            <span class="small-text">Views: </span><span style="float:right;"><?php echo $__video_h->fetch_video_views($video['rid']); ?></span>
-                                            </span><br>
-
-                                            <span class="video-manager-span" style="width:140px;display: inline-block;margin-bottom: 4px;">
-                                            <span class="small-text">Comments: </span><span style="float:right;"><?php echo $__video_h->get_comments_from_video($video['rid']); ?></span>
-                                            </span><br>
-
-                                            <span class="video-manager-span" style="width:140px;display: inline-block;margin-bottom: 4px;">
-                                            <span class="small-text">Video Responses: </span><span style="float:right;"><?php echo $video['video_responses']; ?></span>
-                                            </span><br>
-                                        </td>
-                                    </tr>
-                                    <?php } ?>
+                                                <span>
+                                                    <img src="/s/img/world.png"> <span style="font-size: 11px;position: relative;bottom: 2px;left: 5px;">Public</span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <?php } } } ?>
                                 </table> 
                                 </div>
 
@@ -318,7 +334,7 @@
                                         $(".my_videos_ajax").html("")
 
                                         $.ajax({
-                                            url: '/video_manager_ajax?filter=' + currentfilter + '&page=' + page,
+                                            url: '/playlists_ajax?filter=' + currentfilter + '&page=' + page,
                                             method: 'GET'
                                         })
 
@@ -332,12 +348,7 @@
 
                                 <?php 
                                     if($result6->num_rows == 0) { echo "
-                                        <br>Welcome to your Video Manager! You can manage your uploaded videos here.<br>
-                                        <a href=\"upload_video\">
-                                            <button type=\"button\" class=\" yt-uix-button yt-uix-button-default\" role=\"button\">
-                                                Upload
-                                            </button>
-                                        </a>
+                                        <br>Welcome to your playlists! You can make collections of videos for you to share with others.<br>
                                     "; 
                                 } ?>
 								</div>
