@@ -15,21 +15,20 @@ class user_insert {
 	}
 
     function check_view_channel($vidid, $user) {
-        $stmt = $this->__db->prepare("SELECT * FROM channel_views WHERE viewer = ? AND channel = ?");
-        $stmt->bind_param("ss", $user, $vidid);
+        $stmt = $this->__db->prepare("SELECT * FROM channel_views WHERE viewer = :user AND channel = :vidid");
+        $stmt->bindParam(":user", $user);
+        $stmt->bindParam(":vidid", $vidid);
         $stmt->execute();
-        $result = $stmt->get_result();
-        if($result->num_rows === 0) {
+        if($stmt->rowCount() === 0) {
             $this->add_view_channel($vidid, $user);
         }
-        $stmt->close();
     }
     
     function add_view_channel($vidid, $user) {
-        $stmt = $this->__db->prepare("INSERT INTO channel_views (viewer, channel) VALUES (?, ?)");
-        $stmt->bind_param("ss", $user, $vidid);
+        $stmt = $this->__db->prepare("INSERT INTO channel_views (viewer, channel) VALUES (:user, :vidid)");
+        $stmt->bindParam(":user", $user);
+        $stmt->bindParam(":vidid", $vidid);
         $stmt->execute();
-        $stmt->close();
     }   
 }
 

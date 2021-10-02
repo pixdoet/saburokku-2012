@@ -27,17 +27,23 @@
         "forum_properties" => (object) [ "status" => "unloaded" ],
     ];
 
-    // sorry pdo doesnt cworkd i cant get it 2 work
-    $__db = new mysqli($__server->db_properties->db_host, 
-                         $__server->db_properties->db_user, 
-                         $__server->db_properties->db_password,
-                         $__server->db_properties->db_database);
-
-    if(!$__db->connect_error) {
+    try
+    {
+        $__db = new PDO("mysql:host=".$__server->db_properties->db_host.";dbname=".$__server->db_properties->db_database.";charset=utf8mb4",
+                        $__server->db_properties->db_user,
+                        $__server->db_properties->db_password,
+                        [
+                            PDO::ATTR_EMULATE_PREPARES => false,
+                            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                        ]
+                        );
         $__server->db_properties->db_connected = true;
     }
-    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-    $__db->set_charset("utf8mb4");
+    catch(PDOException $e)
+    {
+        $__server->db_properties->db_connected = false;
+        // wtf is the point of this? cant you just vomit out the error? why?????????????
+    }
 
     session_start();
 ?>
