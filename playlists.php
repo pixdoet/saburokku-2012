@@ -12,6 +12,7 @@
 <?php $__user_u = new user_update($__db); ?>
 <?php $__db_h = new db_helper(); ?>
 <?php $__time_h = new time_helper(); ?>
+<?php if(!isset($_SESSION['siteusername'])) { header("Location: /sign_in"); } ?>
 <?php
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         if(!isset($_SESSION['siteusername'])){ $error_legacy = "you are not logged in"; goto skipcomment; }

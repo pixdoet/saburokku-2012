@@ -10,6 +10,7 @@
 <?php $__user_h = new user_helper($__db); ?>
 <?php $__db_h = new db_helper(); ?>
 <?php $__time_h = new time_helper(); ?>
+<?php if(!isset($_SESSION['siteusername'])) { header("Location: /sign_in"); } ?>
 <!DOCTYPE html>
 <html dir="ltr">
 	<head>

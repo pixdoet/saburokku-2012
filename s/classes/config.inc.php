@@ -2,6 +2,10 @@
     $__server = (object) [
         "page_title" => "",
         "featured_channels" => array("bhief", "CrazyFrog", "ItsJustAPlayer"),
+        "ffmpeg_binary" => "C:\\ffmpeg\\bin\\ffmpeg", 
+        "ffprobe_binary" => "C:\\ffmpeg\\bin\\ffprobe", 
+        "ffmpeg_threads" => 2, 
+
         "page_embeds" => (object) [
             "page_title" => "bitch SubRocks",
             "page_description" => "",

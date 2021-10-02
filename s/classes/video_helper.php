@@ -10,6 +10,20 @@
 class video_helper {
     public $__db;
 
+    public function sh_exec(string $cmd, string $outputfile = "", string $pidfile = "", bool $mergestderror = true, bool $bg = false) {
+        $fullcmd = $cmd;
+        if(strlen($outputfile) > 0) $fullcmd .= " >> " . $outputfile;
+        if($mergestderror) $fullcmd .= " 2>&1";
+        
+        if($bg) {
+            $fullcmd = "nohup " . $fullcmd . " &";
+            if(strlen($pidfile)) $fullcmd .= " echo $! > " . $pidfile;
+        } else {
+            if(strlen($pidfile) > 0) $fullcmd .= "; echo $$ > " . $pidfile;
+        }
+        shell_exec($fullcmd);
+    }
+
 	public function __construct($conn){
         $this->__db = $conn;
 	}
