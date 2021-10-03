@@ -29,22 +29,19 @@ class video_helper {
 	}
 
     function fetch_video_views(string $id) {
-        $stmt = $this->__db->prepare("SELECT * FROM views WHERE videoid = ?");
-        $stmt->bind_param("s", $id);
+        $stmt = $this->__db->prepare("SELECT * FROM views WHERE videoid = :id");
+        $stmt->bindParam(":id", $id);
         $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->num_rows;
+
+        return $stmt->rowCount();
     }
 
     function get_comments_from_video($id) {
-        $stmt = $this->__db->prepare("SELECT * FROM comments WHERE toid = ?");
-        $stmt->bind_param("s", $id);
+        $stmt = $this->__db->prepare("SELECT * FROM comments WHERE toid = :id");
+        $stmt->bindParam(":id", $id);
         $stmt->execute();
-        $result = $stmt->get_result();
-        $rows = mysqli_num_rows($result); 
-        $stmt->close();
     
-        return $rows;
+        return $stmt->rowCount();
     }
 
     function shorten_description(string $description, int $limit, bool $newlines = false) {
@@ -59,63 +56,44 @@ class video_helper {
     }
 
     function get_video_responses($id) {
-        $stmt = $this->__db->prepare("SELECT * FROM video_response WHERE toid = ?");
-        $stmt->bind_param("s", $id);
+        $stmt = $this->__db->prepare("SELECT * FROM video_response WHERE toid = :id");
+        $stmt->bindParam(":id", $id);
         $stmt->execute();
-        $result = $stmt->get_result();
-        $rows = mysqli_num_rows($result); 
-        $stmt->close();
     
-        return $rows;
+        return $stmt->rowCount();
     }
 
     function fetch_video_rid(string $rid) {
-            $stmt = $this->__db->prepare("SELECT * FROM videos WHERE rid = ?");
-            $stmt->bind_param("s", $rid);
-            $stmt->execute();
-        $result = $stmt->get_result();
-        $video = $result->fetch_assoc();
+        $stmt = $this->__db->prepare("SELECT * FROM videos WHERE rid = :rid");
+        $stmt->bindParam(":rid", $rid);
+        $stmt->execute();
 
-        if($result->num_rows === 0) 
-            return 0;
-        else
-            return $video;
-
-        $stmt->close();
+        return ($stmt->rowCount() === 0 ? 0 : $stmt->fetch(PDO::FETCH_ASSOC));
     }
 
     function get_video_stars_level($id, $level) {
-        $stmt = $this->__db->prepare("SELECT * FROM stars WHERE reciever = ? AND type = ?");
-        $stmt->bind_param("si", $id, $level);
+        $stmt = $this->__db->prepare("SELECT * FROM stars WHERE reciever = :id AND type = :lvl");
+        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":lvl", $level, PDO::PARAM_INT);
         $stmt->execute();
-        $result = $stmt->get_result();
-        $rows = mysqli_num_rows($result); 
-        $stmt->close();
     
-        return $rows;
+        return $stmt->rowCount();
     }
 
     function video_exists($video) {
-            $stmt = $this->__db->prepare("SELECT `rid` FROM videos WHERE rid = ?");
-            $stmt->bind_param("s", $video);
-            $stmt->execute();
-        $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
-        if($result->num_rows === 1) { return true; } else { return false; }
-        $stmt->close();
+        $stmt = $this->__db->prepare("SELECT rid FROM videos WHERE rid = :rid");
+        $stmt->bindParam(":rid", $video);
+        $stmt->execute();
         
-        return $user;
+        return $stmt->rowCount() === 1;
     }
 
     function fetch_user_videos($v) {
-        $stmt = $this->__db->prepare("SELECT rid FROM videos WHERE author = ?");
-        $stmt->bind_param("s", $v);
+        $stmt = $this->__db->prepare("SELECT rid FROM videos WHERE author = :v");
+        $stmt->bindParam(":v", $v);
         $stmt->execute(); 
-        $result = $stmt->get_result();
-        $rows = mysqli_num_rows($result); 
-        $stmt->close();
     
-        return $rows;
+        return $stmt->rowCount();
     }
 }
 
