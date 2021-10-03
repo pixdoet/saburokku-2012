@@ -20,7 +20,7 @@
         if(strlen($_POST['comment']) > 1024){ $error_legacy = "your comment must be shorter than 1000 characters"; goto skipcomment; }
         if($__user_h->if_cooldown($_SESSION['siteusername'])) { $error_legacy = "You are on a cooldown! Wait for a minute before posting another comment."; goto skipcomment; }
 
-        $stmt = $__db->prepare("INSERT INTO `playlists` (title, description, rid, author) VALUES (:title, :desc, :rid, :username)");
+        $stmt = $__db->prepare("INSERT INTO playlists (title, description, rid, author) VALUES (:title, :desc, :rid, :username)");
         $stmt->bindParam(":title", $_POST['title']);
         $stmt->bindParam(":desc", $_POST['comment']);
         $stmt->bindParam(":rid", $rid);
