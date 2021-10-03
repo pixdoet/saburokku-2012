@@ -24,15 +24,14 @@
 
         echo(json_encode($request->error));
 
-        $stmt = $__db->prepare("SELECT password FROM `users` WHERE username = ?");
-        $stmt->bind_param("s", $request->username);
+        $stmt = $__db->prepare("SELECT password FROM users WHERE username = :username");
+        $stmt->bindParam(":username", $request->username);
         $stmt->execute();
-        $result = $stmt->get_result();
 
-        if(!mysqli_num_rows($result)){ 
+        if(!$stmt->rowCount()){ 
             { $request->error->message = "Incorrect username or password!"; $request->error->status = ""; } }
 
-        $row = $result->fetch_assoc();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if(!isset($row['password'])) 
             { $request->error->message = "Incorrect username or password!"; $request->error->status = ""; } 
         else 

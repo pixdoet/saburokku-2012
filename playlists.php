@@ -20,16 +20,18 @@
         if(strlen($_POST['comment']) > 1024){ $error_legacy = "your comment must be shorter than 1000 characters"; goto skipcomment; }
         if($__user_h->if_cooldown($_SESSION['siteusername'])) { $error_legacy = "You are on a cooldown! Wait for a minute before posting another comment."; goto skipcomment; }
 
-        $stmt = $__db->prepare("INSERT INTO `playlists` (title, description, rid, author) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $_POST['title'], $_POST['comment'], $rid, $_SESSION['siteusername']);
+        $stmt = $__db->prepare("INSERT INTO playlists (title, description, rid, author) VALUES (:title, :desc, :rid, :username)");
+        $stmt->bindParam(":title", $_POST['title']);
+        $stmt->bindParam(":desc", $_POST['comment']);
+        $stmt->bindParam(":rid", $rid);
+        $stmt->bindParam(":username", $_SESSION['siteusername']);
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
         $result = '';
         for ($i = 0; $i < 11; $i++)
             $rid .= $characters[mt_rand(0, 63)];
         $text = htmlspecialchars($_POST['comment']);
         $stmt->execute();
-        $stmt->close();
-        $__user_u->update_comment_cooldown_time($_SESSION['siteusername']);
+        $__user_u->update_cooldown_time($_SESSION['siteusername'], "cooldown_comment");
         skipcomment:
     }
 ?>
@@ -178,22 +180,13 @@
 							<div id="browse-main-column" style="float: right;margin: 0px 0 0 14px;" class="ytg-4col">
 								<div class="browse-collection  has-box-ad">
                                 <?php
-                                    $search = $_SESSION['siteusername'];
-                                    $stmt56 = $__db->prepare("SELECT * FROM playlists WHERE author = ?");
-                                    $stmt56->bind_param("s", $search);
-                                    $stmt56->execute();
-                                    $result854 = $stmt56->get_result();
-                                    $result56 = $result854->num_rows;
-
                                     $results_per_page = 12;
 
-                                    $stmt = $__db->prepare("SELECT * FROM playlists WHERE author = ? ORDER BY id DESC");
-                                    $stmt->bind_param("s", $_SESSION['siteusername']);
+                                    $stmt = $__db->prepare("SELECT * FROM playlists WHERE author = :username ORDER BY id DESC");
+                                    $stmt->bindParam(":username", $_SESSION['siteusername']);
                                     $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    $results = $result->num_rows;
 
-                                    $number_of_result = $result->num_rows;
+                                    $number_of_result = $stmt->rowCount();
                                     $number_of_page = ceil ($number_of_result / $results_per_page);  
 
                                     if (!isset ($_GET['page']) ) {  
@@ -203,14 +196,13 @@
                                     }  
 
                                     $page_first_result = ($page - 1) * $results_per_page;  
-
-                                    $stmt->close();
                                 ?>
                                 <?php 
-                                    $stmt6 = $__db->prepare("SELECT * FROM playlists WHERE author = ? ORDER BY id DESC LIMIT ?, ?");
-                                    $stmt6->bind_param("sss", $search, $page_first_result, $results_per_page);
+                                    $stmt6 = $__db->prepare("SELECT * FROM playlists WHERE author = :search ORDER BY id DESC LIMIT :pfirst, :pper");
+                                    $stmt6->bindParam(":search", $search);
+                                    $stmt6->bindParam(":pfirst", $page_first_result);
+                                    $stmt6->bindParam(":pper", $results_per_page);
                                     $stmt6->execute();
-                                    $result6 = $stmt6->get_result();
                                 ?>                    
                                 
                                 <div id="ex1" class="modal">
@@ -248,7 +240,7 @@
                                     </tr>
                                     
                                     <?php
-                                        while($playlist = $result->fetch_assoc()) { 
+                                        while($playlist = $stmt->fetch(PDO::FETCH_ASSOC)) { 
                                             $playlist['videos'] = json_decode($playlist['videos']);
                                             if($__video_h->video_exists(@$playlist['videos'][0])) {
                                                 if(count($playlist['videos']) != 0) {
@@ -348,7 +340,7 @@
                                 </script>
 
                                 <?php 
-                                    if($result6->num_rows == 0) { echo "
+                                    if($stmt6->rowCount() == 0) { echo "
                                         <br>Welcome to your playlists! You can make collections of videos for you to share with others.<br>
                                     "; 
                                 } ?>

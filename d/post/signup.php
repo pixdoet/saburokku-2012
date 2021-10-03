@@ -35,20 +35,20 @@
         if(empty(trim($request->username))) 
             { $request->error->message = "Your username cannot be empty!"; $request->error->status = ""; }
         
-        $stmt = $__db->prepare("SELECT username FROM users WHERE username = ?");
-        $stmt->bind_param("s", $username);
+        $stmt = $__db->prepare("SELECT username FROM users WHERE username = :username");
+        $stmt->bindParam(":username", $username);
         $stmt->execute();
-        $result = $stmt->get_result();
-        if($result->num_rows) 
+        if($stmt->rowCount()) 
             { $request->error->message = "There's already a user with that same username!"; $request->error->status = ""; }
             
         echo json_encode($request->error);
         
         if($request->error->status == "OK") {
-            $stmt = $__db->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $request->username, $request->email, $request->password_hash);
+            $stmt = $__db->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
+            $stmt->bindParam(":username", $request->username);
+            $stmt->bindParam(":email", $request->email);
+            $stmt->bindParam(":password", $request->password_hash);
             $stmt->execute();
-            $stmt->close();
 
             $_SESSION['siteusername'] = $request->username;
             header("Location: /");

@@ -140,8 +140,7 @@
 										<?php
 											$stmt = $__db->prepare("SELECT * FROM videos ORDER BY rand() LIMIT 4");
 											$stmt->execute();
-											$result = $stmt->get_result();
-											while($video = $result->fetch_assoc()) {	
+											while($video = $stmt->fetch(PDO::FETCH_ASSOC)) {	
 												$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
 												$video['duration'] = $__time_h->timestamp($video['duration']);
 												$video['views'] = $__video_h->fetch_video_views($video['rid']);
@@ -186,8 +185,7 @@
 										<?php
 											$stmt = $__db->prepare("SELECT * FROM videos WHERE category = 'Comedy' ORDER BY rand() LIMIT 4");
 											$stmt->execute();
-											$result = $stmt->get_result();
-											while($video = $result->fetch_assoc()) {	
+											while($video = $stmt->fetch(PDO::FETCH_ASSOC)) {	
 												$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
 												$video['duration'] = $__time_h->timestamp($video['duration']);
 												$video['views'] = $__video_h->fetch_video_views($video['rid']);
@@ -232,8 +230,7 @@
 										<?php
 											$stmt = $__db->prepare("SELECT * FROM videos WHERE category = 'Film & Animation' ORDER BY rand() LIMIT 4");
 											$stmt->execute();
-											$result = $stmt->get_result();
-											while($video = $result->fetch_assoc()) {	
+											while($video = $stmt->fetch(PDO::FETCH_ASSOC)) {	
 												$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
 												$video['duration'] = $__time_h->timestamp($video['duration']);
 												$video['views'] = $__video_h->fetch_video_views($video['rid']);
@@ -282,8 +279,7 @@
 										<?php
 											$stmt = $__db->prepare("SELECT * FROM videos WHERE category = 'Gaming' ORDER BY rand() LIMIT 4");
 											$stmt->execute();
-											$result = $stmt->get_result();
-											while($video = $result->fetch_assoc()) {	
+											while($video = $stmt->fetch(PDO::FETCH_ASSOC)) {	
 												$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
 												$video['duration'] = $__time_h->timestamp($video['duration']);
 												$video['views'] = $__video_h->fetch_video_views($video['rid']);
@@ -332,8 +328,7 @@
 										<?php
 											$stmt = $__db->prepare("SELECT * FROM videos WHERE category = 'Nonprofits & Activism' ORDER BY rand() LIMIT 4");
 											$stmt->execute();
-											$result = $stmt->get_result();
-											while($video = $result->fetch_assoc()) {	
+											while($video = $stmt->fetch(PDO::FETCH_ASSOC)) {	
 												$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
 												$video['duration'] = $__time_h->timestamp($video['duration']);
 												$video['views'] = $__video_h->fetch_video_views($video['rid']);
@@ -382,8 +377,7 @@
 										<?php
 											$stmt = $__db->prepare("SELECT * FROM videos WHERE category = 'Pets & Animals' ORDER BY rand() LIMIT 4");
 											$stmt->execute();
-											$result = $stmt->get_result();
-											while($video = $result->fetch_assoc()) {	
+											while($video = $stmt->fetch(PDO::FETCH_ASSOC)) {	
 												$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
 												$video['duration'] = $__time_h->timestamp($video['duration']);
 												$video['views'] = $__video_h->fetch_video_views($video['rid']);
@@ -432,8 +426,7 @@
 										<?php
 											$stmt = $__db->prepare("SELECT * FROM videos WHERE category = 'Science & Technology' ORDER BY rand() LIMIT 4");
 											$stmt->execute();
-											$result = $stmt->get_result();
-											while($video = $result->fetch_assoc()) {	
+											while($video = $stmt->fetch(PDO::FETCH_ASSOC)) {	
 												$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
 												$video['duration'] = $__time_h->timestamp($video['duration']);
 												$video['views'] = $__video_h->fetch_video_views($video['rid']);
@@ -482,8 +475,7 @@
 										<?php
 											$stmt = $__db->prepare("SELECT * FROM videos WHERE category = 'Travel & Events' ORDER BY rand() LIMIT 4");
 											$stmt->execute();
-											$result = $stmt->get_result();
-											while($video = $result->fetch_assoc()) {	
+											while($video = $stmt->fetch(PDO::FETCH_ASSOC)) {	
 												$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
 												$video['duration'] = $__time_h->timestamp($video['duration']);
 												$video['views'] = $__video_h->fetch_video_views($video['rid']);

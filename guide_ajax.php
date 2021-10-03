@@ -82,18 +82,16 @@
             break;
         }
 
-        $stmt = $__db->prepare("SELECT * FROM videos WHERE category = ? ORDER BY id DESC LIMIT 20");
-        $stmt->bind_param("s", $category);
+        $stmt = $__db->prepare("SELECT * FROM videos WHERE category = :category ORDER BY id DESC LIMIT 20");
+        $stmt->bindParam(":category", $category);
         $stmt->execute();
-        $result = $stmt->get_result();
     } else {
         $username = $_GET['user_id'];
         $category = htmlspecialchars($_GET['user_id']);
         $diviconn = "trending";
-        $stmt = $__db->prepare("SELECT * FROM videos WHERE author = ? ORDER BY id DESC LIMIT 20");
-        $stmt->bind_param("s", $username);
+        $stmt = $__db->prepare("SELECT * FROM videos WHERE author = :username ORDER BY id DESC LIMIT 20");
+        $stmt->bindParam(":username", $username);
         $stmt->execute();
-        $result = $stmt->get_result();
     }
 	?>
 {'paging': null, 'feed_html': `
@@ -109,7 +107,7 @@
 <div class=\'feed-page\'>
 	<ul>
         <?php
-            while($video = $result->fetch_assoc()) {	
+            while($video = $stmt->fetch(PDO::FETCH_ASSOC)) {	
                 $video['age'] = $__time_h->time_elapsed_string($video['publish']);		
                 $video['duration'] = $__time_h->timestamp($video['duration']);
                 $video['views'] = $__video_h->fetch_video_views($video['rid']);
@@ -181,7 +179,7 @@
                 </div>
             </div>
         </li>
-        <?php } $stmt->close(); ?>
+        <?php } ?>
 	</ul>
 </div>
 `}
