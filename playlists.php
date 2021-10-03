@@ -29,7 +29,7 @@
         $text = htmlspecialchars($_POST['comment']);
         $stmt->execute();
         $stmt->close();
-        $__user_u->update_comment_cooldown_time($_SESSION['siteusername']);
+        $__user_u->update_cooldown_time($_SESSION['siteusername'], "cooldown_comment");
         skipcomment:
     }
 ?>

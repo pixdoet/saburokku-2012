@@ -97,10 +97,7 @@
     
                 if ($uploadOk) {
                     if ($movedFile) {
-                        $__user_u->update_user_bg_09(
-                            $target_name, 
-                            $_SESSION['siteusername']
-                        );
+                        $__user_u->update_row($_SESSION['siteusername'], "2009_bg", $target_name);
                     } else {
                         $fileerror = 'fatal error';
                     }
@@ -134,10 +131,7 @@
     
                 if ($uploadOk) {
                     if ($movedFile) {
-                        $__user_u->update_user_banner(
-                            $target_name, 
-                            $_SESSION['siteusername']
-                        );
+                        $__user_u->update_row($_SESSION['siteusername'], "banner", $target_name);
                     } else {
                         $fileerror = 'fatal error';
                     }
@@ -171,10 +165,7 @@
     
                 if ($uploadOk) {
                     if ($movedFile) {
-                        $__user_u->update_user_video_banner(
-                            $target_name, 
-                            $_SESSION['siteusername']
-                        );
+                        $__user_u->update_row($_SESSION['siteusername'], "subbutton", $target_name);
                     } else {
                         $fileerror = 'fatal error';
                     }
@@ -183,122 +174,71 @@
         }
 
         if(!empty($_POST['bio'])) { 
-            $__user_u->update_user_bio(
-                $_SESSION['siteusername'], 
-                $_POST['bio']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "bio", $_POST['bio']);
         }
 
         if(!empty($_POST['videoid'])) { 
-            $__user_u->update_user_channels(
-                $_SESSION['siteusername'], 
-                $_POST['videoid']
-            );
-        }
+            $__user_u->update_row($_SESSION['siteusername'], "featured_channels", $_POST['videoid']);
+        } // duplicate?
     
         if(!empty($_POST['css'])) {
-            $__user_u->update_user_css(
-                $_SESSION['siteusername'], 
-                $_POST['css']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "css", $_POST['css']);
         }
 
         if(!empty($_POST['videoid'])) {
-            $__user_u->update_user_featured_video(
-                $_SESSION['siteusername'], 
-                $_POST['videoid']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "featured", $_POST['videoid']);
         }
 
         if(!empty($_POST['solidcolor'])) {
-            $__user_u->update_user_primary_color(
-                $_SESSION['siteusername'], 
-                $_POST['solidcolor']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "primary_color", $_POST['solidcolor']);
         }
 
         if(!empty($_POST['transparency'])) {
-            $__user_u->update_user_transparency(
-                $_SESSION['siteusername'], 
-                $_POST['transparency']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "transparency", $_POST['transparency']);
         }
 
         if(!empty($_POST['genre'])) {
-            $__user_u->update_user_genre(
-                $_SESSION['siteusername'], 
-                $_POST['genre']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "genre", $_POST['genre']);
         }
 
         if(!empty($_POST['bordercolor'])) {
-            $__user_u->update_user_border_color(
-                $_SESSION['siteusername'], 
-                $_POST['bordercolor']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "border_color", $_POST['bordercolor']);
         }
 
         if(!empty($_POST['country'])) {
-            $__user_u->update_user_country(
-                $_SESSION['siteusername'], 
-                $_POST['country']
-            );
-        }
+            $__user_u->update_row($_SESSION['siteusername'], "country", $_POST['country']);
+        } // duplicate?
 
         if(!empty($_POST['header'])) {
-            $__user_u->update_user_header(
-                $_SESSION['siteusername'], 
-                $_POST['header']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "custom_header", $_POST['header']);
         }
 
         if(!empty($_POST['channels'])) {
-            $__user_u->update_user_channels(
-                $_SESSION['siteusername'], 
-                $_POST['channels']
-            );
-        }
+            $__user_u->update_row($_SESSION['siteusername'], "featured_channels", $_POST['channels']);
+        } // duplicate?
 
         if(!empty($_POST['customtext'])) {
-            $__user_u->update_user_text(
-                $_SESSION['siteusername'], 
-                $_POST['customtext']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "custom_text", $_POST['customtext']);
         }
 
         if(!empty($_POST['country'])) {
-            $__user_u->update_user_text(
-                $_SESSION['siteusername'], 
-                $_POST['country']
-            );
-        }
+            $__user_u->update_row($_SESSION['siteusername'], "custom_text", $_POST['country']);
+        } // duplicate?
 
         if(!empty($_POST['website'])) {
-            $__user_u->update_user_website(
-                $_SESSION['siteusername'], 
-                $_POST['website']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "website", $_POST['website']);
         }
     
         if(!empty($_POST['channelboxcolor'])) {
-            $__user_u->update_user_secondary_color(
-                $_SESSION['siteusername'], 
-                $_POST['channelboxcolor']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "secondary_color", $_POST['channelboxcolor']);
         }
 
         if(!empty($_POST['backgroundcolor'])) {
-            $__user_u->update_user_third_color(
-                $_POST['backgroundcolor'], 
-                $_SESSION['siteusername']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "third_color", $_POST['backgroundcolor']);
         }
 
         if(!empty($_POST['textmaincolor'])) {
-            $__user_u->update_user_primary_text_color(
-                $_SESSION['siteusername'], 
-                $_POST['textmaincolor']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "primary_color_text", $_POST['textmaincolor']);
         }
 
     if(!empty($_POST['bgoptionset'])) {
@@ -306,26 +246,12 @@
         $bgcolor = $_POST['solidcolor'];
         $default = "default.png";
 
-        $__user_u->update_user_bg_option_09(
-            $bgoption, 
-            $_SESSION['siteusername']
-        );
-
-        $__user_u->update_user_bg_color_09(
-            $bgcolor, 
-            $_SESSION['siteusername']
-        );  
+        $__user_u->update_row($_SESSION['siteusername'], "2009_bgoption", $bgoption);
+        
+        $__user_u->update_row($_SESSION['siteusername'], "2009_bgcolor", $bgcolor);
 
         if($bgoption == "solid") {
-            $__user_u->update_user_bg_color_09(
-                $bgcolor, 
-                $_SESSION['siteusername']
-            );    
-            
-            $__user_u->update_user_bg_09(
-                $default, 
-                $_SESSION['siteusername']
-            );
+            $__user_u->update_row($_SESSION['siteusername'], "2009_bg", $default);
         }
     }
     
