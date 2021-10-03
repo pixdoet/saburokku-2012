@@ -24,11 +24,12 @@
         if($__user_h->if_cooldown($_SESSION['siteusername'])) { $error['message'] = "You are on a cooldown! Wait for a minute before posting another comment."; $error['status'] = true; }
 
         if(!isset($error['message'])) {
-            $stmt = $__db->prepare("INSERT INTO `comments` (toid, author, comment) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $_GET['v'], $_SESSION['siteusername'], $text);
-            $text = $_POST['comment'];
+			$text = $_POST['comment'];
+            $stmt = $__db->prepare("INSERT INTO comments (toid, author, comment) VALUES (:v, :username, :comment)");
+            $stmt->bindParam(":v", $_GET['v']);
+			$stmt->bindParam(":username", $_SESSION['siteusername']);
+			$stmt->bindParam(":comment", $text);
             $stmt->execute();
-            $stmt->close();
 
 			$__user_u->update_cooldown_time($_SESSION['siteusername'], "cooldown_comment")
 

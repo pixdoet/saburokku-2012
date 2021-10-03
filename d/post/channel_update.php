@@ -17,22 +17,23 @@
         return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
     }
 
-        $stmt = $__db->prepare("UPDATE users SET layout = ? WHERE username = ?");
-        $stmt->bind_param("ss", $_POST['layout'], $_SESSION['siteusername']);
+        $stmt = $__db->prepare("UPDATE users SET layout = :layout WHERE username = :username");
+        $stmt->bindParam(":layout", $_POST['layout']);
+        $stmt->bindParam(":username", $_SESSION['siteusername']);
         $stmt->execute();
-        $stmt->close();
 
-        $stmt = $__db->prepare("UPDATE users SET 2009_user_left = ? WHERE username = ?");
-        $stmt->bind_param("ss", $clean, $_SESSION['siteusername']);
         $clean = $_POST['left'];
+        $stmt = $__db->prepare("UPDATE users SET 2009_user_left = :clean WHERE username = :username");
+        $stmt->bindParam(":clean", $clean);
+        $stmt->bindParam(":username", $_SESSION['siteusername']);
         $stmt->execute();
-        $stmt->close();
 
-        $stmt = $__db->prepare("UPDATE users SET 2009_user_right = ? WHERE username = ?");
-        $stmt->bind_param("ss", $clean, $_SESSION['siteusername']);
         $clean = $_POST['right'];
+        $stmt = $__db->prepare("UPDATE users SET 2009_user_right = :clean WHERE username = :username");
+        $stmt->bindParam(":clean", $clean);
+        $stmt->bindParam(":username", $_SESSION['siteusername']);
         $stmt->execute();
-        $stmt->close();
+
 
         if($_SERVER['REQUEST_METHOD'] == 'POST' && @$_FILES['pfpset']) {
             if(!empty($_FILES["pfpset"]["name"])) {
@@ -60,10 +61,10 @@
         
                 if ($uploadOk) {
                     if ($movedFile) {
-                        $stmt = $__db->prepare("UPDATE users SET pfp = ? WHERE `users`.`username` = ?;");
-                        $stmt->bind_param("ss", $target_name, $_SESSION['siteusername']);
+                        $stmt = $__db->prepare("UPDATE users SET pfp = :pfp WHERE username = :username");
+                        $stmt->bindParam(":pfp", $target_name);
+                        $stmt->bindParam(":username", $_SESSION['siteusername']);
                         $stmt->execute();
-                        $stmt->close();
                     } else {
                         $fileerror = 'fatal error';
                     }
