@@ -12,21 +12,17 @@
     $search = $_SESSION['siteusername'];
 
     if($_GET['filter'] == "time") {
-        $stmt = $__db->prepare("SELECT * FROM favorite_video WHERE sender = ? ORDER BY id DESC");
-        $stmt->bind_param("s", $_SESSION['siteusername']);
+        $stmt = $__db->prepare("SELECT * FROM favorite_video WHERE sender = :username ORDER BY id DESC");
+        $stmt->bindParam(":username", $_SESSION['siteusername']);
         $stmt->execute();
-        $result = $stmt->get_result();
-        $results = $result->num_rows;
     } else if($_GET['filter'] == "title") {
-        $stmt = $__db->prepare("SELECT * FROM favorite_video WHERE sender = ? ORDER BY title DESC");
-        $stmt->bind_param("s", $_SESSION['siteusername']);
+        $stmt = $__db->prepare("SELECT * FROM favorite_video WHERE sender = :username ORDER BY title DESC");
+        $stmt->bindParam(":username", $_SESSION['siteusername']);
         $stmt->execute();
-        $result = $stmt->get_result();
-        $results = $result->num_rows;
     }
 
     $results_per_page = 12;
-    $number_of_result = $result->num_rows;
+    $number_of_result = $stmt->rowCount();
     $number_of_page = ceil ($number_of_result / $results_per_page);  
 
     if (!isset ($_GET['page']) ) {  
@@ -35,20 +31,20 @@
         $page = (int)$_GET['page'];  
     }  
 
-    $page_first_result = ($page - 1) * $results_per_page;  
-
-    $stmt->close();
+    $page_first_result = ($page - 1) * $results_per_page;
 
     if($_GET['filter'] == "time") {
-        $stmt6 = $__db->prepare("SELECT * FROM favorite_video WHERE sender = ? ORDER BY id DESC LIMIT ?, ?");
-        $stmt6->bind_param("sss", $search, $page_first_result, $results_per_page);
+        $stmt6 = $__db->prepare("SELECT * FROM favorite_video WHERE sender = :search ORDER BY id DESC LIMIT :pfirst, :pper");
+        $stmt6->bindParam(":search", $search);
+        $stmt6->bindParam(":pfirst", $page_first_result);
+        $stmt6->bindParam(":pper", $results_per_page);
         $stmt6->execute();
-        $result6 = $stmt6->get_result();
     } else if($_GET['filter'] == "title") {
-        $stmt6 = $__db->prepare("SELECT * FROM favorite_video WHERE sender = ? ORDER BY title LIMIT ?, ?");
-        $stmt6->bind_param("sss", $search, $page_first_result, $results_per_page);
+        $stmt6 = $__db->prepare("SELECT * FROM favorite_video WHERE sender = :search ORDER BY title LIMIT :pfirst, :pper");
+        $stmt6->bindParam(":search", $search);
+        $stmt6->bindParam(":pfirst", $page_first_result);
+        $stmt6->bindParam(":pper", $results_per_page);
         $stmt6->execute();
-        $result6 = $stmt6->get_result();
     }
 ?>              
 <table style="width: 100%;">
@@ -60,7 +56,7 @@
     </tr>
     
     <?php
-        while($video = $result6->fetch_assoc()) { 
+        while($video = $stmt6->fetch(PDO::FETCH_ASSOC)) { 
             if($__video_h->video_exists($video['reciever'])) {
                 $_video = $__video_h->fetch_video_rid($video['reciever']);
                 $_video['video_responses'] = $__video_h->get_video_responses($_video['rid']);

@@ -19,7 +19,7 @@ class user_helper {
         $stmt = $this->__db->prepare("SELECT pfp FROM users WHERE username = :username")
         $stmt->bindParam(":username", $username);
         $stmt->execute();
-        while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $pfp = $row['pfp'];
         } // why the while statement? just remove it (i cant be bothered to)
 

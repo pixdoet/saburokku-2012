@@ -296,13 +296,12 @@
 												</div>
 											</div>
 											<?php 
-												$stmt = $__db->prepare("SELECT * FROM video_response WHERE toid = ? ORDER BY id DESC LIMIT 4");
-												$stmt->bind_param("s", $_GET['v']);
+												$stmt = $__db->prepare("SELECT * FROM video_response WHERE toid = :v ORDER BY id DESC LIMIT 4");
+												$stmt->bindParam(":v", $_GET['v']);
 												$stmt->execute();
-												$result = $stmt->get_result();
 											?>
 
-											<?php if($result->num_rows != 0) { ?>
+											<?php if($stmt->rowCount() != 0) { ?>
 												<div class="comments-section">
 													<a class="comments-section-see-all" href="/video_response_view_all?v=rLHU-_OhT8g">
 													see all
@@ -310,7 +309,7 @@
 													<h4>Video Responses</h4>
 													<ul class="video-list">
 													<?php 
-														while($video = $result->fetch_assoc()) { 
+														while($video = $stmt->fetch(PDO::FETCH_ASSOC)) { 
 															if($__video_h->video_exists($video['video'])) { 
 																$video = $__video_h->fetch_video_rid($video['video']);
 																$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
@@ -326,7 +325,7 @@
 															</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
 															</span><span dir="ltr" class="title" title="<?php echo $video['title']; ?>"><?php echo $video['title']; ?></span><span class="stat attribution">by <span class="yt-user-name " dir="ltr"><?php echo $video['author']; ?></span></span><span class="stat view-count"><?php echo $video['views']; ?> views</span></a>
 														</li>
-													<?php } } $stmt->close(); ?>
+													<?php } } ?>
 													</ul>
 												</div>
 											<?php } ?>
@@ -401,21 +400,13 @@
 												</div>
 												<ul class="comment-list" id="live_comments">
 														<?php
-														$stmt56 = $__db->prepare("SELECT * FROM comments WHERE toid = ? ORDER BY id DESC");
-														$stmt56->bind_param("s", $_video['rid']);
-														$stmt56->execute();
-														$result854 = $stmt56->get_result();
-														$result56 = $result854->num_rows;
-
 														$results_per_page = 20;
 
-														$stmt = $__db->prepare("SELECT * FROM comments WHERE toid = ? ORDER BY id DESC");
-														$stmt->bind_param("s", $_video['rid']);
+														$stmt = $__db->prepare("SELECT * FROM comments WHERE toid = :rid ORDER BY id DESC");
+														$stmt->bindParam(":rid", $_video['rid']);
 														$stmt->execute();
-														$result = $stmt->get_result();
-														$results = $result->num_rows;
 
-														$number_of_result = $result->num_rows;
+														$number_of_result = $stmt->rowCount();
 														$number_of_page = ceil ($number_of_result / $results_per_page);  
 
 														if (!isset ($_GET['page']) ) {  
@@ -426,14 +417,13 @@
 
 														$page_first_result = ($page - 1) * $results_per_page;  
 
-														$stmt->close();
-
-														$stmt = $__db->prepare("SELECT * FROM comments WHERE toid = ? ORDER BY id DESC LIMIT ?, ?");
-														$stmt->bind_param("sss", $_video['rid'], $page_first_result, $results_per_page);
+														$stmt = $__db->prepare("SELECT * FROM comments WHERE toid = :rid ORDER BY id DESC LIMIT :pfirst, :pper");
+														$stmt->bindParam(":rid", $_video['rid']);
+														$stmt->bindParam(":pfirst", $page_first_result);
+														$stmt->bindParam(":pper", $results_per_page);
 														$stmt->execute();
-														$result = $stmt->get_result();
 
-														while($comment = $result->fetch_assoc()) { 
+														while($comment = $stmt->fetch(PDO::FETCH_ASSOC))) { 
 													?>
 
 													<li class="comment yt-tile-default " data-author-viewing="" data-author-id="-uD01K8FQTeOSS5sniRFzQ" data-id="HdQrMeklJ_5hd_uPDRcvtdaMk2pMVS8d9sufcfiGx0U" data-score="0">
@@ -513,8 +503,7 @@
 												<?php
 													$stmt = $__db->prepare("SELECT * FROM videos ORDER BY rand() LIMIT 20");
 													$stmt->execute();
-													$result = $stmt->get_result();
-													while($video = $result->fetch_assoc()) {	
+													while($video = $stmt->fetch(PDO::FETCH_ASSOC)) {	
 														$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
 														$video['duration'] = $__time_h->timestamp($video['duration']);
 														$video['views'] = $__video_h->fetch_video_views($video['rid']);

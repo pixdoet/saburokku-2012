@@ -155,21 +155,14 @@
 								<div class="browse-collection  has-box-ad">
                                 <?php
                                     $search = $_SESSION['siteusername'];
-                                    $stmt56 = $__db->prepare("SELECT * FROM videos WHERE author = ? AND visibility = 'v'");
-                                    $stmt56->bind_param("s", $search);
-                                    $stmt56->execute();
-                                    $result854 = $stmt56->get_result();
-                                    $result56 = $result854->num_rows;
 
                                     $results_per_page = 12;
 
-                                    $stmt = $__db->prepare("SELECT * FROM videos WHERE author = ? ORDER BY id DESC");
-                                    $stmt->bind_param("s", $_SESSION['siteusername']);
+                                    $stmt = $__db->prepare("SELECT * FROM videos WHERE author = :username ORDER BY id DESC");
+                                    $stmt->bindParam(":username", $_SESSION['siteusername']);
                                     $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    $results = $result->num_rows;
 
-                                    $number_of_result = $result->num_rows;
+                                    $number_of_result = $stmt->rowCount();
                                     $number_of_page = ceil ($number_of_result / $results_per_page);  
 
                                     if (!isset ($_GET['page']) ) {  
@@ -179,14 +172,13 @@
                                     }  
 
                                     $page_first_result = ($page - 1) * $results_per_page;  
-
-                                    $stmt->close();
                                 ?>
                                 <?php 
-                                    $stmt6 = $__db->prepare("SELECT * FROM videos WHERE author = ? ORDER BY id DESC LIMIT ?, ?");
-                                    $stmt6->bind_param("sss", $search, $page_first_result, $results_per_page);
+                                    $stmt6 = $__db->prepare("SELECT * FROM videos WHERE author = :search ORDER BY id DESC LIMIT :pfirst, :pper");
+                                    $stmt6->bindParam(":search", $search);
+                                    $stmt6->bindParam(":pfirst", $page_first_result);
+                                    $stmt6->bindParam(":pper", $results_per_page);
                                     $stmt6->execute();
-                                    $result6 = $stmt6->get_result();
                                 ?>                    
                                 
                                 <div class="my_videos_ajax">
@@ -204,7 +196,7 @@
                                     </tr>
                                     
                                     <?php
-                                        while($video = $result6->fetch_assoc()) { 
+                                        while($video = $stmt->fetch(PDO::FETCH_ASSOC)) { 
                                             $video['video_responses'] = $__video_h->get_video_responses($video['rid']);
                                             $video['age'] = $__time_h->time_elapsed_string($video['publish']);		
                                             $video['duration'] = $__time_h->timestamp($video['duration']);
@@ -332,7 +324,7 @@
                                 </script>
 
                                 <?php 
-                                    if($result6->num_rows == 0) { echo "
+                                    if($stmt6->rowCount() == 0) { echo "
                                         <br>Welcome to your Video Manager! You can manage your uploaded videos here.<br>
                                         <a href=\"upload_video\">
                                             <button type=\"button\" class=\" yt-uix-button yt-uix-button-default\" role=\"button\">

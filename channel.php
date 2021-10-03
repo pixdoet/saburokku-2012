@@ -92,11 +92,12 @@
         //if(ifBlocked(@$_SESSION['siteusername'], $user['username'], $__db)) { $error = "This user has blocked you!"; $error['status'] = true; } 
 
         if(!isset($error['message'])) {
-            $stmt = $__db->prepare("INSERT INTO `profile_comments` (toid, author, comment) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $_user['username'], $_SESSION['siteusername'], $text);
-            $text = ($_POST['comment']);
+			$text = $_POST['comment'];
+            $stmt = $__db->prepare("INSERT INTO profile_comments (toid, author, comment) VALUES (:id, :username, :comment)");
+			$stmt->bindParam(":id", $_user['username']);
+			$stmt->bindParam(":username", $_SESSION['siteusername']);
+			$stmt->bindParam(":comment", $text);
             $stmt->execute();
-            $stmt->close();
 
             $_user_update_utils->update_comment_cooldown_time($_SESSION['siteusername']);
 
@@ -322,11 +323,10 @@
 													</div>
 													<ul class="gh-single-playlist">
                                                         <?php 
-                                                            $stmt = $__db->prepare("SELECT * FROM videos WHERE author = ? ORDER BY id DESC LIMIT 20");
-                                                            $stmt->bind_param("s", $_user['username']);
+                                                            $stmt = $__db->prepare("SELECT * FROM videos WHERE author = :username ORDER BY id DESC LIMIT 20");
+                                                            $stmt->bindParam(":username", $_user['username']);
                                                             $stmt->execute();
-                                                            $result = $stmt->get_result();
-                                                            while($video = $result->fetch_assoc()) { 
+                                                            while($video = $stmt->fetch(PDO::FETCH_ASSOC)) { 
                                                         ?>
 														<li class="blogger-video">
 															<div class="video yt-tile-visible">
