@@ -16,7 +16,7 @@
 		</a>
 	</div>
 	<?php } else { ?>
-	<div id="yt-masthead-user">
+	<div id="yt-masthead-user" style="position: relative;top: 4px;">
 		<span id="yt-masthead-user-displayname" dir="ltr" class="yt-valign-container" onclick="yt.www.masthead.toggleExpandedMasthead();">
 		<?php echo htmlspecialchars($_SESSION['siteusername']); ?>
 		</span>
@@ -29,19 +29,7 @@
 		<img src="/yt/imgbin/notification_icon.png" style="width: 22px;position: relative;left: -8px;" class="yt-uix-button-icon"></span>
 		</button>
 		<?php } ?>
-		<button onclick="yt.www.masthead.toggleExpandedMasthead();;return false;" class="yt-masthead-user-icon yt-uix-button yt-uix-button-default yt-uix-button-size-default" type="button" data-orientation="vertical" role="button">    <span class="yt-uix-button-content">
-		<span class="video-thumb  yt-thumb yt-thumb-27">
-		<span class="yt-thumb-square">
-		<span class="yt-thumb-clip">
-		<span class="yt-thumb-clip-inner">
-		<img alt="Thumbnail" src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($_SESSION['siteusername']); ?>" width="27">
-		<span class="vertical-align"></span>
-		</span>
-		</span>
-		</span>
-		</span>
-		</span>
-		</button>
+		<img onclick="yt.www.masthead.toggleExpandedMasthead();;return false;" alt="Thumbnail" src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($_SESSION['siteusername']); ?>" style="width:27px;height:27px;vertical-align:middle;">
 		<span id="yt-masthead-dropdown" onclick="yt.www.masthead.toggleExpandedMasthead();" class=""></span>
 	</div>
 	<?php } ?>
@@ -53,10 +41,7 @@
 				<div id="masthead-search-terms" class="masthead-search-terms-border" dir="ltr"><label><input id="masthead-search-term" autocomplete="off" class="search-term" name="search_query" value="" type="text" tabindex="1" onkeyup="goog.i18n.bidi.setDirAttribute(event,this)" title="Search"></label></div>
 			</form>
 		</div>
-	</div>
-</div>
-</div>
-</div>
+	</div></div>
 <?php if(isset($_SESSION['siteusername'])) { ?>
 <div id="masthead-expanded" class="hid" style="display: none;">
 	<div id="masthead-expanded-container" class="with-sandbar">
@@ -121,7 +106,7 @@
 						<a href="#" class="yt-uix-sessionlink" data-sessionlink="ei=nn0KUubpEcL8kwLQ5oGQDA&amp;feature=mhee">Subscriptions</a>
 					</li>
 					<li class="masthead-expanded-menu-item">
-						<a href="/user/<?php echo htmlspecialchars($_SESSION['siteusername']); ?>" class="yt-uix-sessionlink" data-sessionlink="ei=nn0KUubpEcL8kwLQ5oGQDA&amp;feature=mhee">SubRocks Settings</a>
+						<a href="/inbox/" class="yt-uix-sessionlink" data-sessionlink="ei=nn0KUubpEcL8kwLQ5oGQDA&amp;feature=mhee">Inbox</a>
 					</li>
 				</ul>
 			</div>
@@ -219,7 +204,6 @@
 		</div>
 		<div class="clear"></div>
 	</div>
-</div>
 <?php } ?>
 </div>
 <div id="alerts">
@@ -240,6 +224,16 @@
 		<div class="yt-alert-buttons"></div><div class="yt-alert-content" role="alert">    <span class="yt-alert-vertical-trick"></span>
 			<div class="yt-alert-message">
 				<?php echo htmlspecialchars($_GET['error']); ?>
+			</div>
+		</div></div></div>
+	<?php } ?>
+	<?php if(isset($_GET['success'])) { ?>
+		<div id="masthead_child_div"><div class="yt-alert yt-alert-default yt-alert-success ">  <div class="yt-alert-icon">
+			<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
+		</div>
+		<div class="yt-alert-buttons"></div><div class="yt-alert-content" role="alert">    <span class="yt-alert-vertical-trick"></span>
+			<div class="yt-alert-message">
+				<?php echo htmlspecialchars($_GET['success']); ?>
 			</div>
 		</div></div></div>
 	<?php } ?>

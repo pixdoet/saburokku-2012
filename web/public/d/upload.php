@@ -64,7 +64,7 @@
 
         /* Process the video... */
         $video_validation->video_processing_logs = shell_exec('
-            ' . $__server->ffmpeg_binary . ' -hide_banner -loglevel error -i "' . $video_properties->video_filename . '" -vcodec h264 -acodec aac -pix_fmt yuv420p -threads 2 -preset medium -vf "scale=-1:480,pad=ceil(iw/2)*2:ceil(ih/2)*2" -b:v 2500k "dynamic/videos/' . $video_properties->video_rid . '.mp4" 2>&1
+            ' . $__server->ffmpeg_binary . ' -hide_banner -loglevel error -i "' . $video_properties->video_filename . '" -vcodec h264 -acodec aac -pix_fmt yuv420p -threads 2 -preset medium -vf "scale=-1:480,pad=ceil(iw/2)*2:ceil(ih/2)*2" -b:v 1500k "dynamic/videos/' . $video_properties->video_rid . '.mp4" 2>&1
         ');
 
 

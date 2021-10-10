@@ -59,13 +59,14 @@
 								if(isset($_SESSION['siteusername'])) {
 								?>
 								<div style="/*! margin-top: 0px; *//*! margin-left: 10px; *//*! margin-bottom: 13px; */height: 99px;" class="guide-section feed-header channel first"><img alt="" src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($_SESSION['siteusername']); ?>" style="height: 88px;position: relative;top: 4px;left: 4px;" class="feed-header-thumb channel-thumb" width="88px"><div id="links" style="/*! margin-left: 5px; */position: relative;left: 13px;top: 7px;"><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
-							<a href="/user/<?php echo htmlspecialchars($_SESSION['siteusername']); ?>" style="color: inherit;">My channel
-							<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="see-more-arrow" alt=""></a>        
-							</div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
-							<a href="/my_videos" style="color: inherit;">Videos</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
-							<a href="/playlists" style="color: inherit;">Playlists</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
-							<a href="/logout" style="color: inherit;">Log Out</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
-							</div></div></div>
+								<a href="/user/<?php echo htmlspecialchars($_SESSION['siteusername']); ?>" style="color: inherit;">My channel
+								<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="see-more-arrow" alt=""></a>        
+								</div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
+								<a href="/my_videos" style="color: inherit;">Videos</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
+								<a href="/playlists" style="color: inherit;">Playlists</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
+								<a href="/logout" style="color: inherit;">Log Out</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
+								<a href="/inbox/" style="color: inherit;">Inbox</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
+								</div></div></div>
 
 								<div class="guide-section yt-uix-expander  ">
 								<h3 class="guide-item-container">

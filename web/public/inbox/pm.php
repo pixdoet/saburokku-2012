@@ -11,33 +11,6 @@
 <?php $__db_h = new db_helper(); ?>
 <?php $__time_h = new time_helper(); ?>
 <?php if(!isset($_SESSION['siteusername'])) { header("Location: /sign_in"); } ?>
-<?php
-    if($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $error = array();
-
-        if(!isset($_SESSION['siteusername'])){ $error['message'] = "You are not logged in"; $error['status'] = true; }
-        if(!$_POST['comment']){ $error['message'] = "Your description cannot be blank"; $error['status'] = true; }
-        if(empty(trim($_POST['title']))){ $error['message'] = "Your title cannot be blank"; $error['status'] = true; }
-        if(strlen($_POST['comment']) > 1000){ $error['message'] = "Your description must be shorter than 1000 characters"; $error['status'] = true; }
-        if($__user_h->if_cooldown($_SESSION['siteusername'])) { $error['message'] = "You are on a cooldown! Wait for a minute before making a playlist."; $error['status'] = true; }
-
-        if(!isset($error['message'])) {
-            $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
-            $result = '';
-            for ($i = 0; $i < 11; $i++)
-                $rid .= $characters[mt_rand(0, 63)];
-            $stmt = $__db->prepare("INSERT INTO playlists (title, description, rid, author) VALUES (:title, :desc, :rid, :username)");
-            $stmt->bindParam(":title", $_POST['title']);
-            $stmt->bindParam(":desc", $_POST['comment']);
-            $stmt->bindParam(":rid", $rid);
-            $stmt->bindParam(":username", $_SESSION['siteusername']);
-            $text = htmlspecialchars($_POST['comment']);
-            $stmt->execute();
-
-            $__user_u->update_cooldown_time($_SESSION['siteusername'], "cooldown_comment");
-        }
-    }
-?>
 <!DOCTYPE html>
 <html dir="ltr">
 	<head>
@@ -51,15 +24,13 @@
 		</script>
 		<link id="www-core-css" rel="stylesheet" href="/yt/cssbin/www-core-vfluMRDnk.css">
 		<link rel="stylesheet" href="/yt/cssbin/www-guide-vflx0V5Tq.css">
-        <link rel="stylesheet" href="/yt/cssbin/www-extra.css">
 		<link rel="stylesheet" href="/yt/cssbin/www-videos-nav-vflYGt27y.css">
+        <link rel="stylesheet" href="/yt/cssbin/www-extra.css">
 		<script src="//s.ytimg.com/yt/jsbin/www-browse-vflu1nggJ.js" data-loaded="true"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
-        <script>
-			if (window.yt.timing) {yt.timing.tick("ct");}   
-        </script> 
+		<script>
+			if (window.yt.timing) {yt.timing.tick("ct");}    
+		</script>
         <style>
             .master-myaccount-top {
                 border-bottom: 1px solid #CACACA;
@@ -163,13 +134,15 @@
 					<div id="alerts"></div>
 					<div id="masthead-subnav" class="yt-nav yt-nav-dark ">
 						<ul>
-							<li class=" selected">
+                            <a href="/my_videos">
+							<li>
 								<span class="yt-nav-item">
 								My Channel
 								</span>
 							</li>
-                            <a href="/inbox">
-                            <li class="">
+                            </a>
+                            <a href="/inbox/">
+                            <li class=" selected">
 								<span class="yt-nav-item">
 								Inbox
 								</span>
@@ -179,13 +152,15 @@
 					</div>
 					<div class="browse-container ytg-wide ytg-box no-stage browse-bg-gradient">
 						<div class="ytg-fl browse-content">
-                            <?php require($_SERVER['DOCUMENT_ROOT'] . "/s/mod/sidebar.php"); ?>
+                            <?php require($_SERVER['DOCUMENT_ROOT'] . "/s/mod/sidebar_inbox.php"); ?>
 							<div id="browse-main-column" style="float: right;margin: 0px 0 0 14px;" class="ytg-4col">
 								<div class="browse-collection  has-box-ad">
                                 <?php
+                                    $search = $_SESSION['siteusername'];
+
                                     $results_per_page = 12;
 
-                                    $stmt = $__db->prepare("SELECT * FROM playlists WHERE author = :username ORDER BY id DESC");
+                                    $stmt = $__db->prepare("SELECT * FROM pms WHERE touser = :username AND type = 'nm' ORDER BY id DESC");
                                     $stmt->bindParam(":username", $_SESSION['siteusername']);
                                     $stmt->execute();
 
@@ -199,126 +174,86 @@
                                     }  
 
                                     $page_first_result = ($page - 1) * $results_per_page;  
-                                ?>
-                                <?php 
-                                    $stmt6 = $__db->prepare("SELECT * FROM playlists WHERE author = :search ORDER BY id DESC LIMIT :pfirst, :pper");
-                                    $stmt6->bindParam(":search", $_SESSION['siteusername']);
+
+                                    $stmt6 = $__db->prepare("SELECT * FROM pms WHERE touser = :search AND type = 'nm' ORDER BY id DESC LIMIT :pfirst, :pper");
+                                    $stmt6->bindParam(":search", $search);
                                     $stmt6->bindParam(":pfirst", $page_first_result);
                                     $stmt6->bindParam(":pper", $results_per_page);
                                     $stmt6->execute();
                                 ?>                    
                                 
-                                <div id="ex1" class="modal">
-                                    <form method="post" enctype="multipart/form-data" id="submitform" style="top:0px;">
-                                        <div >
-                                            <h2>Create a Playlist</h2>
-                                            <span style="font-size: 11px;" class="grey-text">Playlists are still in a buggy state. Report bugs to the forums.</span><br>
-                                            <input placeholder="Playlist Title" type="text" name="title" style="width: 100%;" required="required" row="20"><br>
-                                        </div><br>
-                                        <div >
-                                            <textarea style="width: 100%;" id="com" placeholder="Description" name="comment"></textarea><br><br>
-                                            <input class="yt-uix-button yt-uix-button-default" type="submit" value="Create">
-                                        </div><br>
-                                    </form>
-                                </div>
-
-                                <a href="#ex1" rel="modal:open">
-                                    <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
-                                        Create Playlist
-                                    </button>
-                                </a><br><br>
-
                                 <div class="my_videos_ajax">
                                 <table style="width: 100%;">
                                     <tr>
                                         <!-- <th style="margin: 5px; width: 5%;"></th> -->
-                                        <th style="width: 80%;">
-                                            <small class="video-filter-options">
-                                                Sort by:  
-                                                    <a id="selector-title" onclick="changeFilter_Title();">Title</a> | 
-                                                    <a id="selector-time" onclick="changeFilter_Time();" class="selected">Time</a>
-                                            </small>
+                                        <th style="margin: 5px; width: 21%;">
+                                            From
                                         </th>
-                                        <th style="margin: 5px; width: 20%;"></th>
+                                        <th style="width: 69%;">
+                                            Message
+                                        </th>
+                                        <th style="margin: 5px; width: 20%;">
+                                            Date
+                                        </th>
                                     </tr>
                                     
                                     <?php
-                                        while($playlist = $stmt->fetch(PDO::FETCH_ASSOC)) { 
-                                            $playlist['videos'] = json_decode($playlist['videos']);
-                                            if($__video_h->video_exists(@$playlist['videos'][0])) {
-                                                if(count($playlist['videos']) != 0) {
-                                                    $video = $__video_h->fetch_video_rid($playlist['videos'][0]);
-                                                    $video['video_responses'] = $__video_h->get_video_responses($video['rid']);
-                                                    $video['age'] = $__time_h->time_elapsed_string($video['publish']);		
-                                                    $video['duration'] = $__time_h->timestamp($video['duration']);
-                                                    $video['views'] = $__video_h->fetch_video_views($video['rid']);
-                                                    $video['author'] = htmlspecialchars($video['author']);		
-                                                    $video['title'] = htmlspecialchars($video['title']);
-                                                    $video['description'] = $__video_h->shorten_description($video['description'], 50);
-                                                    $playlist['title'] = htmlspecialchars($playlist['title']);
-                                        ?> 
-                                        <tr style="margin-top: 5px;" id="videoslist">
-                                            <td class="video-manager-left">
+                                        while($inbox = $stmt->fetch(PDO::FETCH_ASSOC)) { 
+                                            if($__video_h->video_exists($inbox['video_attribute'])) {
+                                                $inbox['video'] = $__video_h->fetch_video_rid($inbox['video_attribute']);
+                                                $inbox['video_attr_exists'] = true;
+
+                                                $inbox['video']['age'] = $__time_h->time_elapsed_string($inbox['video']['publish']);		
+                                                $inbox['video']['duration'] = $__time_h->timestamp($inbox['video']['duration']);
+                                                $inbox['video']['views'] = $__video_h->fetch_video_views($inbox['video']['rid']);
+                                                $inbox['video']['author'] = htmlspecialchars($inbox['video']['author']);		
+                                                $inbox['video']['title'] = htmlspecialchars($inbox['video']['title']);
+                                                $inbox['video']['description'] = $__video_h->shorten_description($inbox['video']['description'], 50);
+                                            }
+                                    ?> 
+                                    <tr style="margin-top: 5px;" id="videoslist">
+                                            <!--
+                                            <?php if($inbox['readed'] == "n") { ?>
+                                                <a style="position:relative;top:7px;color: white;text-decoration: none;background-color: #d54343;padding: 7px;padding-left: 10px;margin-right: 12px;display: inline;" href="/inbox/">
+                                                NEW
+                                                </a>
+                                            <?php } ?>
+                                            -->
+                                        <td class="video-manager-stats" style="background: none;padding-left: 8px;font-size: 10px;">
+                                            <br>
+                                            <img style="width: 50px;height:50px;" src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($inbox['owner']); ?>">
+                                            <span style="display: inline-block; vertical-align:top;width: 87px;">
+                                                <b><a href="/user/<?php echo htmlspecialchars($inbox['owner']); ?>"><?php echo htmlspecialchars($inbox['owner']); ?></a></b><br>
+                                                <?php echo $__user_h->fetch_subs_count($inbox['owner']); ?> subscribers<br>
+                                                <?php echo $__user_h->fetch_user_videos($inbox['owner']); ?> videos published<br>
+                                            </span><br><br>
+                                            <a href="/inbox/compose?title=RE: <?php echo htmlspecialchars($inbox['subject']); ?>&to=<?php echo htmlspecialchars($inbox['owner']); ?>">
+                                                <button class="yt-uix-button yt-uix-button-default">
+                                                    Reply
+                                                </button>
+                                            </a>
+                                        </td>
+                                        <td class="video-manager-stats" style="background: none;padding-left: 8px;">
+                                            <h3><?php echo htmlspecialchars($inbox['subject']); ?></h3>
+                                            <?php echo $__video_h->shorten_description($inbox['message'], 300, true); ?>
+                                            <?php if($inbox['video_attr_exists']) { ?>
+                                                <hr>
                                                 <ul>
-                                                    <li class="video-list-item "><a href="/view_playlist?v=<?php echo $playlist['rid']; ?>" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $playlist['title']; ?>" data-thumb="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $video['duration']; ?></span>
+                                                    <li class="video-list-item "><a href="/watch?v=<?php echo $inbox['video']['rid']; ?>" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $inbox['video']['title']; ?>" data-thumb="/dynamic/thumbs/<?php echo $inbox['video']['thumbnail']; ?>" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $inbox['video']['duration']; ?></span>
                                                         <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="yuTBQ86r8o0" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
                                                         </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-                                                        </span><span dir="ltr" class="title" title="<?php echo $playlist['title']; ?>"><?php echo $playlist['title']; ?></span><span class="stat">by <span class="yt-user-name " dir="ltr"><?php echo $playlist['author']; ?></span></span><span class="stat view-count">  <span class="viewcount"><?php echo $video['views']; ?> views</span>
+                                                        </span><span dir="ltr" class="title" title="<?php echo $inbox['video']['title']; ?>"><?php echo $inbox['video']['title']; ?></span><span class="stat">by <span class="yt-user-name " dir="ltr"><?php echo $inbox['video']['author']; ?></span></span><span class="stat view-count">  <span class="viewcount"><?php echo $inbox['video']['views']; ?> views</span>
                                                         </span></a>
                                                     </li>
                                                 </ul>
-                                            </div>
-                                                
-                                            </td>
-                                            <td class="video-manager-stats" style="background: none;padding-left: 8px;">
-                                            <a href="/edit_playlist?id=<?php echo $playlist['rid']; ?>">
-                                                    <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
-                                                        Edit
-                                                    </button>
-                                                </a> 
-                                                <a href="/get/delete_playlist?id=<?php echo $playlist['rid']; ?>">
-                                                    <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
-                                                        Delete
-                                                    </button>
-                                                </a><br><br>
-
-                                                <span>
-                                                    <img src="/s/img/world.png"> <span style="font-size: 11px;position: relative;bottom: 2px;left: 5px;">Public</span>
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    <?php } } else {  ?>
-                                        <tr style="margin-top: 5px;" id="videoslist">
-                                            <td class="video-manager-left">
-                                                <ul>
-                                                    <li class="video-list-item "><a href="/view_playlist?v=<?php echo $playlist['rid']; ?>" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $playlist['title']; ?>" data-thumb="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $video['duration']; ?></span>
-                                                        <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="yuTBQ86r8o0" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
-                                                        </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-                                                        </span><span dir="ltr" class="title" title="<?php echo $playlist['title']; ?>"><?php echo $playlist['title']; ?></span><span class="stat">by <span class="yt-user-name " dir="ltr"><?php echo $playlist['author']; ?></span></span><span class="stat view-count">  <span class="viewcount">0 views</span>
-                                                        </span></a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                                
-                                            </td>
-                                            <td class="video-manager-stats" style="background: none;padding-left: 8px;">
-                                            <a href="/edit_playlist?id=<?php echo $playlist['rid']; ?>">
-                                                    <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
-                                                        Edit
-                                                    </button>
-                                                </a> 
-                                                <a href="/get/delete_playlist?id=<?php echo $playlist['rid']; ?>">
-                                                    <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
-                                                        Delete
-                                                    </button>
-                                                </a><br><br>
-
-                                                <span>
-                                                    <img src="/s/img/world.png"> <span style="font-size: 11px;position: relative;bottom: 2px;left: 5px;">Public</span>
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    <?php } } ?>
+                                            <?php } ?>
+                                        </td>
+                                        <td class="video-manager-stats" style="background: none;padding-left: 8px;font-size: 10px;">
+                                            <br>
+                                            <?php echo date("M d, Y", strtotime($inbox['date'])); ?> at <?php echo date("h:m a", strtotime($inbox['date'])); ?>
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
                                 </table> 
                                 </div>
 
@@ -326,42 +261,20 @@
                                     <div>
                                         <img src="/static/img/spinner.gif" style="width:16px;vertical-align: middle;"> Loading...
                                     </div>
-                                </center>
+                                </center><br>
 
                                 <?php for($page = 1; $page<= $number_of_page; $page++) { ?>
-                                    <button class="yt-uix-button yt-uix-button-default" onclick="ajax_fetch_videomanager(<?php echo $page; ?>)"><?php echo $page; ?></button>
+                                    <button class="yt-uix-button yt-uix-button-default" onclick="ajax_fetch(<?php echo $page; ?>)"><?php echo $page; ?></button>
                                 <?php } ?>   
 
                                 <script>
-                                    var currentfilter = 'time';
-
-                                    function changeFilter_Title() {
-                                        currentfilter = 'title';
-                                        $("#selector-title").addClass("selected");
-                                        $("#selector-time").removeClass("selected");
-
-                                        console.log(currentfilter);
-                                        
-                                        ajax_fetch_videomanager(1);
-                                    }
-
-                                    function changeFilter_Time() {
-                                        currentfilter = 'time';
-                                        $("#selector-title").removeClass("selected");
-                                        $("#selector-time").addClass("selected");
-
-                                        console.log(currentfilter);
-
-                                        ajax_fetch_videomanager(1);
-                                    }
-
-                                    function ajax_fetch_videomanager(page) {
+                                    function ajax_fetch(page) {
                                         $(".loading_comm_pagination").show();
                                         $(".my_videos_ajax").fadeOut(10);
                                         $(".my_videos_ajax").html("")
 
                                         $.ajax({
-                                            url: '/playlists_ajax?filter=' + currentfilter + '&page=' + page,
+                                            url: '/inbox_ajax?filter=pm&page=' + page,
                                             method: 'GET'
                                         })
 
@@ -375,7 +288,7 @@
 
                                 <?php 
                                     if($stmt6->rowCount() == 0) { echo "
-                                        <br>Welcome to your playlists! You can make collections of videos for you to share with others.<br>
+                                        You currently have no personal messages in your inbox.
                                     "; 
                                 } ?>
 								</div>
@@ -523,6 +436,7 @@
 			<!-- end pagebottom -->
 		</div>
 		<!-- end page -->
+        <script id="www-core-js" src="/yt/jsbin/www-core-vfl1pq97W.js" data-loaded="true"></script>
 		<script>yt.www.thumbnaildelayload.init(0);</script>
 		<script>
 			yt.setMsg({
