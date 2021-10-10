@@ -46,6 +46,7 @@
         else return false;
     }
 
+    $_user['subscribed'] = $__user_h->if_subscribed(@$_SESSION['siteusername'], $_user['username']);
     $_user['subscribers'] = $__user_h->fetch_subs_count($_user['username']);
     $_user['videos'] = $__user_h->fetch_user_videos($_user['username']);
     $_user['favorites'] = $__user_h->fetch_user_favorites($_user['username']);
@@ -66,7 +67,7 @@
     $_user['2009_bgcolor'] = substr($_user['2009_bgcolor'], 0, 7);
 
     $_user['genre'] = strtolower($_user['genre']);
-	$_user['subscribed'] = $__user_h->if_subscribed(@$_SESSION['siteusername'], $_user['username']);
+    $_user['subscribed'] = $__user_h->if_subscribed(@$_SESSION['siteusername'], $_user['username']);
 
     if(!check_valid_colorhex($_user['primary_color']) && strlen($_user['primary_color']) != 6) { $_user['primary_color'] = ""; }
     if(!check_valid_colorhex($_user['secondary_color']) && strlen($_user['secondary_color']) != 6) { $_user['secondary_color'] = ""; }
@@ -119,7 +120,6 @@
 		</script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<link id="www-core-css" rel="stylesheet" href="/yt/cssbin/www-core-vfluMRDnk.css">
-		<script src="/s/js/alert.js"></script>
 		<link rel="stylesheet" href="/yt/cssbin/www-guide-vflx0V5Tq.css">
         <link rel="stylesheet" href="/yt/cssbin/www-channels3-vfl-wJB5W.css">
         <link rel="stylesheet" href="/yt/cssbin/www-the-rest-vflNb6rAI.css">
@@ -144,7 +144,7 @@
 				<!-- begin content -->
 				<?php if(isset($_SESSION['siteusername']) && $_user['username'] == $_SESSION['siteusername']) { ?>
 					<div class="channel_customization"><?php echo require($_SERVER['DOCUMENT_ROOT'] . "/s/mod/channel_customization.php"); ?></div>
-				<?php } ?>
+				<?php } ?> 
 				<?php
 					if(empty(trim($_user['bio'])))
 						$_user['bio'] = "This user has no description.";
@@ -203,15 +203,7 @@
 											<div class="upper-left-section enable-fancy-subscribe-button">
 												<?php if($_user['username'] != @$_SESSION['siteusername']) { ?>
 													<div class="yt-subscription-button-hovercard yt-uix-hovercard">
-														<button 
-															href="#" 
-															onclick=";subscribe();return false;" 
-															title="" 
-															id="subscribe-button"
-															type="button" 
-															class="yt-subscription-button <?php if($_user['subscribed']) { echo "subscribed "; } ?>  yt-uix-button yt-uix-button-subscription yt-uix-tooltip" 
-															role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-subscribe" 
-															src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></span><span class="yt-uix-button-content">  <span class="subscribe-label">Subscribe</span>
+														<button href="https://accounts.google.com/ServiceLogin?uilel=3&amp;service=youtube&amp;passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dsubscribe%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252Fuser%252F<?php echo htmlspecialchars($_user['username']); ?>%253Ffeature%253Dg-logo-xit&amp;hl=en_US&amp;ltmpl=sso" onclick=";window.location.href=this.getAttribute('href');return false;" title="" type="button" class="yt-subscription-button subscription-button-with-recommended-channels   yt-uix-button yt-uix-button-subscription yt-uix-tooltip" data-enable-hovercard="true" data-subscription-value="UCIwFjwMjI0y7PDBVEO9-bkQ" data-force-position="" data-position="" data-subscription-feature="channels3" data-subscription-type="channel" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></span><span class="yt-uix-button-content">  <span class="subscribe-label">Subscribe</span>
 														<span class="subscribed-label">Subscribed</span>
 														<span class="unsubscribe-label">Unsubscribe</span>
 														</span></button>
@@ -242,12 +234,12 @@
 										</div>
 										<div class="channel-horizontal-menu clearfix">
 											<ul>
-												<li class="selected">
+												<li>
 													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/featured" class="gh-tab-100">
 													Featured
 													</a>
 												</li>
-												<li>
+												<li class="selected">
 													<a href="/channel_feed?n=<?php echo htmlspecialchars($_user['username']); ?>" class="gh-tab-102">
 													Feed
 													</a>
@@ -280,91 +272,198 @@
 								<div class="channel-tab-content channel-layout-two-column selected blogger-template">
 									<div class="tab-content-body">
 										<div class="primary-pane">
-                                            <?php if($_user['featured'] != false && $__video_h->video_exists($_user['featured'])) { ?>
-											<div class="channels-featured-video channel-module yt-uix-c3-module-container has-visible-edge">
-												<div class="module-view featured-video-view-module">
-													<div class="channels-video-player " data-swf-config="{&quot;assets&quot;: {&quot;html&quot;: &quot;\/html5_player_template&quot;, &quot;css&quot;: &quot;http:\/\/s.ytimg.com\/yt\/cssbin\/www-player-vfllhw7HB.css&quot;, &quot;js&quot;: &quot;http:\/\/s.ytimg.com\/yt\/jsbin\/html5player-vflzTrRqK.js&quot;}, &quot;url&quot;: &quot;http:\/\/s.ytimg.com\/yt\/swfbin\/watch_as3-vflbPspVE.swf&quot;, &quot;min_version&quot;: &quot;8.0.0&quot;, &quot;args&quot;: {&quot;ttsurl&quot;: &quot;http:\/\/www.youtube.com\/api\/timedtext?sparams=asr_langs%2Ccaps%2Cv%2Cexpire\u0026asr_langs=en%2Cko%2Cja%2Ces\u0026v=/watch?v=<?php echo $video['rid']; ?>\u0026caps=asr\u0026expire=1339746882\u0026key=yttt1\u0026signature=A1B858FF427B45672676C7403417ED1F4091A806.C347A6021C0F843E46F2056AEBA38FC93A0A47B8\u0026hl=en_US&quot;, &quot;el&quot;: &quot;profilepage&quot;, &quot;fexp&quot;: &quot;904001,907342,904824,910206,908620,907217,907335,921602,919306,922600,919316,920704,912804,913542,919324,912706&quot;, &quot;url_encoded_fmt_stream_map&quot;: &quot;url=http%3A%2F%2Fo-o.preferred.nuq04s10.v1.lscache4.c.youtube.com%2Fvideoplayback%3Fupn%3D_7WL7XeDtjs%26sparams%3Dcp%252Cid%252Cip%252Cipbits%252Citag%252Cratebypass%252Csource%252Cupn%252Cexpire%26fexp%3D904001%252C907342%252C904824%252C910206%252C908620%252C907217%252C907335%252C921602%252C919306%252C922600%252C919316%252C920704%252C912804%252C913542%252C919324%252C912706%26ms%3Dau%26itag%3D44%26ip%3D207.0.0.0%26signature%3D9B9B5ECF02F2F66BDCCB0ACED26D3406F9F83241.1B2CC833461E3D2C4D081B7DFBC65B0948C61FB9%26sver%3D3%26mt%3D1339721111%26ratebypass%3Dyes%26source%3Dyoutube%26expire%3D1339743583%26key%3Dyt1%26ipbits%3D8%26cp%3DU0hSTldPUV9NTUNOMl9PSVVGOmdTcVlPRFNNTEdM%26id%3D56ffd0bfee85d71f\u0026quality=large\u0026fallback_host=tc.v1.cache4.c.youtube.com\u0026type=video%2Fwebm%3B+codecs%3D%22vp8.0%2C+vorbis%22\u0026itag=44,url=http%3A%2F%2Fo-o.preferred.nuq04s10.v14.lscache1.c.youtube.com%2Fvideoplayback%3Fupn%3D_7WL7XeDtjs%26sparams%3Dalgorithm%252Cburst%252Ccp%252Cfactor%252Cid%252Cip%252Cipbits%252Citag%252Csource%252Cupn%252Cexpire%26fexp%3D904001%252C907342%252C904824%252C910206%252C908620%252C907217%252C907335%252C921602%252C919306%252C922600%252C919316%252C920704%252C912804%252C913542%252C919324%252C912706%26mt%3D1339721111%26ms%3Dau%26algorithm%3Dthrottle-factor%26itag%3D35%26ip%3D207.0.0.0%26burst%3D40%26sver%3D3%26signature%3DB702D7CA72653169BDC2C945B5A35F4A23A3FEBF.ACC660CDAB11901FF8D3DA8D384D61F0AB0F0125%26source%3Dyoutube%26expire%3D1339743583%26key%3Dyt1%26ipbits%3D8%26factor%3D1.25%26cp%3DU0hSTldPUV9NTUNOMl9PSVVGOmdTcVlPRFNNTEdM%26id%3D56ffd0bfee85d71f\u0026quality=large\u0026fallback_host=tc.v14.cache1.c.youtube.com\u0026type=video%2Fx-flv\u0026itag=35,url=http%3A%2F%2Fo-o.preferred.nuq04s10.v24.lscache3.c.youtube.com%2Fvideoplayback%3Fupn%3D_7WL7XeDtjs%26sparams%3Dcp%252Cid%252Cip%252Cipbits%252Citag%252Cratebypass%252Csource%252Cupn%252Cexpire%26fexp%3D904001%252C907342%252C904824%252C910206%252C908620%252C907217%252C907335%252C921602%252C919306%252C922600%252C919316%252C920704%252C912804%252C913542%252C919324%252C912706%26ms%3Dau%26itag%3D43%26ip%3D207.0.0.0%26signature%3D9FABDD8C013AA137B87DF2D154D1B90E6827A2A3.880FECDEC066236D85FCF223CF472B62B8F9B3A4%26sver%3D3%26mt%3D1339721111%26ratebypass%3Dyes%26source%3Dyoutube%26expire%3D1339743583%26key%3Dyt1%26ipbits%3D8%26cp%3DU0hSTldPUV9NTUNOMl9PSVVGOmdTcVlPRFNNTEdM%26id%3D56ffd0bfee85d71f\u0026quality=medium\u0026fallback_host=tc.v24.cache3.c.youtube.com\u0026type=video%2Fwebm%3B+codecs%3D%22vp8.0%2C+vorbis%22\u0026itag=43,url=http%3A%2F%2Fo-o.preferred.nuq04s10.v3.lscache7.c.youtube.com%2Fvideoplayback%3Fupn%3D_7WL7XeDtjs%26sparams%3Dalgorithm%252Cburst%252Ccp%252Cfactor%252Cid%252Cip%252Cipbits%252Citag%252Csource%252Cupn%252Cexpire%26fexp%3D904001%252C907342%252C904824%252C910206%252C908620%252C907217%252C907335%252C921602%252C919306%252C922600%252C919316%252C920704%252C912804%252C913542%252C919324%252C912706%26mt%3D1339721111%26ms%3Dau%26algorithm%3Dthrottle-factor%26itag%3D34%26ip%3D207.0.0.0%26burst%3D40%26sver%3D3%26signature%3D1BA326B784DAA9F62FD789CBB5C2FABFCD5D351C.C4618E3AB2AB08C61C6A982A36F405DA886B5D5A%26source%3Dyoutube%26expire%3D1339743583%26key%3Dyt1%26ipbits%3D8%26factor%3D1.25%26cp%3DU0hSTldPUV9NTUNOMl9PSVVGOmdTcVlPRFNNTEdM%26id%3D56ffd0bfee85d71f\u0026quality=medium\u0026fallback_host=tc.v3.cache7.c.youtube.com\u0026type=video%2Fx-flv\u0026itag=34,url=http%3A%2F%2Fo-o.preferred.nuq04s10.v14.lscache1.c.youtube.com%2Fvideoplayback%3Fupn%3D_7WL7XeDtjs%26sparams%3Dcp%252Cid%252Cip%252Cipbits%252Citag%252Cratebypass%252Csource%252Cupn%252Cexpire%26fexp%3D904001%252C907342%252C904824%252C910206%252C908620%252C907217%252C907335%252C921602%252C919306%252C922600%252C919316%252C920704%252C912804%252C913542%252C919324%252C912706%26ms%3Dau%26itag%3D18%26ip%3D207.0.0.0%26signature%3D8806EA8FAE16557A2F9732068442133EA0A0760F.D91694A47E6B0BF627965CDA46010F36105A28FE%26sver%3D3%26mt%3D1339721111%26ratebypass%3Dyes%26source%3Dyoutube%26expire%3D1339743583%26key%3Dyt1%26ipbits%3D8%26cp%3DU0hSTldPUV9NTUNOMl9PSVVGOmdTcVlPRFNNTEdM%26id%3D56ffd0bfee85d71f\u0026quality=medium\u0026fallback_host=tc.v14.cache1.c.youtube.com\u0026type=video%2Fmp4%3B+codecs%3D%22avc1.42001E%2C+mp4a.40.2%22\u0026itag=18,url=http%3A%2F%2Fo-o.preferred.nuq04s10.v4.lscache1.c.youtube.com%2Fvideoplayback%3Fupn%3D_7WL7XeDtjs%26sparams%3Dalgorithm%252Cburst%252Ccp%252Cfactor%252Cid%252Cip%252Cipbits%252Citag%252Csource%252Cupn%252Cexpire%26fexp%3D904001%252C907342%252C904824%252C910206%252C908620%252C907217%252C907335%252C921602%252C919306%252C922600%252C919316%252C920704%252C912804%252C913542%252C919324%252C912706%26mt%3D1339721111%26ms%3Dau%26algorithm%3Dthrottle-factor%26itag%3D5%26ip%3D207.0.0.0%26burst%3D40%26sver%3D3%26signature%3D011CB6739AB60ED79D032DE2F62EB016D8A8E462.C2C0ABE42F26DBA18F2BC6E0D074EB99A95C0DF0%26source%3Dyoutube%26expire%3D1339743583%26key%3Dyt1%26ipbits%3D8%26factor%3D1.25%26cp%3DU0hSTldPUV9NTUNOMl9PSVVGOmdTcVlPRFNNTEdM%26id%3D56ffd0bfee85d71f\u0026quality=small\u0026fallback_host=tc.v4.cache1.c.youtube.com\u0026type=video%2Fx-flv\u0026itag=5,url=http%3A%2F%2Fo-o.preferred.nuq04s10.v12.lscache3.c.youtube.com%2Fvideoplayback%3Fupn%3D_7WL7XeDtjs%26sparams%3Dalgorithm%252Cburst%252Ccp%252Cfactor%252Cid%252Cip%252Cipbits%252Citag%252Csource%252Cupn%252Cexpire%26fexp%3D904001%252C907342%252C904824%252C910206%252C908620%252C907217%252C907335%252C921602%252C919306%252C922600%252C919316%252C920704%252C912804%252C913542%252C919324%252C912706%26mt%3D1339721111%26ms%3Dau%26algorithm%3Dthrottle-factor%26itag%3D36%26ip%3D207.0.0.0%26burst%3D40%26sver%3D3%26signature%3D988FDD37CBA8DB74C1148EE17921D8549434297C.A2C1796F2BA0427C9FE370BFB6B3B09BA1D81B07%26source%3Dyoutube%26expire%3D1339743583%26key%3Dyt1%26ipbits%3D8%26factor%3D1.25%26cp%3DU0hSTldPUV9NTUNOMl9PSVVGOmdTcVlPRFNNTEdM%26id%3D56ffd0bfee85d71f\u0026quality=small\u0026fallback_host=tc.v12.cache3.c.youtube.com\u0026type=video%2F3gpp\u0026itag=36&quot;, &quot;allow_embed&quot;: 1, &quot;vq&quot;: &quot;auto&quot;, &quot;account_playback_token&quot;: &quot;&quot;, &quot;allow_ratings&quot;: 1, &quot;keywords&quot;: &quot;Rehearsal,Dance,justin,bieber,believe,as,long,you,love,me,rodney,jerkins,pattie,mallette,jeremy,dad,mom,scooter,braun,island,def,jam,usher,rbmg,making,of,the,album,webisode,june,19th,19,new,amazing,song,big,sean,hit,record,<?php echo htmlspecialchars($_user['username']); ?>,always,still,studio,singing,kuk,harrell,producer,sing,boy,guy,man,smash,single,nick,demoura,dancers,sweat,beliebers,hard,work,tour,band&quot;, &quot;cc3_module&quot;: &quot;http:\/\/s.ytimg.com\/yt\/swfbin\/subtitles3_module-vflu_Qeod.swf&quot;, &quot;track_embed&quot;: 0, &quot;is_purchased&quot;: false, &quot;ps&quot;: &quot;default&quot;, &quot;fmt_list&quot;: &quot;44\/854x480\/99\/0\/0,35\/854x480\/9\/0\/115,43\/640x360\/99\/0\/0,34\/640x360\/9\/0\/115,18\/640x360\/9\/0\/115,5\/320x240\/7\/0\/0,36\/320x240\/99\/0\/0&quot;, &quot;author&quot;: &quot;<?php echo htmlspecialchars($_user['username']); ?>&quot;, &quot;muted&quot;: &quot;0&quot;, &quot;cc_module&quot;: &quot;http:\/\/s.ytimg.com\/yt\/swfbin\/subtitle_module-vflq8KnSi.swf&quot;, &quot;length_seconds&quot;: 82, &quot;feature&quot;: &quot;g-logo-xit&quot;, &quot;enablejsapi&quot;: 1, &quot;rel&quot;: 0, &quot;plid&quot;: &quot;AATCeEL9eg3Ls9t-&quot;, &quot;cc_font&quot;: &quot;Arial Unicode MS, arial, verdana, _sans&quot;, &quot;ftoken&quot;: &quot;&quot;, &quot;sdetail&quot;: &quot;f:g-logo-xit,p:\/&quot;, &quot;status&quot;: &quot;ok&quot;, &quot;cc_asr&quot;: 1, &quot;watermark&quot;: &quot;,http:\/\/s.ytimg.com\/yt\/img\/watermark\/youtube_watermark-vflHX6b6E.png,http:\/\/s.ytimg.com\/yt\/img\/watermark\/youtube_hd_watermark-vflAzLcD6.png&quot;, &quot;sourceid&quot;: &quot;y&quot;, &quot;timestamp&quot;: 1339721682, &quot;has_cc&quot;: true, &quot;view_count&quot;: 2600, &quot;quality_cap&quot;: &quot;highres&quot;, &quot;hl&quot;: &quot;en_US&quot;, &quot;tmi&quot;: &quot;1&quot;, &quot;no_get_video_log&quot;: &quot;1&quot;, &quot;eurl&quot;: &quot;http:\/\/www.youtube.com\/user\/<?php echo htmlspecialchars($_user['username']); ?>&quot;, &quot;iurl&quot;: &quot;http:\/\/i3.ytimg.com\/vi\//watch?v=<?php echo $video['rid']; ?>\/hqdefault.jpg&quot;, &quot;endscreen_module&quot;: &quot;http:\/\/s.ytimg.com\/yt\/swfbin\/endscreen-vflJBKwqC.swf&quot;, &quot;referrer&quot;: &quot;http:\/\/www.youtube.com\/&quot;, &quot;avg_rating&quot;: 4.97805486284, &quot;video_id&quot;: &quot;/watch?v=<?php echo $video['rid']; ?>&quot;, &quot;sendtmp&quot;: &quot;1&quot;, &quot;sk&quot;: &quot;bwv_lGOGF4u1g0p7puy7ERICN8NZ5cVFC&quot;, &quot;is_video_preview&quot;: false, &quot;token&quot;: &quot;vjVQa1PpcFMSYb-unvOiIgSL8pW9tObJUMfrEc1mxfE=&quot;, &quot;thumbnail_url&quot;: &quot;http:\/\/i3.ytimg.com\/vi\//watch?v=<?php echo $video['rid']; ?>\/default.jpg&quot;, &quot;iurlsd&quot;: &quot;http:\/\/i3.ytimg.com\/vi\//watch?v=<?php echo $video['rid']; ?>\/sddefault.jpg&quot;, &quot;autoplay&quot;: &quot;1&quot;}, &quot;url_v9as2&quot;: &quot;http:\/\/s.ytimg.com\/yt\/swfbin\/cps-vflhvG6F4.swf&quot;, &quot;params&quot;: {&quot;allowscriptaccess&quot;: &quot;always&quot;, &quot;allowfullscreen&quot;: &quot;true&quot;, &quot;bgcolor&quot;: &quot;#000000&quot;}, &quot;attrs&quot;: {&quot;width&quot;: &quot;640&quot;, &quot;id&quot;: &quot;movie_player&quot;, &quot;height&quot;: &quot;390&quot;}, &quot;url_v8&quot;: &quot;http:\/\/s.ytimg.com\/yt\/swfbin\/cps-vflhvG6F4.swf&quot;, &quot;html5&quot;: false}" data-video-id="/watch?v=<?php echo $video['rid']; ?>">
-													</div>
-													<div class="channels-featured-video-details yt-tile-visible clearfix">
-														<h3 class="title">
-															<a href="/watch?v=<?php echo $video['rid']; ?>">
-															<?php echo htmlspecialchars($video['title']); ?>
-															</a>
-															<div class="view-count-and-actions">
-																<div class="view-count">
-																	<span class="count">
-																	<?php echo $__video_h->fetch_video_views($video['rid']); ?>
-																	</span>
-																	views
-																</div>
-															</div>
-														</h3>
-														<p class="channels-featured-video-metadata">
-															<span>by <?php echo htmlspecialchars($_user['username']); ?></span>
-															<span class="created-date"><?php echo $__time_h->time_elapsed_string($video['publish']); ?></span>
-														</p>
-													</div>
-												</div>
-											</div>
-                                            <?php } ?>
-											<div class="single-playlist channel-module yt-uix-c3-module-container">
-												<div class="module-view single-playlist-view-module">
-													<div class="blogger-playall">
-                                                        <!--
-                                                            <a class="yt-playall-link yt-playall-link-default " href="/watch?v=<?php echo $video['rid']; ?>&amp;list=UUIwFjwMjI0y7PDBVEO9-bkQ&amp;feature=plcp">
-                                                            <img class="small-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-                                                            Play all
-                                                            </a>
-                                                        -->
-													</div>
-													<div class="playlist-info">
-														<h2>Uploaded videos</h2>
-														<div class="yt-horizontal-rule "><span class="first"></span><span class="second"></span><span class="third"></span></div>
-														<?php if($_user['videos'] == 0) { ?>
-															<h4>This user has not uploaded a video yet.</h4>
-														<?php } ?>
-													</div>
-													<ul class="gh-single-playlist">
-                                                        <?php 
-                                                            $stmt = $__db->prepare("SELECT * FROM videos WHERE author = :username ORDER BY id DESC LIMIT 20");
-                                                            $stmt->bindParam(":username", $_user['username']);
-                                                            $stmt->execute();
-                                                            while($video = $stmt->fetch(PDO::FETCH_ASSOC)) { 
-                                                        ?>
-														<li class="blogger-video">
-															<div class="video yt-tile-visible">
-																<a href="/watch?v=<?php echo $video['rid']; ?>">
-																<span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-288 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" alt="Thumbnail" width="288"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $__time_h->timestamp($video['duration']); ?></span>
-																<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="/watch?v=<?php echo $video['rid']; ?>" role="button"><span class="yt-uix-button-content">  <span class="addto-label">
-																Watch Later
-																</span>
-																<span class="addto-label-error" style="display: none;">
-																Error
-																</span>
-																<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
-																</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-																</span>
-																<span class="video-item-content">
-																<span class="video-overview">
-																<span class="title video-title" title="<?php echo htmlspecialchars($video['title']); ?>"><?php echo htmlspecialchars($video['title']); ?></span>
-																</span>
-																<span class="video-details">
-																<span class="yt-user-name video-owner" dir="ltr"><?php echo htmlspecialchars($_user['username']); ?></span>
-																<span class="video-view-count">
-																<?php echo $__video_h->fetch_video_views($video['rid']); ?> views
-																</span>
-																<span class="video-time-published"><?php echo $__time_h->time_elapsed_string($video['publish']); ?></span>
-																<span class="video-item-description"><?php echo $__video_h->shorten_description($video['description'], 100); ?></span>
-																</span>
-																</span>
-																</a>
-															</div>
-														</li>
-                                                        <?php } ?>
-													</ul>
-												</div>
-											</div>
-										</div>
+                                            <div class="channel-activity-feeds " data-module-id="10500">
+                                                <div class="activity-feeds-container">
+                                                    <div class="activity-feeds-header clearfix">
+                                                        <ul>
+                                                            <li class="user-feed-filter selected">
+                                                                <a href="/user/Macbarbie07/feed?filter=2">
+                                                                Activity
+                                                                </a>
+                                                            </li>
+                                                            <li class="user-feed-filter ">
+                                                                <a href="/user/Macbarbie07/feed?filter=1">
+                                                                Comments
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div id="channel-feed-post-form">
+                                                    </div>
+                                                    <div class="yt-horizontal-rule channel-section-hr"><span class="first"></span><span class="second"></span><span class="third"></span></div>
+                                                    <div class="activity-feed">
+                                                        <div class="feed-list-container">
+                                                            <div class="feed-item-list">
+                                                                <div>
+                                                                    <?php 
+                                                                        $stmt = $__db->prepare("select 
+																		t1.date, 
+																		t1.comment, 
+																		t1.author, 
+																		t1.id,
+																		t1.toid
+																	  FROM 
+																		`comments` as t1 
+																	  WHERE
+																		t1.author = :comment_username
+																	  UNION ALL 
+																	  select 
+																		t2.publish, 
+																		t2.description, 
+																		t2.author, 
+																		t2.rid,
+																		t2.visibility
+																	  FROM 
+																		`videos` as t2
+																	  WHERE
+																		t2.author = :videos_username
+																	  ORDER BY 
+																		`date` DESC;");
+                                                                        $stmt->bindParam(":comment_username", $_user['username']);
+																		$stmt->bindParam(":videos_username", $_user['username']);
+                                                                        $stmt->execute();
+                                                                        while($content = $stmt->fetch(PDO::FETCH_ASSOC)) { 
+																			if((int)$content['id']) {
+																				$content = $__video_h->fetch_comment_id($content['id']);
+																				$content['video'] = $__video_h->fetch_video_rid($content['toid']);
+																				$content['type'] = "comment";
+																			} else {
+																				$content = $__video_h->fetch_video_rid($content['id']);
+																				$content['type'] = "video";
+																			}
+
+																			if($content['type'] == "video") {
+                                                                    ?>
+                                                                    <div class="feed-item-container" data-channel-key="UCc6W7efUSkd9YYoxOnctlFg">
+                                                                        <a href="/user/<?php echo htmlspecialchars($content['author']); ?>?feature=plcp" class="feed-author-bubble " title="<?php echo htmlspecialchars($content['author']); ?>">  <span class="feed-item-author">
+                                                                        <span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo htmlspecialchars($content['author']); ?>" data-thumb="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($content['author']); ?>" width="28"><span class="vertical-align"></span></span></span></span>
+                                                                        </span>
+                                                                        </a>
+                                                                        <div class="feed-item-main">
+                                                                            <div class="feed-item-header">
+                                                                                <span class="feed-item-actions-line ">
+                                                                                <span class="feed-item-owner">    <a href="/user/<?php echo htmlspecialchars($content['author']); ?>?feature=plcp" class="yt-user-name " dir="ltr"><?php echo htmlspecialchars($content['author']); ?></a>
+                                                                                </span>
+                                                                                uploaded a video
+                                                                                <span class="feed-item-time">
+                                                                                <?php echo $__time_h->time_elapsed_string($content['publish']); ?>
+                                                                                </span>
+                                                                                </span>
+                                                                            </div>
+                                                                            <div class="feed-item-content-wrapper clearfix">
+                                                                                <div class="feed-item-thumb">
+                                                                                    <a class="ux-thumb-wrap contains-addto  yt-uix-contextlink  yt-uix-sessionlink" data-sessionlink="context=C48232d5ADvjVQa1PpcFMDeAifI2yCLsflFJ-7L8wLgQIeQbQxzjo%3D" href="/watch?v=<?php echo htmlspecialchars($content['rid']); ?>&amp;feature=plcp">
+                                                                                    <span class="video-thumb ux-thumb yt-thumb-default-185 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="/dynamic/thumbs/<?php echo htmlspecialchars($content['thumbnail']); ?>" width="185"><span class="vertical-align"></span></span></span></span>
+                                                                                    <span class="video-time"><?php echo $__time_h->timestamp($content['duration']); ?></span>
+                                                                                    <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="<?php echo htmlspecialchars($content['rid']); ?>" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
+                                                                                    </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
+                                                                                    </a>
+                                                                                </div>
+                                                                                <div class="feed-item-content">
+                                                                                    <h4>
+                                                                                        <a class="feed-video-title title yt-uix-contextlink  yt-uix-sessionlink" href="/watch?v=<?php echo htmlspecialchars($content['rid']); ?>&amp;feature=plcp" data-sessionlink="feature=plcp&amp;context=C48232d5ADvjVQa1PpcFMDeAifI2yCLsflFJ-7L8wLgQIeQbQxzjo%3D">
+                                                                                        <?php echo htmlspecialchars($content['title']); ?>
+                                                                                        </a>
+                                                                                    </h4>
+                                                                                    <div class="metadata">
+                                                                                        <span class="view-count">
+                                                                                        <?php echo $__video_h->fetch_video_views($content['rid']); ?> views
+                                                                                        </span>
+                                                                                        <div class="description">
+                                                                                            <p><?php echo $__video_h->shorten_description($content['description'], 100, true); ?></p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="feed-item-dismissal-notices">
+                                                                        <div class="feed-item-dismissal feed-item-dismissal-hide hid">This item has been hidden</div>
+                                                                        <div class="feed-item-dismissal feed-item-dismissal-uploads hid">In the future you will only see uploads from   <span class="feed-item-owner">    <a href="/user/<?php echo htmlspecialchars($content['author']); ?>?feature=plcp" class="yt-user-name " dir="ltr"><?php echo htmlspecialchars($content['author']); ?></a>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="feed-item-dismissal feed-item-dismissal-all-activity hid">In the future you will see all activity from   <span class="feed-item-owner">    <a href="/user/<?php echo htmlspecialchars($content['author']); ?>?feature=plcp" class="yt-user-name " dir="ltr"><?php echo htmlspecialchars($content['author']); ?></a>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="feed-item-dismissal feed-item-dismissal-unsubscribe hid">You have been unsubscribed from   <span class="feed-item-owner">    <a href="/user/<?php echo htmlspecialchars($content['author']); ?>?feature=plcp" class="yt-user-name " dir="ltr"><?php echo htmlspecialchars($content['author']); ?></a>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <div class="feed-item-dismissal-notices">
+                                                                        <div class="feed-item-dismissal feed-item-dismissal-hide hid">This item has been hidden</div>
+                                                                        <div class="feed-item-dismissal feed-item-dismissal-uploads hid">In the future you will only see uploads from   <span class="feed-item-owner">    <a href="/user/<?php echo htmlspecialchars($content['author']); ?>?feature=plcp" class="yt-user-name " dir="ltr"><?php echo htmlspecialchars($content['author']); ?></a>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="feed-item-dismissal feed-item-dismissal-all-activity hid">In the future you will see all activity from   <span class="feed-item-owner">    <a href="/user/<?php echo htmlspecialchars($content['author']); ?>?feature=plcp" class="yt-user-name " dir="ltr"><?php echo htmlspecialchars($content['author']); ?></a>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="feed-item-dismissal feed-item-dismissal-unsubscribe hid">You have been unsubscribed from   <span class="feed-item-owner">    <a href="/user/<?php echo htmlspecialchars($content['author']); ?>?feature=plcp" class="yt-user-name " dir="ltr"><?php echo htmlspecialchars($content['author']); ?></a>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <?php } else { 
+																		if($__video_h->video_exists($content['video']['rid'])) { ?>
+																	<div class="feed-item-container" data-channel-key="UCXf1X2u5gsmuqcuTQlpOGhw">
+																		<a href="/user/<?php echo htmlspecialchars($content['author']); ?>?feature=plcp" class="feed-author-bubble " title="<?php echo htmlspecialchars($content['author']); ?>">  <span class="feed-item-author">
+																		<span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo htmlspecialchars($content['author']); ?>" data-thumb="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($content['author']); ?>" width="28"><span class="vertical-align"></span></span></span></span>
+																		</span>
+																		</a>
+																		<div class="feed-item-main">
+																			<div class="feed-item-header">
+																				<span class="feed-item-actions-line ">
+																					<span class="feed-item-owner">    <a href="/user/<?php echo htmlspecialchars($content['author']); ?>?feature=plcp" class="yt-user-name " dir="ltr"><?php echo htmlspecialchars($content['author']); ?></a>
+																					</span>
+																					<a href="/watch?v=<?php echo htmlspecialchars($content['video']['rid']); ?>">commented</a>
+																					<span class="feed-item-time">
+																					<?php echo $__time_h->time_elapsed_string($content['video']['publish']); ?>
+																					</span>
+																					<div class="feed-item-post">
+																						<p><?php echo $__video_h->shorten_description($content['comment'], 100, true); ?></p>
+																					</div>
+																				</span>
+																			</div>
+																			<div class="feed-item-content-wrapper clearfix">
+																				<div class="feed-item-thumb">
+																					<a class="ux-thumb-wrap contains-addto  yt-uix-contextlink  yt-uix-sessionlink" data-sessionlink="context=C4bdbfd8ADvjVQa1PpcFOc8xrGFVc9o98fEYoP4zkJyb88FUqz-7k%3D" href="/watch?v=<?php echo htmlspecialchars($content['video']['rid']); ?>">
+																					<span class="video-thumb ux-thumb yt-thumb-default-106 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="/dynamic/thumbs/<?php echo htmlspecialchars($content['video']['thumbnail']); ?>" width="106"><span class="vertical-align"></span></span></span></span>
+																					<span class="video-time"><?php echo $__time_h->timestamp($content['video']['duration']); ?></span>
+																					<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="-DWfIzMgZEY" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
+																					</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
+																					</a>
+																				</div>
+																				<div class="feed-item-content">
+																					<h4>
+																						<a class="feed-video-title title yt-uix-contextlink  yt-uix-sessionlink secondary" href="/watch?v=<?php echo htmlspecialchars($content['video']['rid']); ?>" data-sessionlink="feature=plcp&amp;context=C4bdbfd8ADvjVQa1PpcFOc8xrGFVc9o98fEYoP4zkJyb88FUqz-7k%3D">
+																						<?php echo htmlspecialchars($content['video']['title']); ?>
+																						</a>
+																					</h4>
+																					<div class="metadata">
+																						<a href="/user/<?php echo htmlspecialchars($content['video']['author']); ?>?feature=plcp" class="yt-user-photo ">
+																						<span class="video-thumb ux-thumb yt-thumb-square-18 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo htmlspecialchars($content['video']['author']); ?>" data-thumb="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($content['video']['author']); ?>" width="18"><span class="vertical-align"></span></span></span></span>
+																						</a>
+																						<a href="/user/<?php echo htmlspecialchars($content['video']['author']); ?>?feature=plcp" class="yt-user-name " dir="ltr"><?php echo htmlspecialchars($content['video']['author']); ?></a>
+																						<span class="bull">•</span>
+																						<span class="view-count">
+																						<?php echo $__video_h->fetch_video_views($content['video']['rid']); ?> views
+																						</span>
+																						<div class="description">
+																							<p><?php echo $__video_h->shorten_description($content['video']['description'], 50, true); ?></p>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<?php } } } ?>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 										<div class="secondary-pane">
 											<div id="watch-longform-ad" style="display:none;">
 												<div id="watch-longform-text">
@@ -814,47 +913,6 @@
 			yt.setConfig('TIMING_ACTION', "channels3");    
 		</script>
 		<script>yt.www.thumbnaildelayload.init(0);</script>
-		<script>
-			var subscribed = <?php echo($_user['subscribed'] ? 'true' : 'false') ?>;
-			var loggedIn = <?php echo(isset($_SESSION['siteusername']) ? 'true' : 'false') ?>;
-			var alerts = 0;
- 
-			function subscribe() {
-				if(loggedIn == true) { 
-					if(subscribed == false) { 
-						$.ajax({
-							url: "/get/subscribe?n=<?php echo htmlspecialchars($_user['username']); ?>",
-							type: 'GET',
-							success: function(res) {
-								alerts++;
-								$("#subscribe-button").addClass("subscribed");
-								addAlert("editsuccess_" + alerts, "Successfully added <?php echo htmlspecialchars($_user['username']); ?> to your subscriptions!");
-								showAlert("#editsuccess_" + alerts);
-								console.log("DEBUG: " + res);
-								subscribed = true;
-							}
-						});
-					} else {
-						$.ajax({
-							url: "/get/unsubscribe?n=<?php echo htmlspecialchars($_user['username']); ?>",
-							type: 'GET',
-							success: function(res) {
-								alerts++;
-								$("#subscribe-button").removeClass("subscribed");
-								addAlert("editsuccess_" + alerts, "Successfully removed <?php echo htmlspecialchars($_user['username']); ?> from your subscriptions!");
-								showAlert("#editsuccess_" + alerts);
-								console.log("DEBUG: " + res);
-								subscribed = false;
-							}
-						});
-					}
-				} else {
-					alerts++;
-					addAlert("editsuccess_" + alerts, "You need to log in to add subscriptions!");
-					showAlert("#editsuccess_" + alerts);
-				}
-			}
-		</script>
 		<script>
 			yt.setMsg({
 			  'LIST_CLEARED': "List cleared",

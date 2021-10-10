@@ -97,5 +97,5 @@
         $stmt->execute();
     }
 
-    echo json_encode($video_properties, JSON_PRETTY_PRINT);
+    echo $video_properties->video_rid;
 ?>

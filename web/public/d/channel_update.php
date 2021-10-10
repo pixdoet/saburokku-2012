@@ -184,9 +184,9 @@
             $__user_u->update_row($_SESSION['siteusername'], "bio", $_POST['bio']);
         }
 
-        if(!empty($_POST['videoid'])) { 
-            $__user_u->update_row($_SESSION['siteusername'], "featured_channels", $_POST['videoid']);
-        } // duplicate?
+        if(!empty($_POST['featuredchannels'])) { 
+            $__user_u->update_row($_SESSION['siteusername'], "featured_channels", $_POST['featuredchannels']);
+        }
     
         if(!empty($_POST['css'])) {
             $__user_u->update_row($_SESSION['siteusername'], "css", $_POST['css']);
@@ -219,10 +219,6 @@
         if(!empty($_POST['header'])) {
             $__user_u->update_row($_SESSION['siteusername'], "custom_header", $_POST['header']);
         }
-
-        if(!empty($_POST['channels'])) {
-            $__user_u->update_row($_SESSION['siteusername'], "featured_channels", $_POST['channels']);
-        } // duplicate?
 
         if(!empty($_POST['customtext'])) {
             $__user_u->update_row($_SESSION['siteusername'], "custom_text", $_POST['customtext']);

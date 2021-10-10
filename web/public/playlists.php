@@ -15,24 +15,29 @@
 <?php if(!isset($_SESSION['siteusername'])) { header("Location: /sign_in"); } ?>
 <?php
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
-        if(!isset($_SESSION['siteusername'])){ $error_legacy = "you are not logged in"; goto skipcomment; }
-        if(!$_POST['comment']){ $error_legacy = "your description cannot be blank"; goto skipcomment; }
-        if(strlen($_POST['comment']) > 1024){ $error_legacy = "your comment must be shorter than 1000 characters"; goto skipcomment; }
-        if($__user_h->if_cooldown($_SESSION['siteusername'])) { $error_legacy = "You are on a cooldown! Wait for a minute before posting another comment."; goto skipcomment; }
+        $error = array();
 
-        $stmt = $__db->prepare("INSERT INTO playlists (title, description, rid, author) VALUES (:title, :desc, :rid, :username)");
-        $stmt->bindParam(":title", $_POST['title']);
-        $stmt->bindParam(":desc", $_POST['comment']);
-        $stmt->bindParam(":rid", $rid);
-        $stmt->bindParam(":username", $_SESSION['siteusername']);
-        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
-        $result = '';
-        for ($i = 0; $i < 11; $i++)
-            $rid .= $characters[mt_rand(0, 63)];
-        $text = htmlspecialchars($_POST['comment']);
-        $stmt->execute();
-        $__user_u->update_cooldown_time($_SESSION['siteusername'], "cooldown_comment");
-        skipcomment:
+        if(!isset($_SESSION['siteusername'])){ $error['message'] = "You are not logged in"; $error['status'] = true; }
+        if(!$_POST['comment']){ $error['message'] = "Your description cannot be blank"; $error['status'] = true; }
+        if(empty(trim($_POST['title']))){ $error['message'] = "Your title cannot be blank"; $error['status'] = true; }
+        if(strlen($_POST['comment']) > 1000){ $error['message'] = "Your description must be shorter than 1000 characters"; $error['status'] = true; }
+        if($__user_h->if_cooldown($_SESSION['siteusername'])) { $error['message'] = "You are on a cooldown! Wait for a minute before making a playlist."; $error['status'] = true; }
+
+        if(!isset($error['message'])) {
+            $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
+            $result = '';
+            for ($i = 0; $i < 11; $i++)
+                $rid .= $characters[mt_rand(0, 63)];
+            $stmt = $__db->prepare("INSERT INTO playlists (title, description, rid, author) VALUES (:title, :desc, :rid, :username)");
+            $stmt->bindParam(":title", $_POST['title']);
+            $stmt->bindParam(":desc", $_POST['comment']);
+            $stmt->bindParam(":rid", $rid);
+            $stmt->bindParam(":username", $_SESSION['siteusername']);
+            $text = htmlspecialchars($_POST['comment']);
+            $stmt->execute();
+
+            $__user_u->update_cooldown_time($_SESSION['siteusername'], "cooldown_comment");
+        }
     }
 ?>
 <!DOCTYPE html>
@@ -199,7 +204,7 @@
                                 ?>
                                 <?php 
                                     $stmt6 = $__db->prepare("SELECT * FROM playlists WHERE author = :search ORDER BY id DESC LIMIT :pfirst, :pper");
-                                    $stmt6->bindParam(":search", $search);
+                                    $stmt6->bindParam(":search", $_SESSION['siteusername']);
                                     $stmt6->bindParam(":pfirst", $page_first_result);
                                     $stmt6->bindParam(":pper", $results_per_page);
                                     $stmt6->execute();
@@ -284,7 +289,38 @@
                                                 </span>
                                             </td>
                                         </tr>
-                                    <?php } } } ?>
+                                    <?php } } else {  ?>
+                                        <tr style="margin-top: 5px;" id="videoslist">
+                                            <td class="video-manager-left">
+                                                <ul>
+                                                    <li class="video-list-item "><a href="/view_playlist?v=<?php echo $playlist['rid']; ?>" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $playlist['title']; ?>" data-thumb="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $video['duration']; ?></span>
+                                                        <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="yuTBQ86r8o0" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
+                                                        </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
+                                                        </span><span dir="ltr" class="title" title="<?php echo $playlist['title']; ?>"><?php echo $playlist['title']; ?></span><span class="stat">by <span class="yt-user-name " dir="ltr"><?php echo $playlist['author']; ?></span></span><span class="stat view-count">  <span class="viewcount">0 views</span>
+                                                        </span></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                                
+                                            </td>
+                                            <td class="video-manager-stats" style="background: none;padding-left: 8px;">
+                                            <a href="/edit_playlist?id=<?php echo $playlist['rid']; ?>">
+                                                    <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
+                                                        Edit
+                                                    </button>
+                                                </a> 
+                                                <a href="/get/delete_playlist?id=<?php echo $playlist['rid']; ?>">
+                                                    <button type="button" class=" yt-uix-button yt-uix-button-default" role="button">
+                                                        Delete
+                                                    </button>
+                                                </a><br><br>
+
+                                                <span>
+                                                    <img src="/s/img/world.png"> <span style="font-size: 11px;position: relative;bottom: 2px;left: 5px;">Public</span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <?php } } ?>
                                 </table> 
                                 </div>
 

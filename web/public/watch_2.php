@@ -342,13 +342,10 @@
 											<div id="comment-share-area" class="comment-share-area yt-rounded hid">
 												<div class="comment-share-content">
 													<h4>Link to this comment:</h4>
-													<div style="visibility: hidden;">
-														<input type="text" value="https://subrock.rocks/watch?v=<?php echo $_GET['v']; ?>" class="comment-share-url yt-uix-form-input-text">
+													<div>
+														<input type="text" class="comment-share-url yt-uix-form-input-text">
 													</div>
 													<div>
-														<input type="text" value="https://subrock.rocks/watch?v=<?php echo $_GET['v']; ?>" class="yt-uix-form-input-text">
-													</div>
-													<div style="display: none;">
 														<span>Share to:</span>
 														<img alt="" title="Facebook" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon-comment-share icon-comment-share-facebook" action="yt.window.popup('http:\/\/www.facebook.com\/sharer.php?u=http%3A%2F%2Fwww.youtube.com%2Fcomment%3Flc%3D_COMMENT_ID_&amp;t=_COMMENT_TEXT_', {height:440, width:620, scrollbars:true});">
 														<img alt="" title="Twitter" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon-comment-share icon-comment-share-twitter" action="yt.window.popup('http:\/\/twitter.com\/share?url=http%3A%2F%2Fwww.youtube.com%2Fcomment%3Flc%3D_COMMENT_ID_&amp;text=_COMMENT_TEXT_%3A&amp;via=youtube', {height:650, width:1024, scrollbars:true});">
@@ -425,7 +422,7 @@
 													</div>
 												<?php } else { ?>
 													<div class="comments-post-container clearfix">
-														<form method="post" action="/watch?v=<?php echo $_GET['v']; ?>">
+														<form class="comments" method="post" action="/watch?v=<?php echo $_GET['v']; ?>">
 															<div class="yt-alert yt-alert-default yt-alert-error hid comments-post-message">
 																<div class="yt-alert-icon">
 																	<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
@@ -439,7 +436,7 @@
 															<a href="/user/<?php echo htmlspecialchars($_SESSION['siteusername']); ?>" class="yt-user-photo comments-post-profile"><span class="video-thumb ux-thumb yt-thumb-square-46 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($_SESSION['siteusername']); ?>" alt="<?php echo htmlspecialchars($_SESSION['siteusername']); ?>" width="46"><span class="vertical-align"></span></span></span></span></a>
 															<div class="comments-textarea-container" onclick="yt.www.comments.initForm(this, true, false);">
 																<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="" class="comments-textarea-tip"><label class="comments-textarea-label" data-upsell="comment">Respond to this video...</label>  
-																<div class="yt-uix-form-input yt-grid ">
+																<div class="yt-uix-form-input-fluid yt-grid-fluid ">
 																	<textarea id="" class="yt-uix-form-textarea comments-textarea" onfocus="yt.www.comments.initForm(this, false, false);" data-upsell="comment" name="comment"></textarea>
 																</div>
 															</div>
@@ -742,7 +739,7 @@
 			</div>
 		</div>
 		<!-- end page -->
-		<script id="www-core-js" src="/yt/jsbin/www-core-vfl1pq97W.js" data-loaded="true"></script>
+		<script id="www-core-js" src="//s.ytimg.com/yt/jsbin/www-core-vfl1pq97W.js" data-loaded="true"></script>
 		<script>
 			yt.setConfig({
 			'XSRF_TOKEN': 'sWZ0733z73lb8fEYAYSd84MaNV98MTM0OTEzMDExNUAxMzQ5MDQzNzE1',

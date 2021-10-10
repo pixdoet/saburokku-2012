@@ -14,11 +14,11 @@
 <?php
 
 if($video['author'] == $_SESSION['siteusername']) {
-    $stmt = $__db->prepare("DELETE FROM videos WHERE rid=:rid AND author=:author");
-    $stmt->execute(array(
-      ':author' => $video['author'],
-      ':rid' => $video['rid'],
-    ));
+  $stmt = $__db->prepare("DELETE FROM videos WHERE rid=:rid AND author=:author");
+  $stmt->execute(array(
+    ':author' => $video['author'],
+    ':rid' => $video['rid'],
+  ));
 }
 
 header('Location: /video_manager');

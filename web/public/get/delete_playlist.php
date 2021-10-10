@@ -1,27 +1,23 @@
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/static/important/config.inc.php"); ?>
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/static/lib/new/base.php"); ?>
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/static/lib/new/fetch.php"); ?>
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/static/lib/new/delete.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/config.inc.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/db_helper.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/time_manip.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_helper.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/video_helper.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_update.php"); ?>
+<?php $__server->page_title = "test"; ?>
+<?php $__video_h = new video_helper($__db); ?>
+<?php $__user_h = new user_helper($__db); ?>
+<?php $__user_u = new user_update($__db); ?>
+<?php $__db_h = new db_helper(); ?>
+<?php $__time_h = new time_helper(); ?>
+<?php $playlist = $__video_h->fetch_playlist_rid($_GET['id']); ?>
 <?php
-    $_user_fetch_utils = new user_fetch_utils();
-    $_video_fetch_utils = new video_fetch_utils();
-    $_video_delete_utils = new video_delete_utils();
-    $_base_utils = new config_setup();
-    
-    $_base_utils->initialize_db_var($conn);
-    $_video_fetch_utils->initialize_db_var($conn);
-    $_user_fetch_utils->initialize_db_var($conn);
-    $_video_delete_utils->initialize_db_var($conn);
-
-    $playlist = $_video_fetch_utils->fetch_playlist_rid($_GET['id']);
-?>
-<?php
-
 if($playlist['author'] == $_SESSION['siteusername']) {
-    $stmt = $conn->prepare("DELETE FROM playlists WHERE rid = ?");
-    $stmt->bind_param("s", $_GET['id']);
-    $stmt->execute();
-    $stmt->close();
+    $stmt = $__db->prepare("DELETE FROM playlists WHERE rid=:rid AND author=:author");
+    $stmt->execute(array(
+        ':author' => $_SESSION['siteusername'],
+        ':rid' => $playlist['rid'],
+    ));
 }
 
 header('Location: /playlists');

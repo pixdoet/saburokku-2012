@@ -307,12 +307,8 @@
 
                                 <?php 
                                     if($stmt6->rowCount() == 0) { echo "
-                                        <br>Welcome to your Video Manager! You can manage your uploaded videos here.<br>
-                                        <a href=\"upload_video\">
-                                            <button type=\"button\" class=\" yt-uix-button yt-uix-button-default\" role=\"button\">
-                                                Upload
-                                            </button>
-                                        </a>
+                                        <br>Welcome to your favorite vidoes page.<br>
+										You can add videos that you like and the video will be added here!
                                     "; 
                                 } ?>
 								</div>

@@ -3,12 +3,27 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/time_manip.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_helper.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/video_helper.php"); ?>
-<?php $__server->page_title = "Upload Video"; ?>
+<?php $__server->page_title = "test"; ?>
 <?php $__video_h = new video_helper($__db); ?>
 <?php $__user_h = new user_helper($__db); ?>
 <?php $__db_h = new db_helper(); ?>
 <?php $__time_h = new time_helper(); ?>
-<?php if(!isset($_SESSION['siteusername'])) { header("Location: /sign_in"); } ?>
+<?php $video = $__video_h->fetch_video_rid($_GET['v']); ?>
+<?php
+    $video['video_responses'] = $__video_h->get_video_responses($video['rid']);
+    $video['age'] = $__time_h->time_elapsed_string($video['publish']);		
+    $video['duration'] = $__time_h->timestamp($video['duration']);
+    $video['views'] = $__video_h->fetch_video_views($video['rid']);
+    $video['author'] = htmlspecialchars($video['author']);		
+    $video['title'] = htmlspecialchars($video['title']);
+    $video['description'] = $__video_h->shorten_description($video['description'], 50);
+
+	if(!$__video_h->video_exists($_GET['v']))
+		header("Location: /?error=Your video has not processed correctly. Try reuploading it with a shorter title, description, or tag.");
+
+    if($_SESSION['siteusername'] != $video['author'])
+        header("Location: /");
+?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -22,11 +37,10 @@
         </script>
         <link id="www-core-css" rel="stylesheet" href="/yt/cssbin/www-core-vfluMRDnk.css">
         <link rel="stylesheet" href="/yt/cssbin/www-guide-vflx0V5Tq.css">
-        <link rel="stylesheet" href="/yt/cssbin/www-extra.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
             if (window.yt.timing) {yt.timing.tick("ct");}    
         </script>
+        <link rel="stylesheet" href="/yt/cssbin/www-extra.css">
 	</head>
 	<body id="" class="date-20120930 en_US ltr   ytg-old-clearfix guide-feed-v2 " dir="ltr">
 		<form name="logoutForm" method="POST" action="/logout">
@@ -38,178 +52,36 @@
 			<div id="content-container">
 				<!-- begin content -->
 				<div id="content">
-                    <div class="upload-div-top">
-                        Upload video file
-                    </div>
-                    <div class="upload-div-base">
-                        <div class="progressbar">
-                            Your video is being uploaded... <span class="timeRemaining"></span><br>
-                            <div class="barbg">
-                                <div class="bar"></div>
-                            </div>
+                    <div id="watch-owner-container">
+                        <div id="masthead-subnav" class="yt-nav yt-nav-dark ">
+                            <ul class="yt-nav-aside">
+                                <li>
+                                    <a href="/my_videos" class="yt-uix-button yt-uix-sessionlink yt-uix-button-subnav  yt-uix-button-dark" data-sessionlink="ei=CMCA1_3robMCFSrJRAodqnnxKQ%3D%3D"><span class="yt-uix-button-content">Video Manager</span></a>
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                    <a href="/edit_video?id=<?php echo $_video['rid']; ?>" class="yt-uix-button yt-uix-sessionlink yt-uix-button-subnav yt-uix-button-dark" data-sessionlink="ei=CMCA1_3robMCFSrJRAodqnnxKQ%3D%3D"><span class="yt-uix-button-content">Edit</span></a>
+                                </li>
+                                <li>
+                                    <a href="/get/delete_video?v=<?php echo $_video['rid']; ?>" class="yt-uix-button yt-uix-sessionlink yt-uix-button-subnav  yt-uix-button-dark" data-sessionlink="ei=CMCA1_3robMCFSrJRAodqnnxKQ%3D%3D"><span class="yt-uix-button-content">Delete Video</span></a>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="www-upload-left">
-                            <center id="initial-upload">
-                                <img src="/yt/imgbin/upload_button.png" onclick="$('#video-file').click();" style="width: 139px;cursor:pointer;"><br><br>
-                                <button class="yt-uix-button yt-uix-button-default" onclick="$('#video-file').click();">
-                                    Select files from your computer
-                                </button>
-                            </center>
-                            <form enctype="multipart/form-data" id="upload_form" action="/d/upload_video" method="post">
-                            <div class="upload-stage-2" style="display: none;">
-                                <b>Title</b> <br><input id="video-title" placeholder="Video Title" class="upload-input" type="text" name="title"><br><br>
-                                <b>Description</b> <br>
-                                <textarea name="description" class="upload-input" placeholder="Video Description"></textarea><br><br>
-                                <b>Tags</b> <br><input placeholder="Seperate with commas" class="upload-input" type="text" name="tags"><br><br>
-                                <b>Video thumbnails</b><br><br>
-                                Thumbnail selections will appear when the video has finished processing.<br><br>
-                                <input type="submit" value="Upload Video" class="yt-uix-button yt-uix-button-default">
-                            </div>
-                        </div>
-                        <div class="www-upload-right">
-                            <div class="upload-initial-right">
-                                <h1>More ways to upload and create</h1><br> 
-                                <img src="/s/img/upload_multiple.png" style="vertical-align: top;">
-                                <span style="display: inline-block;">
-                                    <h4>Uploading high quality videos</h4>
-                                    <span class="small-text">
-                                        SubRocks suports up to 480p with prstine bitrate.<br>
-                                        You can upload videos that are up to an hour long.
-                                    </span>
-                                </span><br><br>
-                                <img src="/s/img/record_from_webcam.png" style="vertical-align: top;">
-                                <span style="display: inline-block;">
-                                    <h4>Recording from webcam</h4>
-                                    <span class="small-text">
-                                        SubRocks <b>will</b> support recording from webcam.<br>
-                                        This featurem might be added. Only time will tell.
-                                    </span>
-                                </span><br><br>
-                            </div>
-                            <div class="upload-stage-2-right" style="display: none;">
-                                <b>Category</b> <br>
-                                <select style="margin-top:5px;" name="category" class="yt-uix-button yt-uix-button-default">
-                                    <?php $categories = ["None", "Film & Animation", "Autos & Vehicles", "Music", "Pets & Animals", "Sports", "Travel & Events", "Gaming", "People & Blogs", "Comedy", "Entertainment", "News & Politics", "Howto & Style", "Education", "Science & Technology", "Nonprofits & Activism"]; ?>
-                                    <?php foreach($categories as $categoryTag) { ?>
-                                        <option value="<?php echo $categoryTag; ?>"><?php echo $categoryTag; ?></option>
-                                    <?php } ?>
-                                </select><br><br>
-                                <b>Privacy</b> <br><br>
-                                <input class="yt-uix-form-input-radio" type="radio" style="vertical-align: top;"> 
-                                <span style="display: inline-block;">
-                                    <b>Public</b><br>
-                                    <span class="small-text">
-                                        anyone can search for and view - <br>
-                                        recommended
-                                    </span>
-                                </span><br><br>
-                                <input class="yt-uix-form-input-radio" type="radio" style="vertical-align: top;"> 
-                                <span style="display: inline-block;">
-                                    <b>Unlisted</b><br>
-                                    <span class="small-text">
-                                        anyone with the link can view
-                                    </span>
-                                </span><br><br>
-                                <input class="yt-uix-form-input-radio" type="radio" style="vertical-align: top;"> 
-                                <span style="display: inline-block;">
-                                    <b>Private</b><br>
-                                    <span class="small-text">
-                                        only people you choose can view
-                                    </span>
-                                </span><br><br>
-                                <b>License</b><br><br>
-                                <input class="yt-uix-form-input-radio" type="radio" style="vertical-align: top;"> 
-                                <span style="display: inline-block;">
-                                    <b>Literally nothing</b><br>
-                                    <span class="small-text">
-                                        licenses don't exist on here
-                                    </span>
-                                </span><br>
-
-                                <input name="privacy" type="text" style="visibility: hidden;">
-                                <input id="video-file" type="file" name="video_file" style="visibility: hidden;">
-                            </div>
-                        </div>
-                        </form>
-                        <script>
-                            $("#video-file").click(function(){
-                                $(this).val("");
-                            });
-
-                            $("#video-file").change(function(){
-                                $("#video-title").val($(this).val().replace(/^.*\\/, ""));
-                                $("#initial-upload").fadeOut(20);
-                                $(".upload-initial-right").fadeOut(20);
-                                $(".upload-stage-2-right").fadeIn(300);
-                                $(".upload-stage-2").fadeIn(300);
-                            });
-
-                            $(()=>{ // defer
-                                var uploadform = $("#upload_form");
-                                var progressbar = $(".progressbar");
-                                var bar = $(".bar");
-                                var postto = "/d/upload";
-
-                                progressbar.hide(); 
-
-                                // when you press submit
-                                uploadform.on('submit', (e) => {
-
-                                    // i have to both of these for it to not redirect (i want it to redirect if JS is off)
-                                    e.stopImmediatePropagation();
-                                    e.preventDefault();
-                                    
-                                    // good luck understanding this shit. it's mostly copy pasted.
-                                    $.ajax({
-                                        xhr: () => {
-                                            var xhr = new window.XMLHttpRequest();
-                                            xhr.upload.addEventListener("progress", (evt) => {
-                                                if (evt.lengthComputable) {
-                                                    var percentComplete = Math.floor((evt.loaded / evt.total) * 100);
-                                                    bar.width(percentComplete + '%');
-                                                    bar.text(percentComplete + '%');
-
-                                                    var seconds_elapsed =   ( new Date().getTime() - started_at.getTime() )/1000;
-                                                    var bytes_per_second =  seconds_elapsed ? loaded / seconds_elapsed : 0 ;
-                                                    var Kbytes_per_second = bytes_per_second / 1000 ;
-                                                    var remaining_bytes =   total - loaded;
-                                                    var seconds_remaining = seconds_elapsed ? remaining_bytes / bytes_per_second : 'calculating' ;
-                                                    jQuery( '.timeRemaining' ).html( '' );
-                                                    jQuery( '.timeRemaining' ).append( seconds_remaining );
-                                                }
-                                            }, false);
-                                            return xhr;
-                                        },
-                                        // if you can't understand this part you shouldn't be reading this
-                                        type: 'POST',
-                                        url: postto,
-                                        // afaik this only works for POST. don't care enough to check.
-                                        data: new FormData(uploadform[0]),
-                                        // no idea why this shit is 'false'.
-                                        contentType: false,
-                                        cache: false,
-                                        processData: false,
-                                        // right before data starts to be sent
-                                        beforeSend: () => {
-                                            uploadform.hide();
-                                            progressbar.show();
-                                            $(".upload-stage-2-right").hide();
-                                            $(".upload-div-base").css("height", "32px");
-                                            bar.width('0%');
-                                        },
-                                        // when the form gets a non-200 code probably
-                                        error: () => {
-                                            
-                                        },
-                                        // when the form succeeds. resp is a string of what the server sent back 
-                                        success: (resp) => {
-                                            window.location = "/uploaded_video?v=" + resp;
-                                        }
-                                    });
-                                });
-                            }); // defer
-                        </script>
-                    </div>
+                    </div><br>
+                    <h3>Succesfully uploaded!</h3>
+                    <hr><br>
+                    Your video <b><?php echo htmlspecialchars($video['title']); ?></b> has been successfully uploaded.<br><br>
+                    <ul>
+                        <li class="video-list-item "><a href="/watch?v=<?php echo $video['rid']; ?>" class="video-list-item-link yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;feature=g-sptl%26cid%3Dinp-hs-ytg"><span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-120 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="<?php echo $video['title']; ?>" data-thumb="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" width="120"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $video['duration']; ?></span>
+                            <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="yuTBQ86r8o0" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
+                            </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
+                            </span><span dir="ltr" class="title" title="<?php echo $video['title']; ?>"><?php echo $video['title']; ?></span><span class="stat">by <span class="yt-user-name " dir="ltr"><?php echo $video['author']; ?></span></span><span class="stat view-count">  <span class="viewcount"><?php echo $video['views']; ?> views</span>
+                            </span></a>
+                        </li>
+                    </ul>
+                    <input id="video-link" style="width: 300px;" placeholder="Video Link" class="upload-input" type="text" value="https://subrock.rocks/watch?v=<?php echo $video['rid']; ?>" name="title"><br><br>
+                    <br>
                 </div>
             </div>  
 			<div id="footer-container"><?php require($_SERVER['DOCUMENT_ROOT'] . "/s/mod/footer.php"); ?></div>

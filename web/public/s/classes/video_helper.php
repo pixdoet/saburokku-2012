@@ -24,6 +24,25 @@ class video_helper {
         shell_exec($fullcmd);
     }
 
+    function file_get_contents_chunked($file, $chunk_size, $callback) {
+        try {
+            $handle = fopen($file, "r");
+            $i = 0;
+            while (!feof($handle)) {
+                call_user_func_array($callback,array(fread($handle,$chunk_size),&$handle,$i));
+                $i++;
+            }
+    
+            fclose($handle);
+        }
+        catch(Exception $e) {
+            trigger_error("file_get_contents_chunked::" . $e->getMessage(),E_USER_NOTICE);
+            return false;
+        }
+
+        return true;
+    }
+
 	public function __construct($conn){
         $this->__db = $conn;
 	}
@@ -63,9 +82,59 @@ class video_helper {
         return $stmt->rowCount();
     }
 
+    function get_video_likes($reciever, $liked) {
+        if($liked) {
+            $stmt = $this->__db->prepare("SELECT `sender` FROM likes WHERE reciever = :reciever AND type = 'l'");
+            $stmt->bindParam(":reciever", $reciever);
+            $stmt->execute();
+
+            return $stmt->rowCount();
+        } else {
+            $stmt = $this->__db->prepare("SELECT `sender` FROM likes WHERE reciever = :reciever AND type = 'd'");
+            $stmt->bindParam(":reciever", $reciever);
+            $stmt->execute();
+
+            return $stmt->rowCount();
+        }
+    }
+
+    function if_liked($user, $reciever, $liked) {
+        if($liked) {
+            $stmt = $this->__db->prepare("SELECT `sender` FROM likes WHERE sender = :sender AND reciever = :reciever AND type = 'l'");
+            $stmt->bindParam(":sender", $user);
+            $stmt->bindParam(":reciever", $reciever);
+            $stmt->execute();
+
+            return $stmt->rowCount() === 1;
+        } else {
+            $stmt = $this->__db->prepare("SELECT `sender` FROM likes WHERE sender = :sender AND reciever = :reciever AND type = 'd'");
+            $stmt->bindParam(":sender", $user);
+            $stmt->bindParam(":reciever", $reciever);
+            $stmt->execute();
+
+            return $stmt->rowCount() === 1;
+        }
+    }
+
     function fetch_video_rid(string $rid) {
         $stmt = $this->__db->prepare("SELECT * FROM videos WHERE rid = :rid");
         $stmt->bindParam(":rid", $rid);
+        $stmt->execute();
+
+        return ($stmt->rowCount() === 0 ? 0 : $stmt->fetch(PDO::FETCH_ASSOC));
+    }
+
+    function fetch_playlist_rid(string $rid) {
+        $stmt = $this->__db->prepare("SELECT * FROM playlists WHERE rid = :rid");
+        $stmt->bindParam(":rid", $rid);
+        $stmt->execute();
+
+        return ($stmt->rowCount() === 0 ? 0 : $stmt->fetch(PDO::FETCH_ASSOC));
+    }
+
+    function fetch_comment_id(string $id) {
+        $stmt = $this->__db->prepare("SELECT * FROM comments WHERE id = :id");
+        $stmt->bindParam(":id", $id);
         $stmt->execute();
 
         return ($stmt->rowCount() === 0 ? 0 : $stmt->fetch(PDO::FETCH_ASSOC));

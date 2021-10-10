@@ -50,7 +50,7 @@
 									<div id="guide-builder-promo">
 								
 								<div id="guide-builder-promo-buttons" class="">
-									<button href="/browse" type="button" onclick=";window.location.href=this.getAttribute('href');return false;" role="button" class=" yt-uix-button  yt-uix-button-primary"><img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="yt-uix-button-icon-add"><span class="yt-uix-button-content"> Browse channels</span></button>
+									<button href="/videos" type="button" onclick=";window.location.href=this.getAttribute('href');return false;" role="button" class=" yt-uix-button  yt-uix-button-primary"><img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="yt-uix-button-icon-add"><span class="yt-uix-button-content"> Browse videos</span></button>
 								</div>
 								<?php } ?>
 							</div>
@@ -65,7 +65,7 @@
 							<a href="/my_videos" style="color: inherit;">Videos</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
 							<a href="/playlists" style="color: inherit;">Playlists</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
 							<a href="/logout" style="color: inherit;">Log Out</a>        </div><div style="font-size: 11px;margin-bottom: 6px;" class="metadata">
-							<a href="/feed" style="color: inherit;">Dashboard</a>        </div></div></div>
+							</div></div></div>
 
 								<div class="guide-section yt-uix-expander  ">
 								<h3 class="guide-item-container">
@@ -77,14 +77,6 @@
 									</a>
 								</h3>
 								<ul>
-										<li class="guide-item-container ">
-								<a class="guide-item" data-feed-type="system" data-feed-name="retard" href="/feed">
-									<span class="thumb">
-									<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="" class="system-icon system social">
-									</span>
-								<span class="display-name">Feed</span>
-								</a>
-							</li>
 								</ul>
 								<div class="guide-item-container">
 									<span class="guide-item guide-item-action guide-item-fake">

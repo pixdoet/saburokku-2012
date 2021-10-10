@@ -2,7 +2,7 @@
 $requestedPage = explode("/", strtok($_SERVER['REQUEST_URI'], '?'));
 
 switch ($requestedPage[1]) {
-    case '2009player':
+    case 'player':
         if($requestedPage[1] == "2009player" && $requestedPage[2] == "assets") {
             $a = implode("/", $requestedPage);
             $i = implode(".", $requestedPage);
