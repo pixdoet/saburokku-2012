@@ -40,19 +40,11 @@ $fmt_stream_map = [
 	[
 	"itag" => "43",
     "url" => $_video['fmtPath'],
-    "sig" => "ifurreadingthisurgay",
-    "fallback_host" => "tc.v14.cache3.c.youtube.com",
-    "quality" => "large",
-    "type" => "video/webm; codecs=\"vp8.0, vorbis\""
-	],
-    [
-    "itag" => "43",
-    "url" => $_video['fmtPath'],
-    "sig" => "oohahhahahheaeohoho",
+    "sig" => "aintnothinggonnabreakmystrideaintnothinggonnaslowmedownnooigottakeeponmovin",
     "fallback_host" => "tc.v14.cache3.c.youtube.com",
     "quality" => "hd720",
     "type" => "video/webm; codecs=\"vp8.0, vorbis\""
-    ],
+	],
 ];
 
 $count = 0;
