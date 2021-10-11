@@ -53,10 +53,7 @@
 				<div id="masthead-search-terms" class="masthead-search-terms-border" dir="ltr"><label><input id="masthead-search-term" autocomplete="off" class="search-term" name="search_query" value="" type="text" tabindex="1" onkeyup="goog.i18n.bidi.setDirAttribute(event,this)" title="Search"></label></div>
 			</form>
 		</div>
-	</div>
-</div>
-</div>
-</div>
+	</div></div>
 <?php if(isset($_SESSION['siteusername'])) { ?>
 <div id="masthead-expanded" class="hid" style="display: none;">
 	<div id="masthead-expanded-container" class="with-sandbar">
@@ -219,7 +216,6 @@
 		</div>
 		<div class="clear"></div>
 	</div>
-</div>
 <?php } ?>
 </div>
 <div id="alerts">
