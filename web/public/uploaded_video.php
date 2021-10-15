@@ -3,7 +3,7 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/time_manip.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_helper.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/video_helper.php"); ?>
-<?php $__server->page_title = "test"; ?>
+
 <?php $__video_h = new video_helper($__db); ?>
 <?php $__user_h = new user_helper($__db); ?>
 <?php $__db_h = new db_helper(); ?>
@@ -27,7 +27,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><?php echo $__server->page_title; ?> - SubRocks</title>
+		<title><?php echo $__server->page_embeds->page_title; ?></title>
 		<meta property="og:title" content="<?php echo $__server->page_embeds->page_title; ?>" />
 		<meta property="og:url" content="<?php echo $__server->page_embeds->page_url; ?>" />
 		<meta property="og:description" content="<?php echo $__server->page_embeds->page_description; ?>" />

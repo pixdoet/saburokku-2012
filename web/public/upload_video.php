@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><?php echo $__server->page_title; ?> - SubRocks</title>
+		<title><?php echo $__server->page_embeds->page_title; ?></title>
 		<meta property="og:title" content="<?php echo $__server->page_embeds->page_title; ?>" />
 		<meta property="og:url" content="<?php echo $__server->page_embeds->page_url; ?>" />
 		<meta property="og:description" content="<?php echo $__server->page_embeds->page_description; ?>" />

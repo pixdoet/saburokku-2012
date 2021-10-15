@@ -5,7 +5,7 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/video_helper.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_update.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_insert.php"); ?>
-<?php $__server->page_title = "test"; ?>
+
 <?php $__video_h = new video_helper($__db); ?>
 <?php $__user_h = new user_helper($__db); ?>
 <?php $__user_u = new user_update($__db); ?>
@@ -110,7 +110,7 @@
 <html dir="ltr" xmlns:og="http://opengraphprotocol.org/schema/" lang="en">
 	<!-- machid: sNW5tN3Z2SWdXaDRqNGxuNEF5MFBxM1BxWXd0VGo0Rkg3UXNTTTNCUGRDWjR0WGpHR3R1YzFR -->
 	<head>
-        <title><?php echo $__server->page_title; ?> - SubRocks</title>
+        <title><?php echo $__server->page_embeds->page_title; ?></title>
 		<meta property="og:title" content="<?php echo $__server->page_embeds->page_title; ?>" />
 		<meta property="og:url" content="<?php echo $__server->page_embeds->page_url; ?>" />
 		<meta property="og:description" content="<?php echo $__server->page_embeds->page_description; ?>" />
