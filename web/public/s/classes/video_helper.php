@@ -55,6 +55,19 @@ class video_helper {
         return $stmt->rowCount();
     }
 
+    function fetch_views_from_user($user) {
+        $stmt = $this->__db->prepare("SELECT `rid` FROM videos WHERE author = :username");
+        $stmt->bindParam(":username", $user);
+        $stmt->execute();
+        
+        $views = 0;
+        while($video = $stmt->fetch(PDO::FETCH_ASSOC)) { 
+            $views = $views + $this->fetch_video_views($video['rid']);
+        }
+        return $views;
+        $stmt->close();
+    }
+
     function get_comments_from_video($id) {
         $stmt = $this->__db->prepare("SELECT * FROM comments WHERE toid = :id");
         $stmt->bindParam(":id", $id);

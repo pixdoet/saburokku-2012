@@ -36,7 +36,7 @@
             { $request->error->message = "Your username cannot be empty!"; $request->error->status = ""; }
         
         $stmt = $__db->prepare("SELECT username FROM users WHERE username = :username");
-        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":username", $request->username);
         $stmt->execute();
         if($stmt->rowCount()) 
             { $request->error->message = "There's already a user with that same username!"; $request->error->status = ""; }

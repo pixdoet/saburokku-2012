@@ -51,7 +51,7 @@
     $_user['videos'] = $__user_h->fetch_user_videos($_user['username']);
     $_user['favorites'] = $__user_h->fetch_user_favorites($_user['username']);
     $_user['subscriptions'] = $__user_h->fetch_subscriptions($_user['username']);
-    $_user['views'] = $__user_h->get_channel_views($_user['username']);
+    $_user['views'] = $__video_h->fetch_views_from_user($_user['username']);
     $_user['friends'] = $__user_h->fetch_friends_accepted($_user['username']);
 
     $_user['s_2009_user_left'] = $_user['2009_user_left'];
@@ -139,11 +139,11 @@
 		</form>
 		<!-- begin page -->
 		<div id="page" class="  branded-page channel ">
-			<div id="masthead-container"><?php echo require($_SERVER['DOCUMENT_ROOT'] . "/s/mod/header.php"); ?></div>
+			<div id="masthead-container"><?php require($_SERVER['DOCUMENT_ROOT'] . "/s/mod/header.php"); ?></div>
 			<div id="content-container">
 				<!-- begin content -->
 				<?php if(isset($_SESSION['siteusername']) && $_user['username'] == $_SESSION['siteusername']) { ?>
-					<div class="channel_customization"><?php echo require($_SERVER['DOCUMENT_ROOT'] . "/s/mod/channel_customization.php"); ?></div>
+					<div class="channel_customization"><?php require($_SERVER['DOCUMENT_ROOT'] . "/s/mod/channel_customization.php"); ?></div>
 				<?php } ?> 
 				<?php
 					if(empty(trim($_user['bio'])))
