@@ -86,6 +86,7 @@
 			$_video['disliked'] = $__video_h->if_liked(@$_SESSION['siteusername'], $_video['rid'], false);
 			$_video['author_videos'] = $__video_h->fetch_user_videos($_video['author']);
 			$_video['subscribed'] = $__user_h->if_subscribed(@$_SESSION['siteusername'], $_video['author']);
+			$_video['favorited'] = $__video_h->if_favorited(@$_SESSION['siteusername'], $_video['rid']);
 		?>
 	</head>
 	<body id="" class="date-20120927 en_US ltr   ytg-old-clearfix guide-feed-v2 gecko gecko-15" dir="ltr">
@@ -253,9 +254,10 @@ if (window.yt.timing) {yt.timing.tick("bf");}    </script>
 									<div id="watch-actions-area-container" class="hid">
 										<div id="watch-actions-area" class="yt-rounded">
 											<div id="watch-actions-loading" class="watch-actions-panel hid">
-												Loading...
+												not implemented ismnf
 											</div>
 											<div id="watch-actions-logged-out" class="watch-actions-panel hid">
+												<?php if(!isset($_SESSION['siteusername'])) { ?>
 												<div class="yt-alert yt-alert-naked yt-alert-warn  ">
 													<div class="yt-alert-icon">
 														<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
@@ -263,24 +265,249 @@ if (window.yt.timing) {yt.timing.tick("bf");}    </script>
 													<div class="yt-alert-content" role="alert">
 														<span class="yt-alert-vertical-trick"></span>
 														<div class="yt-alert-message">
-															<strong><a href="//accounts.google.com/ServiceLogin?passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dlike%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252Fwatch%253Fv%253D<?php echo htmlspecialchars($_video['rid']); ?>%2526feature%253Dg-logo-xit&amp;uilel=3&amp;hl=en_US&amp;service=youtube">Sign in</a> or <a href="/signup?next=%2Fwatch%3Fv%3D<?php echo htmlspecialchars($_video['rid']); ?>%26feature%3Dg-logo-xit">sign up</a> now!
+															<strong><a href="/sign_in">Sign in</a> or <a href="/sign_up">sign up</a> now!
 															</strong>
 														</div>
 													</div>
 												</div>
+												<?php } else { ?>
+													<h3>Be friends with the creator</h3>
+
+													<?php if($_SESSION['siteusername'] != $_video['author']) { ?>
+														<img style="width: 50px;height:50px;" src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($_video['author']); ?>">
+														<span style="display: inline-block; vertical-align:top;width: 100px;font-size:11px;">
+															<b><a href="/user/<?php echo htmlspecialchars($_video['author']); ?>"><?php echo htmlspecialchars($_video['author']); ?></a></b><br>
+															<?php echo $__user_h->fetch_subs_count($_video['author']); ?> subscribers<br>
+															<?php echo $__user_h->fetch_user_videos($_video['author']); ?> videos published<br>
+														</span><br><br>
+													<?php } else { ?>
+														<img style="width: 50px;height:50px;" src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($_video['author']); ?>">
+														<span style="display: inline-block; vertical-align:top;width: 100px;font-size:11px;">
+															This is you.
+														</span><br><br>
+													<?php } ?>
+
+													<?php if($_SESSION['siteusername'] != $_video['author']) { ?>
+														<?php if($_video['friended'] == false) { ?>
+															<a href="/get/favorite?v=<?php echo $_video['rid']; ?>">Send a friend request</a>
+														<?php } else { ?>
+															Your friend request is pending.
+														<?php } ?>
+													<?php } else { ?>
+														You can't friend yourself.
+													<?php } ?>
+													<hr><br>
+													<h3>Add to Favorites</h3>
+													<?php if($_video['favorited'] == false) { ?>
+														<a href="/get/favorite?v=<?php echo $_video['rid']; ?>">Favorite Video</a>
+													<?php } else { ?>
+														<a href="/get/unfavorite?v=<?php echo $_video['rid']; ?>">Unfavorite Video</a>
+													<?php } ?>
+													<hr><br>
+													<h3>Add to a Playlist</h3>
+													<?php
+														$stmt = $__db->prepare("SELECT * FROM playlists WHERE author = :username ORDER BY id DESC LIMIT 20");
+														$stmt->bindParam(":username", $_SESSION['siteusername']);
+														$stmt->execute();
+														while($playlist = $stmt->fetch(PDO::FETCH_ASSOC)) { 
+															$buffer = json_decode($playlist['videos']);
+															@$rid = $buffer[0];
+															if(!empty($rid)) {
+																@$video = $__video_h->fetch_video_rid($rid);
+															} else {
+																$video['thumbnail'] = "";
+																$video['duration'] = 0;
+															}
+
+															$videos = count($buffer);
+													?>
+														<a href="/get/add_to_playlist?id=<?php echo $_video['rid']; ?>&playlist=<?php echo $playlist['rid']; ?>">Add to <?php echo htmlspecialchars($playlist['title']); ?></a>
+													<?php } ?>
+												<?php } ?>
 											</div>
 											<div id="watch-actions-error" class="watch-actions-panel hid">
-												<div class="yt-alert yt-alert-naked yt-alert-error  ">
-													<div class="yt-alert-icon">
-														<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
-													</div>
-													<div class="yt-alert-content" role="alert" id="watch-error-string"></div>
-												</div>
+	  											kick push coast
 											</div>
 											<div id="watch-actions-addto" class="watch-actions-panel hid"></div>
 											<div id="watch-actions-share" class="watch-actions-panel hid">
 												<div id="watch-actions-share-loading">
-													Loading...
+													<div class="share-panel">
+														<div class="share-option-container ytg-box">
+															<div class="share-panel-url-container">
+																<span class=" yt-uix-form-input-container "><input class="yt-uix-form-input-text share-panel-url" name="share_url" value="http://subrock.rocks/watch?v=<?php echo $_video['rid']; ?>" data-video-id="<?php echo $_video['rid']; ?>"></span>
+																<div class="share-panel-url-options yt-uix-expander yt-uix-expander-collapsed">
+																	<div class="yt-uix-expander-head">
+																		<a class="share-panel-show-url-options">
+																		<span class="collapsed-message">
+																		Options
+																		<img class="arrow" src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="">
+																		</span>
+																		<span class="expanded-message">
+																		Close
+																		<img class="arrow" src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="">
+																		</span>
+																		</a>
+																	</div>
+																	<ul class="yt-uix-expander-body share-options">
+																		<li>
+																			<label>
+																			<input class="share-panel-start-at" type="checkbox">
+																			Start at:
+																			</label>
+																			<input type="text" value="0:00" class="yt-uix-form-input-text share-panel-start-at-time">
+																		</li>
+																		<li>
+																			<label>
+																			<input class="share-panel-long-url" type="checkbox">
+																			Long link
+																			</label>
+																		</li>
+																	</ul>
+																</div>
+															</div>
+															<div class="share-panel-buttons yt-uix-expander yt-uix-expander-collapsed">
+																<span class="share-panel-main-buttons">
+																<button type="button" class="share-panel-embed yt-uix-button yt-uix-button-default" onclick=";return false;" role="button"><span class="yt-uix-button-content">Embed </span></button><button type="button" class="share-panel-email yt-uix-button yt-uix-button-default" onclick=";return false;" role="button"><span class="yt-uix-button-content">Email </span></button>    </span>
+															</div>
+															<div class="share-panel-services yt-uix-expander yt-uix-expander-collapsed clearfix" style="display: none;">
+																<ul class="share-group ytg-box">
+																	<li>
+																		<button onclick="yt.tracking.shareVideo(&quot;FACEBOOK&quot;, &quot;ngzCpd94AwA&quot;,&quot;en_US&quot;, &quot;sharepanel&quot;);yt.window.popup(&quot;http:\/\/www.facebook.com\/sharer.php?u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DngzCpd94AwA%26feature%3Dshare\u0026t=intro+to+RUCA&quot;, {'height': 440,'width': 620,'scrollbars': true});return false;" data-service-name="FACEBOOK" title="Share to Facebook" class="yt-uix-tooltip share-service-button">
+																		<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="Facebook" class="share-service-icon share-service-icon-facebook">
+																		<span>Facebook</span>
+																		</button>
+																	</li>
+																	<li>
+																		<button onclick="yt.tracking.shareVideo(&quot;TWITTER&quot;, &quot;ngzCpd94AwA&quot;,&quot;en_US&quot;, &quot;sharepanel&quot;);yt.window.popup(&quot;http:\/\/twitter.com\/share?url=http%3A%2F%2Fyoutu.be%2FngzCpd94AwA\u0026text=intro+to+RUCA%3A\u0026via=youtube&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="TWITTER" title="Share to Twitter" class="yt-uix-tooltip share-service-button" data-tooltip-text="Share to Twitter">
+																		<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="Twitter" class="share-service-icon share-service-icon-twitter">
+																		<span>Twitter</span>
+																		</button>
+																	</li>
+																	<li>
+																		<button onclick="yt.tracking.shareVideo(&quot;GOOGLEPLUS&quot;, &quot;ngzCpd94AwA&quot;,&quot;en_US&quot;, &quot;sharepanel&quot;);yt.window.popup(&quot;https:\/\/plus.google.com\/u\/0\/share?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DngzCpd94AwA%26feature%3Dshare\u0026source=yt&quot;, {'height': 620,'width': 620,'scrollbars': true});return false;" data-service-name="GOOGLEPLUS" title="Share to Google+" class="yt-uix-tooltip share-service-button" data-tooltip-text="Share to Google+">
+																		<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="Google+" class="share-service-icon share-service-icon-googleplus">
+																		<span>Google+</span>
+																		</button>
+																	</li>
+																</ul>
+																<div class="yt-uix-expander-head">
+																	<a class="share-panel-show-more">
+																	<span class="collapsed-message">
+																	More
+																	<img class="arrow" src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="">
+																	</span>
+																	<span class="expanded-message">
+																	Less
+																	<img class="arrow" src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="">
+																	</span>
+																	</a>
+																</div>
+																<div class="yt-uix-expander-body share-options-secondary">
+																	<div class="secondary">
+																		<div class="share-groups">
+																			<ul>
+																				<li>
+																					<button onclick="yt.tracking.shareVideo(&quot;ORKUT&quot;, &quot;ngzCpd94AwA&quot;,&quot;en_US&quot;, &quot;sharepanel&quot;);yt.window.popup(&quot;http:\/\/www.orkut.com\/FavoriteVideos.aspx?u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DngzCpd94AwA%26feature%3Dshare&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="ORKUT" class="share-service-button">
+																					<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="orkut" class="share-service-icon share-service-icon-orkut">
+																					<span>orkut</span>
+																					</button>
+																					<span>orkut</span>
+																				</li>
+																				<li>
+																					<button onclick="yt.tracking.shareVideo(&quot;TUMBLR&quot;, &quot;ngzCpd94AwA&quot;,&quot;en_US&quot;, &quot;sharepanel&quot;);yt.window.popup(&quot;http:\/\/www.tumblr.com\/share?v=3\u0026u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DngzCpd94AwA%26feature%3Dshare&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="TUMBLR" class="share-service-button">
+																					<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="tumblr." class="share-service-icon share-service-icon-tumblr">
+																					<span>tumblr.</span>
+																					</button>
+																					<span>tumblr.</span>
+																				</li>
+																				<li>
+																					<button onclick="yt.tracking.shareVideo(&quot;BLOGGER&quot;, &quot;ngzCpd94AwA&quot;,&quot;en_US&quot;, &quot;sharepanel&quot;);yt.window.popup(&quot;http:\/\/www.blogger.com\/blog-this.g?n=intro+to+RUCA\u0026source=youtube\u0026b=%3Ciframe+width%3D%22480%22+height%3D%22270%22+src%3D%22http%3A%2F%2Fwww.youtube.com%2Fembed%2FngzCpd94AwA%3Ffs%3D1%22+frameborder%3D%220%22+allowfullscreen%3E%3C%2Fiframe%3E\u0026eurl=http%3A%2F%2Fi3.ytimg.com%2Fvi%2FngzCpd94AwA%2Fhqdefault.jpg&quot;, {'height': 468,'width': 768,'scrollbars': true});return false;" data-service-name="BLOGGER" class="share-service-button">
+																					<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="Blogger" class="share-service-icon share-service-icon-blogger">
+																					<span>Blogger</span>
+																					</button>
+																					<span>Blogger</span>
+																				</li>
+																				<li>
+																					<button onclick="yt.tracking.shareVideo(&quot;MYSPACE&quot;, &quot;ngzCpd94AwA&quot;,&quot;en_US&quot;, &quot;sharepanel&quot;);yt.window.popup(&quot;http:\/\/www.myspace.com\/Modules\/PostTo\/Pages\/?t=intro+to+RUCA\u0026u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DngzCpd94AwA%26feature%3Dshare\u0026l=1&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="MYSPACE" class="share-service-button">
+																					<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="Myspace" class="share-service-icon share-service-icon-myspace">
+																					<span>Myspace</span>
+																					</button>
+																					<span>Myspace</span>
+																				</li>
+																			</ul>
+																			<ul>
+																				<li>
+																					<button onclick="yt.tracking.shareVideo(&quot;HI5&quot;, &quot;ngzCpd94AwA&quot;,&quot;en_US&quot;, &quot;sharepanel&quot;);yt.window.popup(&quot;http:\/\/www.hi5.com\/friend\/checkViewedVideo.do?t=intro+to+RUCA\u0026url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DngzCpd94AwA%26feature%3Dshare\u0026embeddable=true\u0026simple=true&quot;, {'height': 475,'width': 800,'scrollbars': true});return false;" data-service-name="HI5" class="share-service-button">
+																					<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="hi5" class="share-service-icon share-service-icon-hi5">
+																					<span>hi5</span>
+																					</button>
+																					<span>hi5</span>
+																				</li>
+																				<li>
+																					<button onclick="yt.tracking.shareVideo(&quot;LINKEDIN&quot;, &quot;ngzCpd94AwA&quot;,&quot;en_US&quot;, &quot;sharepanel&quot;);yt.window.popup(&quot;http:\/\/www.linkedin.com\/shareArticle?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DngzCpd94AwA%26feature%3Dshare\u0026title=intro+to+RUCA\u0026summary=intro+to+RUCA%2C+a+computer+game+that+I+will+be+releasing+online+this+june+at+www.cecilyismyruca.com\u0026source=Youtube&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="LINKEDIN" class="share-service-button">
+																					<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="LinkedIn" class="share-service-icon share-service-icon-linkedin">
+																					<span>LinkedIn</span>
+																					</button>
+																					<span>LinkedIn</span>
+																				</li>
+																				<li>
+																					<button onclick="yt.tracking.shareVideo(&quot;STUMBLEUPON&quot;, &quot;ngzCpd94AwA&quot;,&quot;en_US&quot;, &quot;sharepanel&quot;);yt.window.popup(&quot;http:\/\/www.stumbleupon.com\/submit?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DngzCpd94AwA%26feature%3Dshare\u0026title=intro+to+RUCA&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="STUMBLEUPON" class="share-service-button">
+																					<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" alt="StumbleUpon" class="share-service-icon share-service-icon-stumbleupon">
+																					<span>StumbleUpon</span>
+																					</button>
+																					<span>StumbleUpon</span>
+																				</li>
+																			</ul>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<div class="share-panel-embed-container" style="">
+																<textarea class="yt-uix-form-textarea share-embed-code" onkeydown="if ((event.ctrlKey || event.metaKey) &amp;&amp; event.keyCode == 67) { yt.tracking.track('embedCodeCopied'); }">not implemented</textarea>
+																<p class="share-embed-code-description">
+																	After making your selection, copy and paste the embed code above. The code changes based on your selection.
+																</p>
+																<hr>
+																<ul class="share-embed-options">
+																	<li>
+																		<label>
+																		<input type="checkbox" class="share-embed-option" name="show-related" checked="">
+																		Show suggested videos when the video finishes
+																		</label>
+																	</li>
+																	<li>
+																		<label>
+																		<input type="checkbox" class="share-embed-option" name="use-https">
+																		Use HTTPS
+																		[<a href="http://www.google.com/support/youtube/bin/answer.py?answer=171780&amp;expand=UseHTTPS#HTTPS" target="_blank">?</a>]
+																		</label>
+																	</li>
+																	<li>
+																		<label>
+																		<input type="checkbox" class="share-embed-option" name="delayed-cookies">
+																		Enable privacy-enhanced mode
+																		[<a href="http://www.google.com/support/youtube/bin/answer.py?answer=171780&amp;expand=PrivacyEnhancedMode#privacy" target="_blank">?</a>]
+																		</label>
+																	</li>
+																	<li>
+																		<label>
+																		<input type="checkbox" class="share-embed-option" name="use-flash-code">
+																		Use old embed code
+																		[<a href="http://www.google.com/support/youtube/bin/answer.py?answer=171780&amp;expand=UseOldEmbedCode#oldcode" target="_blank">?</a>]
+																		</label>
+																	</li>
+																</ul>
+																<hr>
+															</div>
+															<div class="share-panel-email-container hid">
+																<div>
+																	Loading...
+																</div>
+															</div>
+														</div>
+														<span class="share-panel-hangout">
+														</span>
+													</div>
 												</div>
 												<div id="watch-actions-share-panel" class="hid"></div>
 											</div>

@@ -157,6 +157,15 @@ class video_helper {
         return $stmt->rowCount() === 1;
     }
 
+    function if_favorited($user, $reciever) {
+        $stmt = $this->__db->prepare("SELECT `reciever` FROM favorite_video WHERE sender = :user AND reciever = :reciever");
+        $stmt->bindParam(":user", $user);
+        $stmt->bindParam(":reciever", $reciever);
+        $stmt->execute();
+        
+        return $stmt->rowCount() === 1;
+    }
+
     function fetch_user_videos($v) {
         $stmt = $this->__db->prepare("SELECT rid FROM videos WHERE author = :v");
         $stmt->bindParam(":v", $v);

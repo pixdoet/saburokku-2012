@@ -30,6 +30,8 @@ if($request->error->status == "OK") {
       ':sender' => $request->sender,
       ':reciever' => $request->name,
     ));
+
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
 } else {
     echo json_encode($request->error);
 }

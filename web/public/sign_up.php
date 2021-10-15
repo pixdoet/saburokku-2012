@@ -53,13 +53,13 @@
 							<form method="POST" action="/d/signup">
 								<b>Username</b><br>
 								<span class="small-text">Your username must be less than 20 characters and contain no special characters</span><br>
-								<input class="sign-in-inputs" type="text" name="username" placeholder="Username"><br><br>
+								<input class="yt-uix-form-input-text" type="text" name="username" placeholder="Username"><br><br>
 								<b>Password</b><br>
 								<span class="small-text">Your password must contain special characters. <br>Passwords are hashed with bcrypt.</span><br>
-								<input class="sign-in-inputs" type="password" name="password" placeholder="Password"><br><br>
+								<input class="yt-uix-form-input-text" type="password" name="password" placeholder="Password"><br><br>
                                 <b>E-Mail</b><br>
 								<span class="small-text">Your email must be a valid email or you will not be able to comment, and upload!</span><br>
-								<input class="sign-in-inputs" type="email" name="email" placeholder="E-Mail"><br><br>
+								<input class="yt-uix-form-input-text" type="email" name="email" placeholder="E-Mail"><br><br>
 
 								<input class="yt-uix-button yt-uix-button-default" type="submit" value="Sign Up">
 							</form>

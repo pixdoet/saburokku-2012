@@ -136,7 +136,7 @@
 						</div>
 						<ul>
 							<li class="masthead-expanded-menu-item">
-								<a class="end" href="logout">
+								<a class="end" href="/logout">
 								Sign out
 								</a>
 							</li>

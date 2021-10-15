@@ -51,10 +51,10 @@
 					<div class="www-right">
 						<div class="sign-in-div">
 							<form method="POST" action="/d/login">
-								<b>Username</b><br>
-								<input class="sign-in-inputs" type="text" name="username" placeholder="Username"><br><br>
-								<b>Password</b><br>
-								<input class="sign-in-inputs" type="password" name="password" placeholder="Password"><br><br>
+								<b>Username</b><br><br>
+								<input class="yt-uix-form-input-text" type="text" name="username" placeholder="Username"><br><br>
+								<b>Password</b><br><br>
+								<input class="yt-uix-form-input-text" type="password" name="password" placeholder="Password"><br><br>
 
 								<input class="yt-uix-button yt-uix-button-default" type="submit" value="Login">&nbsp;&nbsp;&nbsp; or &nbsp;&nbsp;&nbsp;
 									<a style="color: white; text-decoration: none;" href="/sign_up">

@@ -1,40 +1,33 @@
-<?php ob_start(); ?>
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/static/important/config.inc.php"); ?>
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/static/lib/new/base.php"); ?>
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/static/lib/new/fetch.php"); ?>
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/static/lib/new/insert.php"); ?>
-<?php
-    $_user_fetch_utils = new user_fetch_utils();
-    $_video_fetch_utils = new video_fetch_utils();
-    $_user_insert_utils = new user_insert_utils();
-    $_base_utils = new config_setup();
-    
-    $_base_utils->initialize_db_var($conn);
-    $_video_fetch_utils->initialize_db_var($conn);
-    $_user_fetch_utils->initialize_db_var($conn);
-    $_user_insert_utils->initialize_db_var($conn);
-
-?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/config.inc.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/db_helper.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/time_manip.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_helper.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/video_helper.php"); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_update.php"); ?>
+<?php $__server->page_title = "test"; ?>
+<?php $__video_h = new video_helper($__db); ?>
+<?php $__user_h = new user_helper($__db); ?>
+<?php $__user_u = new user_update($__db); ?>
+<?php $__db_h = new db_helper(); ?>
+<?php $__time_h = new time_helper(); ?>
 <?php
 $name = $_GET['v'];
 $author = $_SESSION['siteusername'];
 
-if(!isset($_SESSION['siteusername']) || !isset($_GET['user'])) {
+$stmt = $__db->prepare("SELECT * FROM favorite_video WHERE sender = :sender AND reciever = :reciever");
+$stmt->bindParam(":sender", $_SESSION['siteusername']);
+$stmt->bindParam(":reciever", $name);
+$stmt->execute();
+
+if($stmt->rowCount() == 1) { 
+    $_SESSION['error']->message = "You have already favorited this video.";
     header('Location: ' . $_SERVER['HTTP_REFERER']);
+    die();
 }
 
-$stmt = $conn->prepare("SELECT * FROM favorite_video WHERE sender = ? AND reciever = ?");
-$stmt->bind_param("ss", $_SESSION['siteusername'], $name);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if($result->num_rows === 1) die('You already favorited this video!');
-$stmt->close();
-
-$stmt = $conn->prepare("INSERT INTO favorite_video (sender, reciever) VALUES (?, ?)");
-$stmt->bind_param("ss", $_SESSION['siteusername'], $name);
-
+$stmt = $__db->prepare("INSERT INTO favorite_video (sender, reciever) VALUES (:sender, :reciever)");
+$stmt->bindParam(":sender", $_SESSION['siteusername']);
+$stmt->bindParam(":reciever", $name);
 $stmt->execute();
-$stmt->close();
-$author = htmlspecialchars($_SESSION['siteusername']);
 header('Location: ' . $_SERVER['HTTP_REFERER']);
 ?>
