@@ -1,7 +1,7 @@
 <?php
     $__server = (object) [
         "page_title" => "",
-        "featured_channels" => array("bhief", "CrazyFrog", "ItsJustAPlayer"),
+        "featured_channels" => array("bhief", "Xx_WalterWhite420_xX", "zulc22", "SuperKamekArea"),
         "ffmpeg_binary" => "ffmpeg", 
         "ffprobe_binary" => "ffprobe", 
         "ffmpeg_threads" => 2, 

@@ -69,8 +69,8 @@
 								</div></div></div>
 
 								<div class="guide-section yt-uix-expander  ">
-								<h3 class="guide-item-container">
-									<a data-feed-name="balls" data-feed-type="system" class="guide-item" href="/inbox/">
+								<h3 class="guide-item-container guide-item-action">
+									<a class="guide-item" href="/inbox/">
 									<span class="thumb">
 										<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="" class="system-icon category">
 									</span>
@@ -170,7 +170,7 @@
 										<?php foreach($__server->featured_channels as $channel) { ?>
 											<li class="guide-item-container ">
 												<a class="guide-item" data-external-id="<?php echo htmlspecialchars($channel); ?>" data-feed-name="<?php echo htmlspecialchars($channel); ?>" data-feed-type="user">
-												<span class="thumb">  <span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($channel); ?>" width="28"><span class="vertical-align"></span></span></span></span>
+												<span class="thumb">  <span class="video-thumb ux-thumb yt-thumb-square-28 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" data-thumb="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($channel); ?>" width="28"><span class="vertical-align"></span></span></span></span>
 												</span>
 												<span class="display-name">
 													<?php echo htmlspecialchars($channel); ?>
@@ -291,7 +291,7 @@
 														<div class="feed-item-content-wrapper clearfix">
 															<div class="feed-item-thumb">
 																<a class="ux-thumb-wrap contains-addto  yt-uix-contextlink yt-uix-sessionlink" data-sessionlink="ei=CNLr3rbS3rICFSwSIQodSW397Q%3D%3D&amp;context=G266dc06FOAAAAAAAAAA" href="/watch?v=<?php echo $video['rid']; ?>">
-																<span class="video-thumb ux-thumb yt-thumb-default-185 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" width="185"><span class="vertical-align"></span></span></span></span>
+																<span class="video-thumb ux-thumb yt-thumb-default-185 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" data-thumb="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" width="185"><span class="vertical-align"></span></span></span></span>
 																<span class="video-time"><?php echo $video['duration']; ?></span>
 																<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="rLHU-_OhT8g" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
 																</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
@@ -414,7 +414,7 @@
 							</span></span><span class="dragger"></span></a></li>-->
 					</div>
 					<div id="playlist-bar-next-up-template" style="display: none;">
-						<!--<div class="playlist-bar-next-thumb"><span class="video-thumb ux-thumb yt-thumb-default-74 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/__video_encrypted_id__/default.jpg" alt="Thumbnail" width="74" ><span class="vertical-align"></span></span></span></span></div>-->
+						<!--<div class="playlist-bar-next-thumb"><span class="video-thumb ux-thumb yt-thumb-default-74 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/__video_encrypted_id__/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="74" ><span class="vertical-align"></span></span></span></span></div>-->
 					</div>
 				</div>
 				<div id="playlist-bar-options-menu" class="hid">

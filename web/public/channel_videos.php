@@ -306,7 +306,7 @@
 															$video['description'] = $__video_h->shorten_description($video['description'], 50);
 													?>
                                                     <li class="yt-c3-grid-item">
-                                                        <a href="/watch?v=<?php echo htmlspecialchars($video['rid']); ?>" class="ux-thumb-wrap yt-uix-sessionlink yt-uix-contextlink contains-addto " data-sessionlink="feature=plcp&amp;context=C4e80d7cVDvjVQa1PpcFPHxNkhfeSQg8_nJHnhVurQf82C2OenNiw%3D"><span class="video-thumb ux-thumb yt-thumb-default-234 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" alt="Thumbnail" width="234"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $video['duration']; ?></span>
+                                                        <a href="/watch?v=<?php echo htmlspecialchars($video['rid']); ?>" class="ux-thumb-wrap yt-uix-sessionlink yt-uix-contextlink contains-addto " data-sessionlink="feature=plcp&amp;context=C4e80d7cVDvjVQa1PpcFPHxNkhfeSQg8_nJHnhVurQf82C2OenNiw%3D"><span class="video-thumb ux-thumb yt-thumb-default-234 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="234"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $video['duration']; ?></span>
                                                         <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="yBlvNSfqAj0" role="button"><span class="yt-uix-button-content">  <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
                                                         </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
                                                         </a>
@@ -384,7 +384,7 @@
 							</span></span><span class="dragger"></span></a></li>-->
 					</div>
 					<div id="playlist-bar-next-up-template" style="display: none;">
-						<!--<div class="playlist-bar-next-thumb"><span class="video-thumb ux-thumb yt-thumb-default-74 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/__video_encrypted_id__/default.jpg" alt="Thumbnail" width="74" ><span class="vertical-align"></span></span></span></span></div>-->
+						<!--<div class="playlist-bar-next-thumb"><span class="video-thumb ux-thumb yt-thumb-default-74 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/__video_encrypted_id__/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="74" ><span class="vertical-align"></span></span></span></span></div>-->
 					</div>
 				</div>
 				<div id="playlist-bar-options-menu" class="hid">

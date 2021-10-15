@@ -36,6 +36,22 @@
 			$__user_i->send_message($_SESSION['siteusername'], "New comment", $_video['author'], "I commented \"" . $_POST['comment'] . "\" on your video!", $_video['rid'], "nt");
         }
     }
+
+	/* 
+	PREPARE EMBEDS CLASS -- function(string $page_title, string $page_description...) 
+	Returns a list of arrays for compatibility purposes & but downside is ugly for loop codes 
+	Work on this tomorrow or some shit idk lol
+	*/
+
+	/* 
+	USE THE GOD DAMN __CONFIG MORE -- idiot
+	Work on this tomorrow or some shit
+	*/
+
+	$__server->page_embeds->page_title = htmlspecialchars($_video['title']);
+	$__server->page_embeds->page_description = htmlspecialchars($_video['description']);
+	$__server->page_embeds->page_image = "/dynamic/thumbs/" . $_video['thumbnail'];
+	$__server->page_embeds->page_url = "https://subrock.rocks/watch?v=" . htmlspecialchars($_video['rid']);
 ?>
 <!DOCTYPE html>
 <html>
@@ -653,7 +669,7 @@ if (window.yt.timing) {yt.timing.tick("bf");}    </script>
 														<form method="post" action="/watch?v=<?php echo $_GET['v']; ?>">
 															<div class="yt-alert yt-alert-default yt-alert-error hid comments-post-message">
 																<div class="yt-alert-icon">
-																	<img src="./intro to RUCA - YouTube_files/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
+																	<img class="icon master-sprite" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" width="32px" height="35px">
 																</div>
 																<div class="yt-alert-buttons"></div>
 																<div class="yt-alert-content" role="alert"></div>
@@ -871,7 +887,7 @@ if (window.yt.timing) {yt.timing.tick("bf");}    </script>
 							</span></span><span class="dragger"></span></a></li>-->
 					</div>
 					<div id="playlist-bar-next-up-template" style="display: none;">
-						<!--<div class="playlist-bar-next-thumb"><span class="video-thumb ux-thumb yt-thumb-default-74 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/__video_encrypted_id__/default.jpg" alt="Thumbnail" width="74" ><span class="vertical-align"></span></span></span></span></div>-->
+						<!--<div class="playlist-bar-next-thumb"><span class="video-thumb ux-thumb yt-thumb-default-74 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/__video_encrypted_id__/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="74" ><span class="vertical-align"></span></span></span></span></div>-->
 					</div>
 				</div>
 				<div id="playlist-bar-options-menu" class="hid">

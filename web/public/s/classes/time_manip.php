@@ -92,5 +92,4 @@ class time_helper {
         }
     }
 }
-
 ?>

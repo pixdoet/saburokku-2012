@@ -30,6 +30,9 @@ switch ($requestedPage[1]) {
     case 'player_asset':
         $a = implode("/", $requestedPage);
         $i = implode(".", $requestedPage);
+        // shitty fix plz dont use in production and stop using the shitty router bitch
+        ini_set ('memory_limit', 400000000);
+
         // normal
         $file = file_get_contents($_SERVER['DOCUMENT_ROOT'] . $a);
 

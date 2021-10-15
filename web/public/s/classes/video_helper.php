@@ -188,4 +188,8 @@ class video_helper {
     }
 }
 
+
+/* SHITTY FIX INCOMING FOR EMBEDS - MOVE SO IT'S IN EVERY PAGE WHEN POSSIBLE AND NOT LAZY */
+$__server->page_embeds->page_title = "SubRocks - " . $__server->page_title;
+$__server->page_embeds->page_description = "Welcome to a Youtube recreation dedicated to replecating 2012's YouTube layout.";
 ?>

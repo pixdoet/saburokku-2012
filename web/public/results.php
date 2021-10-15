@@ -185,7 +185,7 @@
                      <ol id="search-results">
                         <li class="yt-grid-box result-item-video *sr ">
                            <div id="" class="yt-uix-tile yt-lockup-list yt-tile-default yt-grid-box ">
-                              <div class="yt-lockup-thumbnail"><a href="/watch?v=k0BWlvnBmIE" class="ux-thumb-wrap contains-addto result-item-thumb"><span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/k0BWlvnBmIE/default.jpg" alt="Thumbnail" width="138"><span class="vertical-align"></span></span></span></span><span class="video-time">4:37</span>
+                              <div class="yt-lockup-thumbnail"><a href="/watch?v=k0BWlvnBmIE" class="ux-thumb-wrap contains-addto result-item-thumb"><span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/k0BWlvnBmIE/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span><span class="video-time">4:37</span>
                                  <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="k0BWlvnBmIE" role="button"><span class="yt-uix-button-content">  <span class="addto-label">
                                  Watch Later
                                  </span>
@@ -249,7 +249,7 @@
                      <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
                         <div class="thumb-container">
                            <a href="http://www.youtube.com/watch?v=U30hHXToi5E" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i2.ytimg.com/vi/U30hHXToi5E/default.jpg" alt="Thumbnail" width="138"><span class="vertical-align"></span></span></span></span>
+                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i2.ytimg.com/vi/U30hHXToi5E/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
                            <span class="video-time">4:45</span>
                            </a>
                         </div>
@@ -269,7 +269,7 @@
                      <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
                         <div class="thumb-container">
                            <a href="http://www.youtube.com/watch?v=IWcRtSZMN-Q" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i2.ytimg.com/vi/IWcRtSZMN-Q/default.jpg" alt="Thumbnail" width="138"><span class="vertical-align"></span></span></span></span>
+                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i2.ytimg.com/vi/IWcRtSZMN-Q/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
                            <span class="video-time">15:16</span>
                            </a>
                         </div>
@@ -289,7 +289,7 @@
                      <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
                         <div class="thumb-container">
                            <a href="http://www.youtube.com/watch?v=CyUkmHBW26g" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i4.ytimg.com/vi/CyUkmHBW26g/default.jpg" alt="Thumbnail" width="138"><span class="vertical-align"></span></span></span></span>
+                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i4.ytimg.com/vi/CyUkmHBW26g/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
                            <span class="video-time">2:11:30</span>
                            </a>
                         </div>
@@ -309,7 +309,7 @@
                      <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
                         <div class="thumb-container">
                            <a href="http://www.youtube.com/watch?v=iyKsSPHM0wE" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i2.ytimg.com/vi/iyKsSPHM0wE/default.jpg" alt="Thumbnail" width="138"><span class="vertical-align"></span></span></span></span>
+                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i2.ytimg.com/vi/iyKsSPHM0wE/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
                            <span class="video-time">45:26</span>
                            </a>
                         </div>
@@ -329,7 +329,7 @@
                      <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
                         <div class="thumb-container">
                            <a href="http://www.youtube.com/watch?v=hZKMBhVoTu8" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i1.ytimg.com/vi/hZKMBhVoTu8/default.jpg" alt="Thumbnail" width="138"><span class="vertical-align"></span></span></span></span>
+                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i1.ytimg.com/vi/hZKMBhVoTu8/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
                            <span class="video-time">6:34</span>
                            </a>
                         </div>
@@ -349,7 +349,7 @@
                      <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
                         <div class="thumb-container">
                            <a href="http://www.youtube.com/watch?v=hZNaDowboFU" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i1.ytimg.com/vi/hZNaDowboFU/default.jpg" alt="Thumbnail" width="138"><span class="vertical-align"></span></span></span></span>
+                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i1.ytimg.com/vi/hZNaDowboFU/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
                            <span class="video-time">4:52</span>
                            </a>
                         </div>
@@ -369,7 +369,7 @@
                      <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
                         <div class="thumb-container">
                            <a href="http://www.youtube.com/watch?v=SFkurNxZHkM" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i4.ytimg.com/vi/SFkurNxZHkM/default.jpg" alt="Thumbnail" width="138"><span class="vertical-align"></span></span></span></span>
+                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i4.ytimg.com/vi/SFkurNxZHkM/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
                            <span class="video-time">54:45</span>
                            </a>
                         </div>
@@ -389,7 +389,7 @@
                      <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
                         <div class="thumb-container">
                            <a href="http://www.youtube.com/watch?v=6cAVl1NiyA4" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i3.ytimg.com/vi/6cAVl1NiyA4/default.jpg" alt="Thumbnail" width="138"><span class="vertical-align"></span></span></span></span>
+                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i3.ytimg.com/vi/6cAVl1NiyA4/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
                            <span class="video-time">27:07</span>
                            </a>
                         </div>
@@ -464,7 +464,7 @@
                      </span></span><span class="dragger"></span></a></li>-->
                </div>
                <div id="playlist-bar-next-up-template" style="display: none;">
-                  <!--<div class="playlist-bar-next-thumb"><span class="video-thumb ux-thumb yt-thumb-default-74 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/__video_encrypted_id__/default.jpg" alt="Thumbnail" width="74" ><span class="vertical-align"></span></span></span></span></div>-->
+                  <!--<div class="playlist-bar-next-thumb"><span class="video-thumb ux-thumb yt-thumb-default-74 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/__video_encrypted_id__/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="74" ><span class="vertical-align"></span></span></span></span></div>-->
                </div>
             </div>
             <div id="playlist-bar-options-menu" class="hid">

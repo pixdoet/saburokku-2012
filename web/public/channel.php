@@ -334,7 +334,7 @@
 														<li class="blogger-video">
 															<div class="video yt-tile-visible">
 																<a href="/watch?v=<?php echo $video['rid']; ?>">
-																<span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-288 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" alt="Thumbnail" width="288"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $__time_h->timestamp($video['duration']); ?></span>
+																<span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-288 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="288"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $__time_h->timestamp($video['duration']); ?></span>
 																<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="/watch?v=<?php echo $video['rid']; ?>" role="button"><span class="yt-uix-button-content">  <span class="addto-label">
 																Watch Later
 																</span>
@@ -483,7 +483,7 @@
 															<li class="yt-tile-visible yt-uix-tile">
 																<div class="channel-summary clearfix channel-summary-compact">
 																	<div class="channel-summary-thumb">
-																		<span class="video-thumb ux-thumb yt-thumb-square-46 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" data-thumb="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($user); ?>" width="46"><span class="vertical-align"></span></span></span></span>
+																		<span class="video-thumb ux-thumb yt-thumb-square-46 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" data-thumb="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($user); ?>" width="46"><span class="vertical-align"></span></span></span></span>
 																	</div>
 																	<div class="channel-summary-info">
 																		<h3 class="channel-summary-title">
@@ -599,7 +599,7 @@
 							</span></span><span class="dragger"></span></a></li>-->
 					</div>
 					<div id="playlist-bar-next-up-template" style="display: none;">
-						<!--<div class="playlist-bar-next-thumb"><span class="video-thumb ux-thumb yt-thumb-default-74 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/__video_encrypted_id__/default.jpg" alt="Thumbnail" width="74" ><span class="vertical-align"></span></span></span></span></div>-->
+						<!--<div class="playlist-bar-next-thumb"><span class="video-thumb ux-thumb yt-thumb-default-74 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/__video_encrypted_id__/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="74" ><span class="vertical-align"></span></span></span></span></div>-->
 					</div>
 				</div>
 				<div id="playlist-bar-options-menu" class="hid">
