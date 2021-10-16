@@ -2,8 +2,8 @@
 
 <!-- begin masthead -->
 <div id="masthead" class="" dir="ltr">
-	<a id="logo-container" href="/" title="YouTube home">
-	<img id="logo" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="YouTube home">
+	<a id="logo-container" href="/" title="SubRocks home">
+	<img id="logo" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="SubRocks home">
 	</a>
 	<?php if(!isset($_SESSION['siteusername'])) { ?>
 	<div id="yt-masthead-signin">
