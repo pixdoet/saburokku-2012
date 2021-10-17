@@ -2,18 +2,21 @@
 
 <!-- begin masthead -->
 <div id="masthead" class="" dir="ltr">
-	<a id="logo-container" href="/" title="YouTube home">
-	<img id="logo" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="YouTube home">
+	<a id="logo-container" href="/" title="SubRocks home">
+	<img id="logo" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="SubRocks home">
 	</a>
 	<?php if(!isset($_SESSION['siteusername'])) { ?>
 	<div id="yt-masthead-signin">
-		<a style="color: white; text-decoration: none;" href="/sign_in">
-		<button type="button" class=" yt-uix-button yt-uix-button-primary yt-uix-button-size-default" href="/sign_up" role="button">
-		<span class="yt-uix-button-content">
-		Sign In
+		<div id="masthead-user-display"><span id="masthead-user-wrapper"><button href="/sign_in" type="button" id="masthead-user-button" onclick=";window.location.href=this.getAttribute('href');return false;" class=" yt-uix-button yt-uix-button-text" role="button"><span class="yt-uix-button-content">  <span id="masthead-user-image">
+			<span class="clip">
+			<span class="clip-center">
+				<img src="//s.ytimg.com/yts/img/silhouette48-vflLdu7sh.png" alt="">
+				<span class="vertical-center"></span>
+			</span>
+			</span>
 		</span>
-		</button>
-		</a>
+		<span class="masthead-user-username">Sign In</span>
+		</span></button></span></div>
 	</div>
 	<?php } else { ?>
 	<div id="yt-masthead-user" style="position: relative;top: 4px;">
@@ -21,7 +24,7 @@
 		<?php echo htmlspecialchars($_SESSION['siteusername']); ?>
 		</span>
 		<?php if($__user_h->fetch_unread_pms($_SESSION['siteusername']) != 0) { ?>
-		<a style="position:relative;top:1px;color: white;text-decoration: none;background-color: #d54343;padding: 7px;padding-left: 10px;margin-right: 12px;display: inline;" href="/inbox/">
+		<a style="border-radius:1px;font-weight:bold;border:1px solid #CE4D34;position:relative;top:1px;color: white;text-decoration: none;background-color: #E26148;padding: 7px;padding-left: 10px;margin-right: 12px;display: inline;" href="/inbox/">
 		<?php echo $__user_h->fetch_unread_pms($_SESSION['siteusername']); ?> 
 		</a>
 		<?php } else { ?>
@@ -29,7 +32,7 @@
 		<img src="/yt/imgbin/notification_icon.png" style="width: 22px;position: relative;left: -8px;" class="yt-uix-button-icon"></span>
 		</button>
 		<?php } ?>
-		<img onclick="yt.www.masthead.toggleExpandedMasthead();;return false;" alt="Thumbnail" src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($_SESSION['siteusername']); ?>" style="width:27px;height:27px;vertical-align:middle;">
+		<img onclick="yt.www.masthead.toggleExpandedMasthead();;return false;" alt="Thumbnail" src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($_SESSION['siteusername']); ?>" style="width:31px;height:31px;vertical-align:middle;border-radius:1px;">
 		<span id="yt-masthead-dropdown" onclick="yt.www.masthead.toggleExpandedMasthead();" class=""></span>
 	</div>
 	<?php } ?>
