@@ -3,23 +3,22 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/time_manip.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_helper.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/video_helper.php"); ?>
-
 <?php $__video_h = new video_helper($__db); ?>
 <?php $__user_h = new user_helper($__db); ?>
 <?php $__db_h = new db_helper(); ?>
 <?php $__time_h = new time_helper(); ?>
-<?php $video = $__video_h->fetch_video_rid($_GET['v']); ?>
 <?php
-    $video['video_responses'] = $__video_h->get_video_responses($video['rid']);
-    $video['age'] = $__time_h->time_elapsed_string($video['publish']);		
-    $video['duration'] = $__time_h->timestamp($video['duration']);
-    $video['views'] = $__video_h->fetch_video_views($video['rid']);
-    $video['author'] = htmlspecialchars($video['author']);		
-    $video['title'] = htmlspecialchars($video['title']);
-    $video['description'] = $__video_h->shorten_description($video['description'], 50);
-
 	if(!$__video_h->video_exists($_GET['v']))
 		header("Location: /?error=Your video has not processed correctly. Try reuploading it with a shorter title, description, or tag.");
+
+	$video = $__video_h->fetch_video_rid($_GET['v']);
+	$video['video_responses'] = $__video_h->get_video_responses($video['rid']);
+	$video['age'] = $__time_h->time_elapsed_string($video['publish']);		
+	$video['duration'] = $__time_h->timestamp($video['duration']);
+	$video['views'] = $__video_h->fetch_video_views($video['rid']);
+	$video['author'] = htmlspecialchars($video['author']);		
+	$video['title'] = htmlspecialchars($video['title']);
+	$video['description'] = $__video_h->shorten_description($video['description'], 50);
 
     if($_SESSION['siteusername'] != $video['author'])
         header("Location: /");

@@ -161,7 +161,7 @@
                                 
                                 <div class="my_videos_ajax">                                  
                                     <?php while($user = $stmt->fetch(PDO::FETCH_ASSOC)) {  ?> 
-                                        <div>
+                                        <div style="width: 33%;display: inline-block;">
                                             <img style="width: 50px;height:50px;" src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($user['reciever']); ?>">
                                             <span style="display: inline-block; vertical-align:top;width: 100px;font-size: 11px;">
                                                 <b><a href="/user/<?php echo htmlspecialchars($user['reciever']); ?>"><?php echo htmlspecialchars($user['reciever']); ?></a></b><br>
@@ -186,7 +186,7 @@
                                                     </div>
                                                 </div>
                                             </span><br><br>
-                                        </div><br>
+                                        </div>
                                     <?php } ?>
                                 </div>
 

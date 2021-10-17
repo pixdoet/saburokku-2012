@@ -5,7 +5,36 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/time_manip.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_helper.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/video_helper.php"); ?>
+<?php
+   $request = (object) [
+      "search_term"      => htmlspecialchars($_GET['search_query']),
+      "like_search_term" => "%" . htmlspecialchars($_GET['search_query']) . "%",
+      "search_amount"    => 0 /* [fallback] */
+   ];
 
+   $stmt = $__db->prepare("SELECT * FROM videos WHERE lower(title) LIKE lower(:search) ");
+   $stmt->bindParam(":search", $request->like_search_term);
+   $stmt->execute(); 
+   $request->search_amount = $stmt->rowCount();
+
+   $results_per_page = 12;
+   $number_of_result = $request->search_amount;
+   $number_of_page = ceil ($number_of_result / $results_per_page);  
+
+   if (!isset ($_GET['page']) ) {  
+       $page = 1;  
+   } else {  
+       $page = (int)$_GET['page'];  
+   }  
+
+   $page_first_result = ($page - 1) * $results_per_page;  
+
+   $stmt6 = $__db->prepare("SELECT * FROM videos WHERE lower(title) LIKE lower(:search) ORDER BY id DESC LIMIT :pfirst, :pper");
+   $stmt6->bindParam(":search", $request->like_search_term);
+   $stmt6->bindParam(":pfirst", $page_first_result);
+   $stmt6->bindParam(":pper", $results_per_page);
+   $stmt6->execute();
+?>
 <?php $__video_h = new video_helper($__db); ?>
 <?php $__user_h = new user_helper($__db); ?>
 <?php $__db_h = new db_helper(); ?>
@@ -51,11 +80,11 @@
             <div id="search-header">
                <div id="search-header-inner">
                   <p class="num-results">
-                     About <strong>559,000,000</strong> results
+                     About <strong><?php echo number_format($request->search_amount); ?></strong> results
                   </p>
                   <h2>
                      Search results for
-                     <strong class="query"></strong>
+                     <strong class="query"><?php echo $request->search_term; ?></strong>
                   </h2>
                </div>
                <hr class="yt-horizontal-rule">
@@ -183,245 +212,57 @@
                <div id="search-main" class="ytg-4col new-snippets">
                   <div id="results-main-content">
                      <ol id="search-results">
-                        <li class="yt-grid-box result-item-video *sr ">
-                           <div id="" class="yt-uix-tile yt-lockup-list yt-tile-default yt-grid-box ">
-                              <div class="yt-lockup-thumbnail"><a href="/watch?v=k0BWlvnBmIE" class="ux-thumb-wrap contains-addto result-item-thumb"><span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="//i4.ytimg.com/vi/k0BWlvnBmIE/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span><span class="video-time">4:37</span>
-                                 <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="k0BWlvnBmIE" role="button"><span class="yt-uix-button-content">  <span class="addto-label">
-                                 Watch Later
-                                 </span>
-                                 <span class="addto-label-error">
-                                 Error
-                                 </span>
-                                 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
-                                 </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-                                 </a>
-                              </div>
-                              <div class="yt-lockup-content">
-                                 <h3><a class="yt-uix-tile-link result-item-translation-title" dir="ltr" title="Katy Perry - Wide Awake" href="/watch?v=k0BWlvnBmIE">Katy Perry - Wide Awake</a></h3>
-                                 <p class="description " dir="ltr">Official music video for "Wide Awake," the final chapter from 'Teenage Dream: The Complete Confection' on iTunes: smarturl.it Written by Katy <b>...</b></p>
-                                 <div class="yt-lockup-meta">
-                                    <ul class="single-line-lego-list">
-                                       <li><a href="/results?search_type=videos&amp;search_sort=video_recently_uploaded" class="yt-badge-std">NEW</a></li>
-                                       <li><a href="/results?search_type=videos&amp;high_definition=1" class="yt-badge-std">HD</a></li>
-                                    </ul>
-                                    <p class="facets">
-                                       <span class="username-prepend">by     <a href="/user/KatyPerryVEVO" class="yt-user-name " dir="ltr">KatyPerryVEVO</a>
+                        <?php
+                           while($video = $stmt6->fetch(PDO::FETCH_ASSOC)) { 
+                              $video['video_responses'] = $__video_h->get_video_responses($video['rid']);
+                              $video['age'] = $__time_h->time_elapsed_string($video['publish']);		
+                              $video['duration'] = $__time_h->timestamp($video['duration']);
+                              $video['views'] = $__video_h->fetch_video_views($video['rid']);
+                              $video['author'] = htmlspecialchars($video['author']);		
+                              $video['title'] = htmlspecialchars($video['title']);
+                              $video['description'] = $__video_h->shorten_description($video['description'], 50, true);
+                        ?>
+                              <li class="yt-grid-box result-item-video *sr ">
+                                 <div id="" class="yt-uix-tile yt-lockup-list yt-tile-default yt-grid-box ">
+                                    <div style="width: 139px;" class="yt-lockup-thumbnail"><a href="/watch?v=<?php echo $video['rid']; ?>" class="ux-thumb-wrap contains-addto result-item-thumb"><span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $video['duration']; ?></span>
+                                       <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="<?php echo $video['rid']; ?>" role="button"><span class="yt-uix-button-content">  <span class="addto-label">
+                                       Watch Later
                                        </span>
-                                       <span class="metadata-separator">|</span>  <span class="date-added">8 hours ago</span>
-                                       <span class="metadata-separator">|</span>  <span class="viewcount">337,829 views</span>
-                                    </p>
+                                       <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+                                       </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
+                                       </a>
+                                    </div>
+                                    <div class="yt-lockup-content">
+                                       <h3 style="font-size: 14px;"><a class="yt-uix-tile-link result-item-translation-title" dir="ltr" title="<?php echo $video['title']; ?>" href="/watch?v=<?php echo $video['rid']; ?>"><?php echo $video['title']; ?></a></h3>
+                                       <p style="font-size: 11px;" class="description " dir="ltr"><?php echo $video['description']; ?></p>
+                                       <div style="font-size: 11px;" class="yt-lockup-meta">
+                                          <p class="facets">
+                                             <span  style="font-size: 11px;" class="username-prepend">by     <a href="/user/<?php echo $video['author']; ?>" class="yt-user-name " dir="ltr"><?php echo $video['author']; ?></a>
+                                             </span>
+                                             <span style="font-size: 11px;" class="metadata-separator">|</span>  <span style="font-size: 11px;" class="date-added"><?php echo $video['age']; ?></span>
+                                             <span style="font-size: 11px;" class="metadata-separator">|</span>  <span style="font-size: 11px;" class="viewcount"><?php echo $video['views']; ?> views</span>
+                                          </p>
+                                       </div>
+                                    </div>
                                  </div>
-                              </div>
-                           </div>
-                        </li>
+                              </li>
+                        <?php } ?>
                      </ol>
                   </div>
                </div>
                <div id="search-pva-content">
-                  <ul id="search-pva" class="ytg-2col-b ytg-last yt-vertical-rule new-snippets">
-                     <li></li>
-                     <div id="ad_creative_1" class="ad-div " style="z-index: 1">
-                        <iframe id="ad_creative_iframe_1" height="250" width="300" scrolling="no" frameborder="0" style="z-index: 1" src="//ad-emea.doubleclick.net/adi/com.ytsrc.enter/multimediacontent_videoclipsmoviedownloads;sz=300x250;tile=1;plat=pc;dc_dedup=1;kcr=nl;kga=-1;kgg=-1;klg=en;kmyd=ad_creative_1;kr=F;kt=K;kw=site:youtube.com;ord=8412342972014305?"></iframe>
-                        <div style="font-size: 10px; padding-top: 3px;" class="alignC grayText">
-                           <a href="/t/ads_preferences">
-                           Advertisement
-                           </a>
-                        </div>
-                        <script>
-                           (function() {
-                             var addTimestamp = (Math.floor(Math.random() * 1000) == 0);
-                             if (addTimestamp) {
-                               var kts = new Date().getTime();
-                               var iframeSrc = "//ad-emea.doubleclick.net/adi/com.ytsrc.enter/multimediacontent_videoclipsmoviedownloads;sz=300x250;tile=1;plat=pc;dc_dedup=1;kcr=nl;kga=-1;kgg=-1;klg=en;kmyd=ad_creative_1;kr=F;kt=K;kw=site:youtube.com;kts=" + kts + ";ord=8412342972014305?";
-                             } else {
-                               var iframeSrc = "//ad-emea.doubleclick.net/adi/com.ytsrc.enter/multimediacontent_videoclipsmoviedownloads;sz=300x250;tile=1;plat=pc;dc_dedup=1;kcr=nl;kga=-1;kgg=-1;klg=en;kmyd=ad_creative_1;kr=F;kt=K;kw=site:youtube.com;ord=8412342972014305?";
-                             }
-                             var adIframe = document.getElementById("ad_creative_iframe_1");
-                             adIframe.src = iframeSrc;
-                           })();
-                        </script>
-                     </div>
-                     <p class="ads-promoted">
-                        <a href="//support.google.com/youtube/bin/answer.py?answer=143421&amp;hl=en-US" class="grayText">
-                        Featured Videos
-                        </a>
-                     </p>
-                     <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
-                        <div class="thumb-container">
-                           <a href="http://www.youtube.com/watch?v=U30hHXToi5E" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i2.ytimg.com/vi/U30hHXToi5E/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
-                           <span class="video-time">4:45</span>
-                           </a>
-                        </div>
-                        <div class="result-item-main-content">
-                           <h3 dir="ltr">
-                              <a href="http://www.youtube.com/watch?v=U30hHXToi5E" title="" class="yt-uix-tile-link">Classic Game Room - RAPTOR GAMING LK1 gaming keyboard review</a>
-                           </h3>
-                           <p class="search-ad-description">
-                              <span dir="ltr">Raptor-Gaming LK1 review. Classic Game Room reviews the RAPTOR GAMING ...</span>
-                           </p>
-                           <p class="facets">
-                              <span class="ads-by" dir="ltr">by <a href="/user/InecomCompany?feature=chclk">InecomCompany</a></span>
-                              <span class="metadata-separator">|</span>    <strong dir="ltr">32,061 views</strong>
-                           </p>
-                        </div>
-                     </li>
-                     <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
-                        <div class="thumb-container">
-                           <a href="http://www.youtube.com/watch?v=IWcRtSZMN-Q" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i2.ytimg.com/vi/IWcRtSZMN-Q/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
-                           <span class="video-time">15:16</span>
-                           </a>
-                        </div>
-                        <div class="result-item-main-content">
-                           <h3 dir="ltr">
-                              <a href="http://www.youtube.com/watch?v=IWcRtSZMN-Q" title="" class="yt-uix-tile-link">Coe's Quest - E084 - Educated Farming</a>
-                           </h3>
-                           <p class="search-ad-description">
-                              <span dir="ltr">Thanks to the billions of advice comments I got on the last video, I t...</span>
-                           </p>
-                           <p class="facets">
-                              <span class="ads-by" dir="ltr">by <a href="/user/Coestar?feature=chclk">Coestar</a></span>
-                              <span class="metadata-separator">|</span>    <strong dir="ltr">52,079 views</strong>
-                           </p>
-                        </div>
-                     </li>
-                     <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
-                        <div class="thumb-container">
-                           <a href="http://www.youtube.com/watch?v=CyUkmHBW26g" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i4.ytimg.com/vi/CyUkmHBW26g/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
-                           <span class="video-time">2:11:30</span>
-                           </a>
-                        </div>
-                        <div class="result-item-main-content">
-                           <h3 dir="ltr">
-                              <a href="http://www.youtube.com/watch?v=CyUkmHBW26g" title="" class="yt-uix-tile-link">Jai Santoshi Maa</a>
-                           </h3>
-                           <p class="search-ad-description">
-                              <span dir="ltr">Jai Santoshi Maa Full hindi bollywood movie starring Nusrat Bharucha a...</span>
-                           </p>
-                           <p class="facets">
-                              <span class="ads-by" dir="ltr">by <a href="/user/TheCinecurry?feature=chclk">TheCinecurry</a></span>
-                              <span class="metadata-separator">|</span>    <strong dir="ltr">203,619 views</strong>
-                           </p>
-                        </div>
-                     </li>
-                     <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
-                        <div class="thumb-container">
-                           <a href="http://www.youtube.com/watch?v=iyKsSPHM0wE" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i2.ytimg.com/vi/iyKsSPHM0wE/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
-                           <span class="video-time">45:26</span>
-                           </a>
-                        </div>
-                        <div class="result-item-main-content">
-                           <h3 dir="ltr">
-                              <a href="http://www.youtube.com/watch?v=iyKsSPHM0wE" title="" class="yt-uix-tile-link">This Week in IPad - iPad 2 is here!</a>
-                           </h3>
-                           <p class="search-ad-description">
-                              <span dir="ltr">iPad 2 is here and we got our hands on one! Jacob reviews iMovie, and ...</span>
-                           </p>
-                           <p class="facets">
-                              <span class="ads-by" dir="ltr">by <a href="/user/ThisWeekIn?feature=chclk">ThisWeekIn</a></span>
-                              <span class="metadata-separator">|</span>    <strong dir="ltr">160,581 views</strong>
-                           </p>
-                        </div>
-                     </li>
-                     <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
-                        <div class="thumb-container">
-                           <a href="http://www.youtube.com/watch?v=hZKMBhVoTu8" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i1.ytimg.com/vi/hZKMBhVoTu8/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
-                           <span class="video-time">6:34</span>
-                           </a>
-                        </div>
-                        <div class="result-item-main-content">
-                           <h3 dir="ltr">
-                              <a href="http://www.youtube.com/watch?v=hZKMBhVoTu8" title="" class="yt-uix-tile-link">Metka - Przemiana Frytki - styl i elegancja</a>
-                           </h3>
-                           <p class="search-ad-description">
-                              <span dir="ltr">Zobacz więcej na METKA.wp.tv Celebrytka upodobała sobie ubrania szczeg...</span>
-                           </p>
-                           <p class="facets">
-                              <span class="ads-by" dir="ltr">by <a href="/user/wptvwppl?feature=chclk">wptvwppl</a></span>
-                              <span class="metadata-separator">|</span>    <strong dir="ltr">9,494 views</strong>
-                           </p>
-                        </div>
-                     </li>
-                     <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
-                        <div class="thumb-container">
-                           <a href="http://www.youtube.com/watch?v=hZNaDowboFU" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i1.ytimg.com/vi/hZNaDowboFU/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
-                           <span class="video-time">4:52</span>
-                           </a>
-                        </div>
-                        <div class="result-item-main-content">
-                           <h3 dir="ltr">
-                              <a href="http://www.youtube.com/watch?v=hZNaDowboFU" title="" class="yt-uix-tile-link">The Haul - 5/14/11 - JLovesMac1 AndreasChoice vintageortacky lechatn0ir destinygodley</a>
-                           </h3>
-                           <p class="search-ad-description">
-                              <span dir="ltr">Jarmaine, aka JLovesMac1, hosts a special 25th episode of The Haul wit...</span>
-                           </p>
-                           <p class="facets">
-                              <span class="ads-by" dir="ltr">by <a href="/user/stylehaul?feature=chclk">stylehaul</a></span>
-                              <span class="metadata-separator">|</span>    <strong dir="ltr">186,751 views</strong>
-                           </p>
-                        </div>
-                     </li>
-                     <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
-                        <div class="thumb-container">
-                           <a href="http://www.youtube.com/watch?v=SFkurNxZHkM" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i4.ytimg.com/vi/SFkurNxZHkM/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
-                           <span class="video-time">54:45</span>
-                           </a>
-                        </div>
-                        <div class="result-item-main-content">
-                           <h3 dir="ltr">
-                              <a href="http://www.youtube.com/watch?v=SFkurNxZHkM" title="" class="yt-uix-tile-link">Mists of Pandaria - Updated! Theorycrafting 2.0 with Jesse and Pride</a>
-                           </h3>
-                           <p class="search-ad-description">
-                              <span dir="ltr">See the first video here: www.youtube.com Jesse and Pride officially n...</span>
-                           </p>
-                           <p class="facets">
-                              <span class="ads-by" dir="ltr">by <a href="/user/OMFGcata?feature=chclk">OMFGcata</a></span>
-                              <span class="metadata-separator">|</span>    <strong dir="ltr">169,296 views</strong>
-                           </p>
-                        </div>
-                     </li>
-                     <li class="sidebar-ads  featured yt-uix-tile yt-tile-default">
-                        <div class="thumb-container">
-                           <a href="http://www.youtube.com/watch?v=6cAVl1NiyA4" class="ux-thumb-wrap result-item-thumb">
-                           <span class="video-thumb ux-thumb yt-thumb-default-138 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="http://i3.ytimg.com/vi/6cAVl1NiyA4/default.jpg" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="138"><span class="vertical-align"></span></span></span></span>
-                           <span class="video-time">27:07</span>
-                           </a>
-                        </div>
-                        <div class="result-item-main-content">
-                           <h3 dir="ltr">
-                              <a href="http://www.youtube.com/watch?v=6cAVl1NiyA4" title="" class="yt-uix-tile-link">Crochet Geek - Flower Power - Large Crochet Flower</a>
-                           </h3>
-                           <p class="search-ad-description">
-                              <span dir="ltr">Written Instructions crochet-mania.blogspot.com crochet-mania.blogspot...</span>
-                           </p>
-                           <p class="facets">
-                              <span class="ads-by" dir="ltr">by <a href="/user/tjw1963?feature=chclk">tjw1963</a></span>
-                              <span class="metadata-separator">|</span>    <strong dir="ltr">52,933 views</strong>
-                           </p>
-                        </div>
-                     </li>
-                     <span class="yt-vertical-rule-main"></span>
-                     <span class="yt-vertical-rule-corner-top"></span>
-                     <span class="yt-vertical-rule-corner-bottom"></span>
-                  </ul>
-               </div>
+
+        
+
+    </div>
             </div>
             <div id="search-footer-box" class="searchFooterBox">
                <div class="yt-uix-pager" role="navigation">
-                  <a href="/results?page=1" class="yt-uix-button yt-uix-pager-page-num yt-uix-pager-button yt-uix-button-toggled yt-uix-button-default" data-page="1" aria-label="Go to page 1"><span class="yt-uix-button-content">1</span></a>&nbsp;
-                  <a href="/results?page=2" class="yt-uix-button yt-uix-pager-page-num yt-uix-pager-button yt-uix-button-default" data-page="2" aria-label="Go to page 2"><span class="yt-uix-button-content">2</span></a>&nbsp;
-                  <a href="/results?page=3" class="yt-uix-button yt-uix-pager-page-num yt-uix-pager-button yt-uix-button-default" data-page="3" aria-label="Go to page 3"><span class="yt-uix-button-content">3</span></a>&nbsp;
-                  <a href="/results?page=4" class="yt-uix-button yt-uix-pager-page-num yt-uix-pager-button yt-uix-button-default" data-page="4" aria-label="Go to page 4"><span class="yt-uix-button-content">4</span></a>&nbsp;
-                  <a href="/results?page=5" class="yt-uix-button yt-uix-pager-page-num yt-uix-pager-button yt-uix-button-default" data-page="5" aria-label="Go to page 5"><span class="yt-uix-button-content">5</span></a>&nbsp;
-                  <a href="/results?page=6" class="yt-uix-button yt-uix-pager-page-num yt-uix-pager-button yt-uix-button-default" data-page="6" aria-label="Go to page 6"><span class="yt-uix-button-content">6</span></a>&nbsp;
-                  <a href="/results?page=7" class="yt-uix-button yt-uix-pager-page-num yt-uix-pager-button yt-uix-button-default" data-page="7" aria-label="Go to page 7"><span class="yt-uix-button-content">7</span></a>&nbsp;
-                  <a href="/results?page=2" class="yt-uix-button yt-uix-pager-next yt-uix-pager-button yt-uix-button-default" data-page="2"><span class="yt-uix-button-content">Next »</span></a>&nbsp;
+                  <?php for($page = 1; $page<= $number_of_page; $page++) { ?>
+                     <a href="/results?search_query=<?php echo $request->search_term; ?>&page=<?php echo $page; ?>">
+                        <button class="yt-uix-button yt-uix-button-default"><?php echo $page; ?></button>
+                     </a>
+                  <?php } ?>   
                </div>
             </div>
          </div>
