@@ -228,19 +228,19 @@
 											</div>
 										</div>
 										<div class="channel-horizontal-menu clearfix">
-											<ul>
+										<ul>
 												<li>
 													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/featured" class="gh-tab-100">
 													Featured
 													</a>
 												</li>
 												<li>
-													<a href="/channel_feed?n=<?php echo htmlspecialchars($_user['username']); ?>" class="gh-tab-102">
+													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/feed" class="gh-tab-102">
 													Feed
 													</a>
 												</li>
 												<li class="selected">
-													<a href="/channel_videos?n=<?php echo htmlspecialchars($_user['username']); ?>" class="gh-tab-101">
+													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/videos" class="gh-tab-101">
 													Videos
 													</a>
 												</li>

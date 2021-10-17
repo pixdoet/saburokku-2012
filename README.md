@@ -6,7 +6,7 @@ a 2012 rewrite for subrocks
 
 SubRocks is a faithful recreation & reverse engineering effort for 2012 YouTube. You can visit the site at https://subrock.rocks.
 
-![SubRocks 2012 Homepage](https://i.imgur.com/gfLcCdI.png)
+![SubRocks 2012 Homepage](https://i.imgur.com/fenftoY.png)
 
 ## Requirements
 - Docker
@@ -17,8 +17,13 @@ SubRocks is a faithful recreation & reverse engineering effort for 2012 YouTube.
 ## How to setup
 Run `docker-compose up -d` inside the root of this repository.
 
-Wait for it to compile everything, then tada.
+Wait for it to compile everything, then go to http://localhost:8080.
 
+The default username & password is root. Host is `mysql`. 
+
+Import the SQL file in `sql_setup` and you are basically finished with the setup.
+
+## Important Information
 - Web server: localhost:8000
 - PHPMyAdmin: localhost:8080
   - username: root
@@ -28,24 +33,5 @@ Wait for it to compile everything, then tada.
 ## Things that you should expect soon:
 - ~~Dockerized~~
 - Templating
-- ~~Router~~
+- Router
 - Translations
-
-## Features (so far with 2012)
-- Register
-- Signup
-  - with way nicer handling than current subrocks/fulptube
-  - proper validation
-- New uploader
-- Channel pages (WIP)
-- Channel customization (WIP)
-- "My Account" pages
-  - Playlists pages
-  - Video Manager page
-  - Favorites page
-  - ...and others
-- Videos Browse Page
-  - With all categories
-- Reverse engineered ajax calls
-  - Fixed guide response
-  - Commenting

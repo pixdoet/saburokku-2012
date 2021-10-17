@@ -247,12 +247,12 @@
 													</a>
 												</li>
 												<li>
-													<a href="/channel_feed?n=<?php echo htmlspecialchars($_user['username']); ?>" class="gh-tab-102">
+													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/feed" class="gh-tab-102">
 													Feed
 													</a>
 												</li>
 												<li>
-													<a href="/channel_videos?n=<?php echo htmlspecialchars($_user['username']); ?>" class="gh-tab-101">
+													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/videos" class="gh-tab-101">
 													Videos
 													</a>
 												</li>
