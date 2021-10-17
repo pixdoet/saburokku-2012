@@ -7,13 +7,16 @@
 	</a>
 	<?php if(!isset($_SESSION['siteusername'])) { ?>
 	<div id="yt-masthead-signin">
-		<a style="color: white; text-decoration: none;" href="/sign_in">
-		<button type="button" class=" yt-uix-button yt-uix-button-primary yt-uix-button-size-default" href="/sign_up" role="button">
-		<span class="yt-uix-button-content">
-		Sign In
+		<div id="masthead-user-display"><span id="masthead-user-wrapper"><button href="/sign_in" type="button" id="masthead-user-button" onclick=";window.location.href=this.getAttribute('href');return false;" class=" yt-uix-button yt-uix-button-text" role="button"><span class="yt-uix-button-content">  <span id="masthead-user-image">
+			<span class="clip">
+			<span class="clip-center">
+				<img src="//s.ytimg.com/yts/img/silhouette48-vflLdu7sh.png" alt="">
+				<span class="vertical-center"></span>
+			</span>
+			</span>
 		</span>
-		</button>
-		</a>
+		<span class="masthead-user-username">Sign In</span>
+		</span></button></span></div>
 	</div>
 	<?php } else { ?>
 	<div id="yt-masthead-user" style="position: relative;top: 4px;">
