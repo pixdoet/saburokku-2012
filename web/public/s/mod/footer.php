@@ -6,7 +6,6 @@
         <a href="/" title="SubRocks home">
         <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="SubRocks home">
         </a>
-        <span class="copyright" dir="ltr">© <?php echo date("Y"); ?> SubRocks, Parody</span>
         <span id="footer-divider"></span>
     </div>
     <div id="footer-main">
