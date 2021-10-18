@@ -24,7 +24,7 @@
 		<?php echo htmlspecialchars($_SESSION['siteusername']); ?>
 		</span>
 		<?php if($__user_h->fetch_unread_pms($_SESSION['siteusername']) != 0) { ?>
-		<a style="border-radius:1px;font-weight:bold;border:1px solid #CE4D34;position:relative;top:1px;color: white;text-decoration: none;background-color: #E26148;padding: 7px;padding-left: 10px;margin-right: 12px;display: inline;" href="/inbox/">
+		<a style="border-radius:2px;font-weight:bold;border:1px solid #CE4D34;position:relative;top:1px;color: white;text-decoration: none;background-color: #E26148;padding: 7px;padding-left: 10px;margin-right: 12px;display: inline;" href="/inbox/">
 		<?php echo $__user_h->fetch_unread_pms($_SESSION['siteusername']); ?> 
 		</a>
 		<?php } else { ?>
@@ -32,7 +32,7 @@
 		<img src="/yt/imgbin/notification_icon.png" style="width: 22px;position: relative;left: -8px;" class="yt-uix-button-icon"></span>
 		</button>
 		<?php } ?>
-		<img onclick="yt.www.masthead.toggleExpandedMasthead();;return false;" alt="Thumbnail" src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($_SESSION['siteusername']); ?>" style="width:31px;height:31px;vertical-align:middle;border-radius:1px;">
+		<img onclick="yt.www.masthead.toggleExpandedMasthead();;return false;" alt="Thumbnail" src="/dynamic/pfp/<?php echo $__user_h->fetch_pfp($_SESSION['siteusername']); ?>" style="width:31px;height:31px;vertical-align:middle;border-radius:2px;">
 		<span id="yt-masthead-dropdown" onclick="yt.www.masthead.toggleExpandedMasthead();" class=""></span>
 	</div>
 	<?php } ?>
