@@ -12,13 +12,12 @@
 <?php $__db_h = new db_helper(); ?>
 <?php $__time_h = new time_helper(); ?>
 <?php
-	if(isset($_SESSION['siteusername']))
-	    $_user_hp = $__user_h->fetch_user_username($_SESSION['siteusername']);
+    $_playlist = $__video_h->fetch_playlist_rid($_GET['v']);
 
-    if(!$__user_h->user_exists($_GET['n']))
-        header("Location: /?userdoesntexist");
+    if(!$__user_h->user_exists($_playlist['author']))
+        header("Location: /?userdoesntexist");    
 
-    $_user = $__user_h->fetch_user_username($_GET['n']);
+    $_user = $__user_h->fetch_user_username($_playlist['author']);
 
     function clean($string) {
         $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
@@ -118,6 +117,7 @@
 		</script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<link id="www-core-css" rel="stylesheet" href="/yt/cssbin/www-core-vfluMRDnk.css">
+        <link id="www-playlist-css" rel="stylesheet" href="/yt/cssbin/www-playlist-vflmE481L.css">
 		<script src="/s/js/alert.js"></script>
 		<link rel="stylesheet" href="/yt/cssbin/www-guide-vflx0V5Tq.css">
         <link rel="stylesheet" href="/yt/cssbin/www-channels3-vfl-wJB5W.css">
@@ -186,7 +186,7 @@
 					<div id="branded-page-default-bg" class="ytg-base">
 						<div id="branded-page-body-container" class="ytg-base clearfix">
 							<div id="branded-page-header-container" class="ytg-wide banner-displayed-mode">
-								<div id="branded-page-header" class="ytg-wide">
+								<div id="branded-page-header" class="ytg-wide" style="padding: 0px;">
 									<div id="channel-header-main">
 										<div class="upper-section clearfix">
 											<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>">
@@ -196,8 +196,13 @@
 											</span>
 											</span>
 											</a>
-											<div class="upper-left-section ">
-												<h1><?php echo htmlspecialchars($_user['username']); ?></h1>
+											<div class="upper-left-section " style="padding: 0px;">
+												<div class="playlist-reference">
+												<h1 title="<?php echo htmlspecialchars($_playlist['title']); ?>"><?php echo htmlspecialchars($_playlist['title']); ?></h1>
+													<p class="channel-author-attribution">
+														by <a href="/user/<?php echo htmlspecialchars($_playlist['author']); ?>"><?php echo htmlspecialchars($_playlist['author']); ?></a>
+													</p>
+												</div>
 											</div>
 											<div class="upper-left-section enable-fancy-subscribe-button">
 												<?php if($_user['username'] != @$_SESSION['siteusername']) { ?>
@@ -229,7 +234,7 @@
 												<div class="header-stats">
 													<div class="stat-entry">
 														<span class="stat-value"><?php echo $_user['subscribers']; ?></span>
-														<span class="stat-name"><?php if($_user['subscribers'] == 1){ ?>subscriber<?php }else{ ?>subscribers<?php } ?></span>
+														<span class="stat-name">subscribers</span>
 													</div>
 													<div class="stat-entry">
 														<span class="stat-value"><?php echo $_user['views']; ?></span>
@@ -238,38 +243,6 @@
 												</div>
 												<span class="valign-shim"></span>
 											</div>
-										</div>
-										<div class="channel-horizontal-menu clearfix">
-											<ul>
-												<li class="selected">
-													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/featured" class="gh-tab-100">
-													Featured
-													</a>
-												</li>
-												<li>
-													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/feed" class="gh-tab-102">
-													Feed
-													</a>
-												</li>
-												<li>
-													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/videos" class="gh-tab-101">
-													Videos
-													</a>
-												</li>
-											</ul>
-											<form id="channel-search" action="/user/<?php echo htmlspecialchars($_user['username']); ?>/videos">
-												<input name="query" type="text" maxlength="100" class="search-field" placeholder="Search Channel" value="">
-												<button class="search-btn" type="submit">
-												<span class="search-btn-content">
-												Search
-												</span>
-												</button>
-												<a class="search-dismiss-btn" href="/user/<?php echo htmlspecialchars($_user['username']); ?>/videos?view=0">
-												<span class="search-btn-content">
-												Clear
-												</span>
-												</a>
-											</form>
 										</div>
 									</div>
 								</div>
@@ -308,59 +281,84 @@
                                             <?php } ?>
 											<div class="single-playlist channel-module yt-uix-c3-module-container">
 												<div class="module-view single-playlist-view-module">
-													<div class="blogger-playall">
-                                                        <!--
-                                                            <a class="yt-playall-link yt-playall-link-default " href="/watch?v=<?php echo $video['rid']; ?>&amp;list=UUIwFjwMjI0y7PDBVEO9-bkQ&amp;feature=plcp">
-                                                            <img class="small-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-                                                            Play all
-                                                            </a>
-                                                        -->
-													</div>
-													<div class="playlist-info">
-														<h2>Uploaded videos</h2>
-														<div class="yt-horizontal-rule "><span class="first"></span><span class="second"></span><span class="third"></span></div>
-														<?php if($_user['videos'] == 0) { ?>
-															<h4>This user has not uploaded a video yet.</h4>
-														<?php } ?>
-													</div>
-													<ul class="gh-single-playlist">
-                                                        <?php 
-                                                            $stmt = $__db->prepare("SELECT * FROM videos WHERE author = :username ORDER BY id DESC LIMIT 20");
-                                                            $stmt->bindParam(":username", $_user['username']);
-                                                            $stmt->execute();
-                                                            while($video = $stmt->fetch(PDO::FETCH_ASSOC)) { 
-                                                        ?>
-														<li class="blogger-video">
-															<div class="video yt-tile-visible">
-																<a href="/watch?v=<?php echo $video['rid']; ?>">
-																<span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb yt-thumb-default-288 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="/dynamic/thumbs/<?php echo $video['thumbnail']; ?>" alt="Thumbnail" onerror="this.onerror=null;this.src='/dynamic/thumbs/default.jpg';" width="288"><span class="vertical-align"></span></span></span></span><span class="video-time"><?php echo $__time_h->timestamp($video['duration']); ?></span>
-																<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="/watch?v=<?php echo $video['rid']; ?>" role="button"><span class="yt-uix-button-content">  <span class="addto-label">
-																Watch Later
-																</span>
-																<span class="addto-label-error" style="display: none;">
-																Error
-																</span>
-																<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
-																</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-																</span>
-																<span class="video-item-content">
-																<span class="video-overview">
-																<span class="title video-title" title="<?php echo htmlspecialchars($video['title']); ?>"><?php echo htmlspecialchars($video['title']); ?></span>
-																</span>
-																<span class="video-details">
-																<span class="yt-user-name video-owner" dir="ltr"><?php echo htmlspecialchars($_user['username']); ?></span>
-																<span class="video-view-count">
-																<?php echo $__video_h->fetch_video_views($video['rid']); ?> views
-																</span>
-																<span class="video-time-published"><?php echo $__time_h->time_elapsed_string($video['publish']); ?></span>
-																<span class="video-item-description"><?php echo $__video_h->shorten_description($video['description'], 100); ?></span>
-																</span>
-																</span>
-																</a>
-															</div>
-														</li>
-                                                        <?php } ?>
-													</ul>
+
+
+                                                    <div class="playlist-landing ypc-list-container">
+                                                        <div id="playlist-actions" style="display: none;">
+                                                            <div id="playlist-action-buttons">
+                                                                <div id="playlist-likes-container">
+                                                                    <div class="playlist-sparkbars">
+                                                                        <div class="playlist-sparkbar-likes" style="width: 92.5615212528%"></div>
+                                                                        <div class="playlist-sparkbar-dislikes" style="width: 7.4384787472%"></div>
+                                                                    </div>
+                                                                    <span class="playlist-likes-dislikes">
+                                                                    <span class="likes">1,655</span> likes, <span class="dislikes">133</span> dislikes
+                                                                    </span>
+                                                                </div>
+                                                                <div class="playlist-like-dislike yt-uix-button-group"><button type="button" class="playlist-like start yt-uix-button yt-uix-button-default yt-uix-tooltip" onclick=";return false;" title="I like this" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-playlist-like" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I like this"></span><span class="yt-uix-button-content">Like </span></button><button type="button" class="playlist-dislike end yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" onclick=";return false;" title="I dislike this" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-playlist-dislike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I dislike this"></span></button></div>
+                                                                <button type="button" class="playlist-share yt-uix-button yt-uix-button-default yt-uix-tooltip" onclick=";return false;" title="Share or embed this playlist" data-button-toggle="true" data-button-action="yt.www.playlist.share" role="button"><span class="yt-uix-button-content">Share </span></button>
+                                                            </div>
+                                                            <div id="playlist-share-container" class="playlist-share-area hid">
+                                                            </div>
+                                                            <div id="playlist-share-loading" class="playlist-share-area hid">
+                                                                Loading...
+                                                            </div>
+                                                        </div>
+                                                        <ol>
+															<?php
+																$_playlist['videos'] = json_decode($_playlist['videos']);
+																$_playlist['count'] = 1;
+																foreach($_playlist['videos'] as $video) {
+																	if($__video_h->video_exists($video)) {
+																		$_video = $__video_h->fetch_video_rid($video);
+																		$_video['video_responses'] = $__video_h->get_video_responses($_video['rid']);
+																		$_video['age'] = $__time_h->time_elapsed_string($_video['publish']);		
+																		$_video['duration'] = $__time_h->timestamp($_video['duration']);
+																		$_video['views'] = $__video_h->fetch_video_views($_video['rid']);
+																		$_video['author'] = htmlspecialchars($_video['author']);		
+																		$_video['title'] = htmlspecialchars($_video['title']);
+																		$_video['description'] = $__video_h->shorten_description($_video['description'], 50);
+																		$_playlist['title'] = htmlspecialchars($_playlist['title']);
+																	?>
+																	<li class="playlist-video-item
+																		odd
+																		"> 
+																		<a href="/watch?v=<?php echo $_video['rid']; ?>" class="tile-link-block video-tile">
+																		<span class="playlist-video-item-base-content">
+																		<span class="video-index"><?php echo $_playlist['count']; ?></span>
+																		<span class="thumb-container">
+																		<span class="ux-thumb-wrap">
+																		<span class="video-thumb ux-thumb yt-thumb-default-124 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="/dynamic/thumbs/<?php echo $_video['thumbnail']; ?>" alt="Thumbnail" width="124"><span class="vertical-align"></span></span></span></span>
+																		<span class="video-time"><?php echo $_video['duration']; ?></span>
+																		<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="<?php echo $_video['rid']; ?>" role="button"><span class="yt-uix-button-content">  <span class="addto-label">
+																		Watch Later
+																		</span>
+																		<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+																		</span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
+																		</span>
+																		</span>
+																		<span class="video-info ">
+																		<span class="video-buttons">
+																		</span>
+																		<span class="video-overview" style="position: relative;left: 11px;">
+																		<span class="title video-title " dir="ltr"><?php echo $_video['title']; ?></span>
+																		<span class="video-details" style="font-size: 12px;">
+																		<span class="video-owner">
+																		by <span class="yt-user-name " dir="ltr"><?php echo $_video['author']; ?></span>
+																		</span>
+																		<span class="video-view-count">
+																		<?php echo $_video['views']; ?> views
+																		</span>
+																		</span>
+																		</span>
+																		</span>
+																		</span>
+																		</a>
+																	</li>
+																	<?php $_playlist['count']++; ?>
+															<?php } } ?>
+                                                        </ol>
+                                                    </div>
 												</div>
 											</div>
 										</div>

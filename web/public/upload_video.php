@@ -57,10 +57,10 @@
                             </center>
                             <form enctype="multipart/form-data" id="upload_form" action="/d/upload_video" method="post">
                             <div class="upload-stage-2" style="display: none;">
-                                <b>Title</b> <br><input id="video-title" placeholder="Video Title" class="upload-input" type="text" name="title"><br><br>
+                                <b>Title</b> <br><input id="video-title" placeholder="Video Title" class="yt-uix-form-input-text" style="width: 550px;margin-top: 3px;" type="text" name="title"><br><br>
                                 <b>Description</b> <br>
-                                <textarea name="description" class="upload-input" placeholder="Video Description"></textarea><br><br>
-                                <b>Tags</b> <br><input placeholder="Seperate with commas" class="upload-input" type="text" name="tags"><br><br>
+                                <textarea name="description" class="yt-uix-form-input-text" style="width: 550px;margin-top: 3px;" placeholder="Video Description"></textarea><br><br>
+                                <b>Tags</b> <br><input placeholder="Seperate with commas" class="yt-uix-form-input-text" style="width: 550px;margin-top: 3px;" type="text" name="tags"><br><br>
                                 <b>Video thumbnails</b><br><br>
                                 Thumbnail selections will appear when the video has finished processing.<br><br>
                                 <input type="submit" value="Upload Video" class="yt-uix-button yt-uix-button-default">

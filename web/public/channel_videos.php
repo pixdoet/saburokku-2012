@@ -5,7 +5,6 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/video_helper.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_update.php"); ?>
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/s/classes/user_insert.php"); ?>
-
 <?php $__video_h = new video_helper($__db); ?>
 <?php $__user_h = new user_helper($__db); ?>
 <?php $__user_u = new user_update($__db); ?>
@@ -229,19 +228,19 @@
 											</div>
 										</div>
 										<div class="channel-horizontal-menu clearfix">
-											<ul>
+										<ul>
 												<li>
 													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/featured" class="gh-tab-100">
 													Featured
 													</a>
 												</li>
 												<li>
-													<a href="/channel_feed?n=<?php echo htmlspecialchars($_user['username']); ?>" class="gh-tab-102">
+													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/feed" class="gh-tab-102">
 													Feed
 													</a>
 												</li>
 												<li class="selected">
-													<a href="/channel_videos?n=<?php echo htmlspecialchars($_user['username']); ?>" class="gh-tab-101">
+													<a href="/user/<?php echo htmlspecialchars($_user['username']); ?>/videos" class="gh-tab-101">
 													Videos
 													</a>
 												</li>
