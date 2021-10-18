@@ -251,7 +251,7 @@
 		</div></div></div>
 		<?php unset($_SESSION['error']); ?>
 	<?php } ?>
-</div><br>
+</div>
 <!-- end masthead -->
 <div class="alerts-2012">
 	
